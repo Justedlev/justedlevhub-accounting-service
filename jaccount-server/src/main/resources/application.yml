@@ -1,0 +1,62 @@
+server:
+  port: ${SERVER_PORT:8081}
+  servlet:
+    context-path: ${SERVICE_CONTEXT_PATH:/api}
+spring:
+  application:
+    name: jaccount
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+#    properties:
+#      hibernate:
+#        jdbc:
+#          time-zone: UTC
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  security:
+    user:
+      name: ${USERNAME}
+      password: ${PASSWORD}
+  mail:
+    protocol: smtp
+    host: smtp.gmail.com
+    port: 587
+    test-connection: false
+    username: ${SERVICE_MAIL_USERNAME}
+    password: ${SERVICE_MAIL_PASSWORD}
+    properties:
+      mail:
+        debug: ${SERVICE_MAIL_IS_DEBUG:false}
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+justedlev-service:
+  account:
+    client:
+      connect-timeout: 1m
+      read-timeout: 10s
+    deactivation-time: ${DEACTIVATION_TIME:15m}
+    code-length: ${CODE_LENGTH:4}
+    activity-time: ${ACTIVITY_TIME:10m}
+    service:
+      name: ${SERVICE_NAME:J.Auth Service}
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/jeureka

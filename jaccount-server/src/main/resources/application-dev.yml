@@ -1,0 +1,12 @@
+justedlev-service:
+  storage:
+    client:
+      url: http://localhost:8888/jstorage/api
+  account:
+    deactivation-time: ${DEACTIVATION_TIME:15m}
+    code-length: ${CODE_LENGTH:4}
+    activity-time: ${ACTIVITY_TIME:10m}
+    offline-after-time: ${OFFLINE_AFTER_TIME:10m}
+    service:
+      email: ${SERVICE_MAIL_USERNAME}
+      host: ${SERVICE_HOST:http://localhost:${server.port}}${server.servlet.context-path}
