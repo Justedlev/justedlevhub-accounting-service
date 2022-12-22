@@ -186,7 +186,7 @@ public class AccountComponentImpl implements AccountComponent {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
         Optional.ofNullable(account.getAvatar())
-                .map(Avatar::getName)
+                .map(Avatar::getFileName)
                 .ifPresent(storageFeignClient::delete);
         storageFeignClient.upload(List.of(photo))
                 .stream()
