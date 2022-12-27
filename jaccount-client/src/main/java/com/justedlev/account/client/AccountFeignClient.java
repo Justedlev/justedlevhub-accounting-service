@@ -19,7 +19,7 @@ import java.util.List;
 
 @FeignClient(
         name = "accounting-api-client",
-        url = "${justedlev-service.accounting.client.url}",
+        url = "${justedlev-service.account.client.url}",
         configuration = AccountFeignClientConfiguration.class
 )
 public interface AccountFeignClient {
@@ -34,7 +34,7 @@ public interface AccountFeignClient {
     AccountResponse getAccountByNickname(@PathVariable String nickname);
 
     @PutMapping(value = EndpointConstant.V1_ACCOUNT_NICKNAME_UPDATE)
-    AccountResponse updateAccount(String nickname, @RequestBody AccountRequest request);
+    AccountResponse updateAccount(@PathVariable String nickname, @RequestBody AccountRequest request);
 
     @PostMapping(
             value = EndpointConstant.V1_ACCOUNT_NICKNAME_UPDATE_AVATAR,
