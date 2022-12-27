@@ -18,6 +18,7 @@ public class ValidationErrorResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Builder.Default
     private Date timestamp = new Date();
+    private String details;
     @Builder.Default
     private List<Violation> violations = new ArrayList<>();
 

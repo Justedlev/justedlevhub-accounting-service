@@ -1,4 +1,4 @@
-package com.justedlev.account.controller.error;
+package com.justedlev.account.controller;
 
 import com.justedlev.account.model.response.ErrorDetailsResponse;
 import com.justedlev.account.model.response.ValidationErrorResponse;
@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ConstraintViolationException;
 
 @Slf4j
 @ControllerAdvice
@@ -60,6 +61,26 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, status);
     }
 
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<ValidationErrorResponse> handleFeignException(ConstraintViolationException ex,
+                                                                        WebRequest request) {
+        log.error(ex.getMessage());
+        ex.printStackTrace();
+        var violations = ex.getConstraintViolations()
+                .stream()
+                .map(current -> ValidationErrorResponse.Violation.builder()
+                        .fieldName(current.getPropertyPath().toString())
+                        .message(current.getMessage())
+                        .build())
+                .toList();
+        var response = ValidationErrorResponse.builder()
+                .details(request.getDescription(false))
+                .violations(violations)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     @NonNull
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -76,6 +97,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
                         .build())
                 .toList();
         var error = ValidationErrorResponse.builder()
+                .details(request.getDescription(false))
                 .violations(violations)
                 .build();
 
