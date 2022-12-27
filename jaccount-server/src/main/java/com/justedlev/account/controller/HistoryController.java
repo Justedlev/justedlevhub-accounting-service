@@ -1,6 +1,6 @@
 package com.justedlev.account.controller;
 
-import com.justedlev.account.constant.EndpointConstant;
+import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.model.request.HistoryRequest;
 import com.justedlev.account.model.response.AccountHistoryResponse;
 import com.justedlev.account.service.HistoryService;
@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(EndpointConstant.HISTORY)
+@RequestMapping(EndpointConstant.V1_HISTORY)
 @RequiredArgsConstructor
 public class HistoryController {
     private final HistoryService historyService;

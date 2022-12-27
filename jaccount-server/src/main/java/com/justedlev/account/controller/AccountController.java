@@ -1,6 +1,6 @@
 package com.justedlev.account.controller;
 
-import com.justedlev.account.constant.EndpointConstant;
+import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
@@ -22,7 +22,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
-@RequestMapping(EndpointConstant.ACCOUNT)
+@RequestMapping(EndpointConstant.V1_ACCOUNT)
 @RequiredArgsConstructor
 @Validated
 public class AccountController {

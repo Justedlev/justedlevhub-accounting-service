@@ -3,7 +3,7 @@ package com.justedlev.account.component.impl;
 import com.justedlev.account.component.MailComponent;
 import com.justedlev.account.component.command.SendEmailCommand;
 import com.justedlev.account.properties.ServiceProperties;
-import com.justedlev.account.constant.EndpointConstant;
+import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.constant.MailBodyConstant;
 import com.justedlev.account.constant.MailSubjectConstant;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class MailComponentImpl implements MailComponent {
     @Override
     public void sendConfirmActivationMail(SendEmailCommand command) {
         var confirmUri = UriComponentsBuilder.fromHttpUrl(serviceProperties.getHost())
-                .path(String.format("%s/%s", EndpointConstant.ACCOUNT_CONFIRM, command.getActivationCode()))
+                .path(String.format("%s/%s", EndpointConstant.V1_ACCOUNT_CONFIRM, command.getActivationCode()))
                 .build().toUriString();
         var confirmMailBody = String.format(MailBodyConstant.CONFIRM, command.getUserName(), confirmUri);
 
