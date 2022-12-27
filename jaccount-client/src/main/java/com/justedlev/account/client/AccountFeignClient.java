@@ -40,7 +40,7 @@ public interface AccountFeignClient {
             value = EndpointConstant.V1_ACCOUNT_NICKNAME_UPDATE_AVATAR,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    AccountResponse updateAccountPhoto(@PathVariable String nickname, @RequestPart MultipartFile file);
+    AccountResponse updateAccountAvatar(@PathVariable String nickname, @RequestPart MultipartFile file);
 
     @GetMapping(value = EndpointConstant.V1_ACCOUNT_CONFIRM_CODE)
     ReportResponse confirm(@PathVariable String code);

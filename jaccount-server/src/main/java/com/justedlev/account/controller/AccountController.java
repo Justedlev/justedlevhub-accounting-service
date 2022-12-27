@@ -55,10 +55,10 @@ public class AccountController {
     }
 
     @PostMapping(value = EndpointConstant.NICKNAME_UPDATE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AccountResponse> updateAccountPhoto(@PathVariable
-                                                              @NotBlank(message = "Nickname cannot be empty.")
-                                                              String nickname,
-                                                              @RequestPart MultipartFile file) {
+    public ResponseEntity<AccountResponse> updateAccountAvatar(@PathVariable
+                                                               @NotBlank(message = "Nickname cannot be empty.")
+                                                               String nickname,
+                                                               @RequestPart MultipartFile file) {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
