@@ -1,7 +1,7 @@
 justedlev-service:
   storage:
     client:
-      url: http://localhost:8888/jstorage/api
+      url: http://localhost:8765/j-storage-service/api
   account:
     deactivation-time: ${DEACTIVATION_TIME:15m}
     code-length: ${CODE_LENGTH:4}

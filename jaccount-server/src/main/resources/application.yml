@@ -1,10 +1,10 @@
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:0}
   servlet:
     context-path: ${SERVICE_CONTEXT_PATH:/api}
 spring:
   application:
-    name: jaccount
+    name: j-account-service
   jackson:
     mapper:
       accept-case-insensitive-enums: true
@@ -57,6 +57,8 @@ justedlev-service:
     service:
       name: ${SERVICE_NAME:J.Auth Service}
 eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
   client:
     service-url:
-      default-zone: http://localhost:8761/jeureka
+      default-zone: http://localhost:8761/j-eureka
