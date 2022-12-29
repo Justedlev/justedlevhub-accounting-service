@@ -1,7 +1,7 @@
 package com.justedlev.account.model.request;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.justedlev.account.model.converter.LowerCaseConverter;
+import com.justedlev.account.converter.LowerCaseConverter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
