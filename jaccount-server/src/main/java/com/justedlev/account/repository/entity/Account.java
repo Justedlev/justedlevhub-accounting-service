@@ -33,7 +33,7 @@ public class Account extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "account_id", length = 36)
+    @Column(name = "account_id")
     private UUID id;
     @Column(name = "nick_name", nullable = false)
     private String nickname;

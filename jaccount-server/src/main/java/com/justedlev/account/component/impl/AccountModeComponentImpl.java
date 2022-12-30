@@ -5,7 +5,7 @@ import com.justedlev.account.component.AccountModeComponent;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.account.properties.AccountProperties;
+import com.justedlev.account.properties.JaccountProperties;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class AccountModeComponentImpl implements AccountModeComponent {
-    private final AccountProperties properties;
+    private final JaccountProperties properties;
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 

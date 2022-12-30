@@ -1,6 +1,6 @@
 package com.justedlev.account.client;
 
-import com.justedlev.account.client.configuration.AccountFeignClientConfiguration;
+import com.justedlev.account.client.configuration.JaccountFeignClientConfiguration;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.HistoryRequest;
 import com.justedlev.account.model.request.PaginationRequest;
@@ -18,11 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @FeignClient(
-        name = "accounting-api-client",
-        url = "${justedlev-service.account.client.url}",
-        configuration = AccountFeignClientConfiguration.class
+        name = "jaccounting-api-client",
+        url = "${jaccount.client.url}",
+        configuration = JaccountFeignClientConfiguration.class
 )
-public interface AccountFeignClient {
+public interface JaccountFeignClient {
     @PostMapping(value = EndpointConstant.V1_ACCOUNT_CREATE)
     @ResponseStatus(HttpStatus.CREATED)
     AccountResponse create(@RequestBody AccountRequest request);

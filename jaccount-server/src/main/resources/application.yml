@@ -4,7 +4,7 @@ server:
     context-path: ${SERVICE_CONTEXT_PATH:/api}
 spring:
   application:
-    name: j-account-service
+    name: jaccount-service
   jackson:
     mapper:
       accept-case-insensitive-enums: true
@@ -14,10 +14,10 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
-#    properties:
-#      hibernate:
-#        jdbc:
-#          time-zone: UTC
+    #    properties:
+    #      hibernate:
+    #        jdbc:
+    #          time-zone: UTC
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     open-in-view: false
@@ -46,19 +46,18 @@ spring:
           connectiontimeout: 5000
           timeout: 5000
           writetimeout: 5000
-justedlev-service:
-  account:
-    client:
-      connect-timeout: 1m
-      read-timeout: 10s
-    deactivation-time: ${DEACTIVATION_TIME:15m}
-    code-length: ${CODE_LENGTH:4}
-    activity-time: ${ACTIVITY_TIME:10m}
-    service:
-      name: ${SERVICE_NAME:J.Auth Service}
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.uuid}
   client:
     service-url:
       default-zone: http://localhost:8761/j-eureka
+jaccount:
+  client:
+    connect-timeout: 1m
+    read-timeout: 10s
+  deactivation-time: ${DEACTIVATION_TIME:15m}
+  code-length: ${CODE_LENGTH:4}
+  activity-time: ${ACTIVITY_TIME:10m}
+  service:
+    name: ${SERVICE_NAME:J.Auth Service}

@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @Data
 @ConfigurationPropertiesScan
-@ConfigurationProperties(prefix = "justedlev-service.account.service")
+@ConfigurationProperties(prefix = "jaccount.service")
 public class ServiceProperties {
     private String name;
     private String email;

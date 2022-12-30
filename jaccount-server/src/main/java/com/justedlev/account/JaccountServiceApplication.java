@@ -1,7 +1,8 @@
 package com.justedlev.account;
 
-import com.justedlev.account.properties.*;
-import com.justedlev.storage.client.StorageFeignClient;
+import com.justedlev.account.properties.JaccountProperties;
+import com.justedlev.account.properties.ServiceProperties;
+import com.justedlev.storage.client.JstorageFeignClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,13 +13,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableDiscoveryClient
-@EnableFeignClients(clients = StorageFeignClient.class)
+@EnableFeignClients(clients = JstorageFeignClient.class)
 @EnableConfigurationProperties({
-        AccountProperties.class,
+        JaccountProperties.class,
         ServiceProperties.class,
 })
-public class AccountApplication {
+public class JaccountServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AccountApplication.class, args);
+        SpringApplication.run(JaccountServiceApplication.class, args);
     }
 }
