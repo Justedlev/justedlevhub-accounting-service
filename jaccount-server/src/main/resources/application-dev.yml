@@ -14,4 +14,4 @@ jaccount:
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}
   service:
     email: ${SERVICE_MAIL_USERNAME}
-    host: ${SERVICE_HOST:http://localhost:${server.port}}
+    host: ${SERVICE_HOST:http://localhost:8765/${spring.application.name}${server.servlet.context-path}}

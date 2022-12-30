@@ -12,7 +12,7 @@ import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.storage.client.JstorageFeignClient;
+import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,7 +35,7 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final PhoneNumberConverter phoneNumberConverter;
-    private final JstorageFeignClient storageFeignClient;
+    private final JStorageFeignClient storageFeignClient;
     private final ModelMapper defaultMapper;
 
     @Override

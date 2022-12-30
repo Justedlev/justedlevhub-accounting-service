@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Bean;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
-@EnableConfigurationProperties(JaccountFeignClientProperties.class)
-public class JaccountFeignClientConfiguration {
-    private final JaccountFeignClientProperties properties;
+@EnableConfigurationProperties(JAccountFeignClientProperties.class)
+public class JAccountFeignClientConfiguration {
+    private final JAccountFeignClientProperties properties;
 
     @Bean
     public Request.Options requestOptions() {

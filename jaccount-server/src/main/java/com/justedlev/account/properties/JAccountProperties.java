@@ -9,7 +9,7 @@ import java.time.Duration;
 @Data
 @ConfigurationPropertiesScan
 @ConfigurationProperties(prefix = "jaccount")
-public class JaccountProperties {
+public class JAccountProperties {
     private Duration deactivationTime;
     private Integer codeLength;
     private String clientId;
