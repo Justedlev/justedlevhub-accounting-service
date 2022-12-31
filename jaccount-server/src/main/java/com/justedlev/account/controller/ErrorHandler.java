@@ -1,7 +1,8 @@
 package com.justedlev.account.controller;
 
-import com.justedlev.account.model.response.ErrorDetailsResponse;
-import com.justedlev.account.model.response.ValidationErrorResponse;
+import com.justedlev.jmodel.response.ErrorDetailsResponse;
+import com.justedlev.jmodel.response.ValidationErrorResponse;
+import com.justedlev.jmodel.response.ViolationResponse;
 import feign.FeignException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -68,7 +69,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
         var violations = ex.getConstraintViolations()
                 .stream()
-                .map(current -> ValidationErrorResponse.Violation.builder()
+                .map(current -> ViolationResponse.builder()
                         .fieldName(current.getPropertyPath().toString())
                         .message(current.getMessage())
                         .build())
@@ -91,7 +92,7 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
         ex.printStackTrace();
         var violations = ex.getBindingResult().getFieldErrors()
                 .stream()
-                .map(current -> ValidationErrorResponse.Violation.builder()
+                .map(current -> ViolationResponse.builder()
                         .fieldName(current.getField())
                         .message(current.getDefaultMessage())
                         .build())
