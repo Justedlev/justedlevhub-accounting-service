@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +59,8 @@ public class AccountModeComponentImpl implements AccountModeComponent {
     }
 
     private boolean filterOutByModeAt(Account account, long now, Duration duration) {
-        return Optional.ofNullable(account.getModeAt())
-                .map(Timestamp::getTime)
+        return Optional.ofNullable(account.getMode().getModeAt())
+                .map(Date::getTime)
                 .map(current -> now - current)
                 .map(current -> current >= duration.toMillis())
                 .orElse(Boolean.FALSE);

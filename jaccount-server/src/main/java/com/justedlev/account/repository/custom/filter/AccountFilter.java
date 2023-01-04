@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AccountFilter {
-    private Collection<String> ids;
+    private Collection<UUID> ids;
     private Collection<String> nicknames;
     private Collection<String> emails;
     private Collection<AccountStatusCode> statuses;

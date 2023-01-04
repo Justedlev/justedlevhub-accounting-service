@@ -3,6 +3,7 @@ package com.justedlev.account.repository.custom.impl;
 import com.justedlev.account.repository.custom.AccountCustomRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
+import com.justedlev.account.repository.entity.Account_;
 import com.justedlev.account.util.Converter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
     @Override
     public List<Account> findByFilter(@NonNull AccountFilter filter, @NonNull Pageable pageable) {
         var cb = em.getCriteriaBuilder();
-        var cq = cb.createQuery(String.class);
+        var cq = cb.createQuery(UUID.class);
         var root = cq.from(Account.class);
         var predicates = applyFilter(filter, cb, root);
 
@@ -51,7 +53,7 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         }
 
         cq.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
-        var ids = em.createQuery(cq.select(root.get("id")))
+        var ids = em.createQuery(cq.select(root.get(Account_.id)))
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
                 .getResultList();
@@ -66,19 +68,24 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         List<Predicate> predicates = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(filter.getIds())) {
-            predicates.add(root.get("id").in(filter.getIds()));
+            predicates.add(root.get(Account_.id).in(filter.getIds()));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getEmails())) {
-            predicates.add(cb.lower(root.get("email")).in(Converter.toLowerCase(filter.getEmails())));
+            predicates.add(cb.lower(root.get(Account_.email)).in(Converter.toLowerCase(filter.getEmails())));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getNicknames())) {
-            predicates.add(cb.lower(root.get("nickname")).in(Converter.toLowerCase(filter.getNicknames())));
+            predicates.add(cb.lower(root.get(Account_.nickname)).in(Converter.toLowerCase(filter.getNicknames())));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getModes())) {
-            predicates.add(root.get("mode").in(filter.getModes()));
+            predicates.add(root.get(Account_.mode).in(filter.getModes()));
+            cb.function("jsonb_extract_path_text",
+                            String.class,
+                            root.get(Account_.mode),
+                            cb.literal("modeType"))
+                    .in(filter.getModes());
         }
 
         if (ObjectUtils.isNotEmpty(filter.getModeAtFrom())) {
@@ -90,11 +97,11 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         }
 
         if (CollectionUtils.isNotEmpty(filter.getStatuses())) {
-            predicates.add(root.get("status").in(filter.getStatuses()));
+            predicates.add(root.get(Account_.status).in(filter.getStatuses()));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getActivationCodes())) {
-            predicates.add(root.get("activationCode").in(filter.getActivationCodes()));
+            predicates.add(root.get(Account_.activationCode).in(filter.getActivationCodes()));
         }
 
         return predicates;

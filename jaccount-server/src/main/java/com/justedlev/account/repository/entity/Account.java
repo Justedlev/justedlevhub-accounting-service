@@ -4,6 +4,7 @@ import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
+import com.justedlev.account.model.Mode;
 import com.justedlev.account.model.PhoneNumberInfo;
 import com.justedlev.account.repository.entity.base.BaseEntity;
 import com.justedlev.account.util.DateTimeUtils;
@@ -63,16 +64,13 @@ public class Account extends BaseEntity implements Serializable {
     @Column(name = "status", length = 30, nullable = false)
     private AccountStatusCode status = AccountStatusCode.UNCONFIRMED;
     @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(name = "mode", nullable = false)
-    private ModeType mode = ModeType.OFFLINE;
-    @Builder.Default
-    @Column(name = "mode_at")
-    private Timestamp modeAt = DateTimeUtils.nowTimestamp();
+    @Type(type = "jsonb")
+    @Column(name = "mode", columnDefinition = "jsonb", nullable = false)
+    private Mode mode = new Mode();
 
     public void setMode(ModeType mode) {
-        this.mode = mode;
-        this.modeAt = DateTimeUtils.nowTimestamp();
+        this.mode.setModeType(mode);
+        this.mode.setModeAt(DateTimeUtils.nowTimestamp());
     }
 
     @Override
