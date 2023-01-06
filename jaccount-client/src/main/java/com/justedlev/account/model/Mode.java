@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -19,5 +21,6 @@ public class Mode implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private ModeType modeType = ModeType.OFFLINE;
     @Builder.Default
-    private Date modeAt = new Date();
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Timestamp modeAt = Timestamp.valueOf(LocalDateTime.now());
 }

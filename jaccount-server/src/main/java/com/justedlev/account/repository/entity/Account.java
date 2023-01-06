@@ -64,13 +64,16 @@ public class Account extends BaseEntity implements Serializable {
     @Column(name = "status", length = 30, nullable = false)
     private AccountStatusCode status = AccountStatusCode.UNCONFIRMED;
     @Builder.Default
-    @Type(type = "jsonb")
-    @Column(name = "mode", columnDefinition = "jsonb", nullable = false)
-    private Mode mode = new Mode();
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mode", nullable = false)
+    private ModeType mode = ModeType.OFFLINE;
+    @Builder.Default
+    @Column(name = "modeAt", nullable = false)
+    private Timestamp modeAt = DateTimeUtils.nowTimestamp();
 
     public void setMode(ModeType mode) {
-        this.mode.setModeType(mode);
-        this.mode.setModeAt(DateTimeUtils.nowTimestamp());
+        this.mode = mode;
+        this.setModeAt(DateTimeUtils.nowTimestamp());
     }
 
     @Override

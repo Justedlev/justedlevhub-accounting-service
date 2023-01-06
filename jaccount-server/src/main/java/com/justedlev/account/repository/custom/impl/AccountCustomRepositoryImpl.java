@@ -1,5 +1,6 @@
 package com.justedlev.account.repository.custom.impl;
 
+import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.repository.custom.AccountCustomRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,11 +83,6 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
 
         if (CollectionUtils.isNotEmpty(filter.getModes())) {
             predicates.add(root.get(Account_.mode).in(filter.getModes()));
-            cb.function("jsonb_extract_path_text",
-                            String.class,
-                            root.get(Account_.mode),
-                            cb.literal("modeType"))
-                    .in(filter.getModes());
         }
 
         if (ObjectUtils.isNotEmpty(filter.getModeAtFrom())) {

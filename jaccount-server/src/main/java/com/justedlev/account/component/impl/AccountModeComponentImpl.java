@@ -59,7 +59,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
     }
 
     private boolean filterOutByModeAt(Account account, long now, Duration duration) {
-        return Optional.ofNullable(account.getMode().getModeAt())
+        return Optional.ofNullable(account.getModeAt())
                 .map(Date::getTime)
                 .map(current -> now - current)
                 .map(current -> current >= duration.toMillis())
