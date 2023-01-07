@@ -2,11 +2,8 @@ package com.justedlev.account.controller;
 
 import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.model.request.AccountRequest;
-import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.account.model.response.PageResponse;
-import com.justedlev.account.model.response.ReportResponse;
 import com.justedlev.account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

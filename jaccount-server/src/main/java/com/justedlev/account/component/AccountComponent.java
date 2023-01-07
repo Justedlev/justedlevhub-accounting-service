@@ -5,7 +5,6 @@ import com.justedlev.account.component.base.DeleteEntity;
 import com.justedlev.account.component.base.SaveEntity;
 import com.justedlev.account.component.base.UpdateEntity;
 import com.justedlev.account.model.request.AccountRequest;
-import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
 import org.springframework.web.multipart.MultipartFile;

@@ -8,7 +8,6 @@ import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
-import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;

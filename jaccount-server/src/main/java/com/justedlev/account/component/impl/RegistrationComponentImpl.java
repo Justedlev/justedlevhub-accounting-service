@@ -6,7 +6,6 @@ import com.justedlev.account.common.mapper.ReportMapper;
 import com.justedlev.account.common.validator.RegistrationValidator;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.RegistrationRequest;
-import com.justedlev.account.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
