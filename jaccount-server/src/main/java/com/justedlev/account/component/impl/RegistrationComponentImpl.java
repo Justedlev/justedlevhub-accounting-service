@@ -1,9 +1,8 @@
 package com.justedlev.account.component.impl;
 
+import com.justedlev.account.common.mapper.ReportMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.RegistrationComponent;
-import com.justedlev.account.common.mapper.ReportMapper;
-import com.justedlev.account.common.validator.RegistrationValidator;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.RegistrationRequest;
 import com.justedlev.model.response.ReportResponse;
@@ -18,12 +17,10 @@ public class RegistrationComponentImpl implements RegistrationComponent {
     private final ReportMapper reportMapper;
     private final ModelMapper defaultMapper;
     private final AccountComponent accountComponent;
-    private final RegistrationValidator registrationValidator;
 
     @Override
     @Transactional
     public ReportResponse registration(RegistrationRequest request) {
-        registrationValidator.validate(request);
         var createAccountRequest = toAccountRequest(request);
         var account = accountComponent.create(createAccountRequest);
         accountComponent.save(account);
