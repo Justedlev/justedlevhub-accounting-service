@@ -1,6 +1,5 @@
 package com.justedlev.account.repository.custom.impl;
 
-import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.repository.custom.AccountCustomRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -86,11 +84,11 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         }
 
         if (ObjectUtils.isNotEmpty(filter.getModeAtFrom())) {
-            predicates.add(cb.greaterThanOrEqualTo(root.get("modeAt"), filter.getModeAtFrom()));
+            predicates.add(cb.greaterThanOrEqualTo(root.get(Account_.modeAt), filter.getModeAtFrom()));
         }
 
         if (ObjectUtils.isNotEmpty(filter.getModeAtTo())) {
-            predicates.add(cb.lessThanOrEqualTo(root.get("modeAt"), filter.getModeAtTo()));
+            predicates.add(cb.lessThanOrEqualTo(root.get(Account_.modeAt), filter.getModeAtTo()));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getStatuses())) {
