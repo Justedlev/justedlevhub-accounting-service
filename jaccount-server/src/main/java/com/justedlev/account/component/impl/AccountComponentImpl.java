@@ -16,7 +16,6 @@ import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
 import java.util.*;
 
 @Component
@@ -123,31 +121,11 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account update(Account entity, AccountRequest request) {
-        if (StringUtils.isNotBlank(request.getNickname())) {
-            entity.setNickname(request.getNickname());
-        }
-
-        if (ObjectUtils.isNotEmpty(request.getBirthDate())) {
-            var birthDate = Timestamp.valueOf(request.getBirthDate());
-            entity.setBirthDate(birthDate);
-        }
-
-        if (StringUtils.isNotBlank(request.getFirstName())) {
-            entity.setFirstName(request.getFirstName());
-        }
-
-        if (StringUtils.isNotBlank(request.getLastName())) {
-            entity.setLastName(request.getLastName());
-        }
-
-        if (ObjectUtils.isNotEmpty(request.getGender())) {
-            entity.setGender(request.getGender());
-        }
-
-        if (StringUtils.isNotBlank(request.getPhoneNumber())) {
-            var phone = phoneNumberConverter.convert(request.getPhoneNumber());
-            entity.setPhoneNumberInfo(phone);
-        }
+        defaultMapper.map(request, entity);
+        Optional.ofNullable(request.getPhoneNumber())
+                .filter(StringUtils::isNotBlank)
+                .map(phoneNumberConverter::convert)
+                .ifPresent(entity::setPhoneNumberInfo);
 
         return save(entity);
     }

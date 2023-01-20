@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Builder
 @AllArgsConstructor
@@ -23,7 +23,7 @@ public class AccountRequest {
     private String firstName;
     private String lastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDateTime birthDate;
+    private Timestamp birthDate;
     private String phoneNumber;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
