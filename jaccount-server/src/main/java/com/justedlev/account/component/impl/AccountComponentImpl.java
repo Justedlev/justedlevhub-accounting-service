@@ -141,9 +141,9 @@ public class AccountComponentImpl implements AccountComponent {
     public Optional<Account> getByNickname(String nickname) {
         var spec = SpecificationBuilder
                 .<Account>where(Account_.NICKNAME, ComparisonOperator.EQUAL, nickname)
+                .and(BaseEntity_.CREATED_AT, ComparisonOperator.NOT_NULL)
                 .or(Account_.GENDER, ComparisonOperator.EQUAL, Gender.MALE)
                 .or(Account_.EMAIL, ComparisonOperator.IS_NULL)
-                .and(BaseEntity_.CREATED_AT, ComparisonOperator.NOT_NULL)
                 .build();
 
         return accountRepository.findAll(spec)

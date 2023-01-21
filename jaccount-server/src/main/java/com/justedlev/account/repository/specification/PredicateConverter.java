@@ -24,7 +24,7 @@ public class PredicateConverter {
         Object second = criteria.getSecond();
         switch (criteria.getOperator()) {
             case EQUAL -> {
-                return builder.equal(root.get(attributeName), first.toString());
+                return builder.equal(root.get(attributeName), first);
             }
             case GREATER_THAN, AFTER -> {
                 return builder.greaterThan(root.get(attributeName), first.toString());
