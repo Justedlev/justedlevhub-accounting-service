@@ -3,15 +3,16 @@ package com.justedlev.account.repository.specification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @Builder
-class Criteria {
+@AllArgsConstructor
+@NoArgsConstructor
+public class SearchCriteria {
     private String attribute;
-    private ComparisonOperator operator;
-    private Object first;
-    private Object second;
+    private SearchOperation operation;
+    private Object value;
     @Builder.Default
     private boolean orPredicate = false;
 }

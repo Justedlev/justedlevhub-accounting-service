@@ -1,6 +1,6 @@
 package com.justedlev.account.repository.specification;
 
-public enum ComparisonOperator {
+public enum SearchOperation {
     IN,
     NOT_IN,
     LIKE,
@@ -15,5 +15,4 @@ public enum ComparisonOperator {
     LESS_THAN_OR_EQUAL,
     BEFORE,
     AFTER,
-    BETWEEN,
 }
