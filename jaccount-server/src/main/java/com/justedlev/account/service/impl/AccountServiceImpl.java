@@ -10,11 +10,14 @@ import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
+import com.justedlev.account.repository.entity.base.BaseEntity_;
 import com.justedlev.account.service.AccountService;
 import com.justedlev.model.request.PaginationRequest;
 import com.justedlev.model.response.PageResponse;
 import com.justedlev.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +42,16 @@ public class AccountServiceImpl implements AccountService {
             throw new IllegalArgumentException(String.format("Maximum pages is %s", pageCount));
         }
 
-        var accounts = accountComponent.getPage(new AccountFilter(), request);
+        var page = PageRequest.of(
+                request.getPage() - 1,
+                request.getSize(),
+                Sort.Direction.DESC,
+                BaseEntity_.CREATED_AT
+        );
+        var filter = AccountFilter.builder()
+                .pageable(page)
+                .build();
+        var accounts = accountComponent.getByFilter(filter);
         var data = accountMapper.mapToResponse(accounts);
 
         return PageResponse.<List<AccountResponse>>builder()
@@ -68,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
         var filter = AccountFilter.builder()
                 .nicknames(Set.of(nickname))
                 .build();
-        var account = accountComponent.getByFilter(filter)
+        var account = accountComponent.getByNickname(nickname)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(

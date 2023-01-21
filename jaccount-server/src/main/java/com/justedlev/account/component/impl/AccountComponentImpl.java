@@ -5,21 +5,23 @@ import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.enumeration.AccountStatusCode;
+import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.model.request.PaginationRequest;
+import com.justedlev.account.repository.entity.Account_;
+import com.justedlev.account.repository.entity.base.BaseEntity_;
+import com.justedlev.account.repository.specification.ComparisonOperator;
+import com.justedlev.account.repository.specification.SpecificationBuilder;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,14 +37,6 @@ public class AccountComponentImpl implements AccountComponent {
     private final PhoneNumberConverter phoneNumberConverter;
     private final JStorageFeignClient storageFeignClient;
     private final ModelMapper defaultMapper;
-
-    @Override
-    public List<Account> getPage(AccountFilter filter, PaginationRequest request) {
-        var page = PageRequest.of(request.getPage() - 1, request.getSize(),
-                Sort.Direction.DESC, "createdAt");
-
-        return accountRepository.findByFilter(filter, page);
-    }
 
     @Override
     public List<Account> getByFilter(AccountFilter filter) {
@@ -145,16 +139,26 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Optional<Account> getByNickname(String nickname) {
-        return Optional.ofNullable(nickname)
-                .filter(StringUtils::isNotBlank)
-                .map(Set::of)
-                .map(current -> AccountFilter.builder()
-                        .nicknames(current)
-                        .build())
-                .map(this::getByFilter)
+        var spec = SpecificationBuilder
+                .<Account>where(Account_.NICKNAME, ComparisonOperator.EQUAL, nickname)
+                .or(Account_.GENDER, ComparisonOperator.EQUAL, Gender.MALE)
+                .or(Account_.EMAIL, ComparisonOperator.IS_NULL)
+                .and(BaseEntity_.CREATED_AT, ComparisonOperator.NOT_NULL)
+                .build();
+
+        return accountRepository.findAll(spec)
                 .stream()
-                .flatMap(Collection::stream)
-                .findFirst();
+                .max(Comparator.comparing(Account::getCreatedAt));
+//        return Optional.ofNullable(nickname)
+//                .filter(StringUtils::isNotBlank)
+//                .map(Set::of)
+//                .map(current -> AccountFilter.builder()
+//                        .nicknames(current)
+//                        .build())
+//                .map(this::getByFilter)
+//                .stream()
+//                .flatMap(Collection::stream)
+//                .max(Comparator.comparing(Account::getCreatedAt));
     }
 
     @Override

@@ -10,16 +10,16 @@ import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.Date;
 
-public class DynamicCriteriaPredicate {
+public class PredicateConverter {
 
-    private DynamicCriteriaPredicate() {
+    private PredicateConverter() {
         throw new IllegalStateException("Utility class");
     }
 
     public static <E> Predicate toPredicate(@NonNull Root<E> root, @NonNull Criteria criteria,
                                             @NonNull CriteriaQuery<?> query, @NonNull CriteriaBuilder builder)
             throws OperationNotSupportedException {
-        String attributeName = criteria.getAttributeName();
+        String attributeName = criteria.getAttribute();
         Object first = criteria.getFirst();
         Object second = criteria.getSecond();
         switch (criteria.getOperator()) {
