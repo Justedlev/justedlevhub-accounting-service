@@ -42,21 +42,6 @@ public class SpecificationBuilder<E> {
         return where(toCriteria(attribute, operator, value1, value2));
     }
 
-    public Specification<E> build() {
-        if (criteriaList.isEmpty())
-            return null;
-
-        Specification<E> result = new SpecificationImpl<>(criteriaList.get(0));
-
-        for (int i = 1; i < criteriaList.size(); i++) {
-            result = criteriaList.get(i).isOrPredicate()
-                    ? Specification.where(result).or(new SpecificationImpl<>(criteriaList.get(i)))
-                    : Specification.where(result).and(new SpecificationImpl<>(criteriaList.get(i)));
-        }
-
-        return result;
-    }
-
     protected SpecificationBuilder<E> and(@NonNull Criteria criteria) {
         criteriaList.add(criteria);
 
@@ -99,6 +84,21 @@ public class SpecificationBuilder<E> {
 
     public SpecificationBuilder<E> or(String attribute, ComparisonOperator operator, Object value) {
         return this.or(toCriteria(attribute, operator, value));
+    }
+
+    public Specification<E> build() {
+        if (criteriaList.isEmpty())
+            return null;
+
+        Specification<E> result = new SpecificationImpl<>(criteriaList.get(0));
+
+        for (int i = 1; i < criteriaList.size(); i++) {
+            result = criteriaList.get(i).isOrPredicate()
+                    ? Specification.where(result).or(new SpecificationImpl<>(criteriaList.get(i)))
+                    : Specification.where(result).and(new SpecificationImpl<>(criteriaList.get(i)));
+        }
+
+        return result;
     }
 
     private static Criteria toCriteria(String attribute, ComparisonOperator operator) {
