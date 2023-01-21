@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchCriteria {
-    private String attribute;
-    private SearchOperation operation;
+public class Filter {
+    private String field;
+    private QueryOperator operation;
     private Object value;
-    @Builder.Default
-    private boolean orPredicate = false;
 }

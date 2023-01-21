@@ -1,6 +1,6 @@
 package com.justedlev.account.repository.specification;
 
-public enum SearchOperation {
+public enum QueryOperator {
     IN,
     NOT_IN,
     LIKE,

@@ -5,7 +5,6 @@ import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.enumeration.AccountStatusCode;
-import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
@@ -13,8 +12,7 @@ import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Account_;
-import com.justedlev.account.repository.entity.base.BaseEntity_;
-import com.justedlev.account.repository.specification.DynamicSpecification;
+import com.justedlev.account.repository.specification.AndSpecification;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,8 +26,8 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
-import static com.justedlev.account.repository.specification.SearchOperation.EQUAL;
-import static com.justedlev.account.repository.specification.SearchOperation.NOT_NULL;
+import static com.justedlev.account.repository.specification.QueryOperator.EQUAL;
+import static com.justedlev.account.repository.specification.QueryOperator.NOT_NULL;
 
 @Component
 @RequiredArgsConstructor
@@ -141,15 +139,13 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Optional<Account> getByNickname(String nickname) {
-        var spec = DynamicSpecification
+        var specification = AndSpecification
                 .<Account>where(Account_.NICKNAME, EQUAL, nickname)
                 .and(Account_.EMAIL, NOT_NULL)
                 .and(Account_.ID, NOT_NULL)
-                .or(Account_.GENDER, EQUAL, Gender.MALE)
-                .or(BaseEntity_.CREATED_AT, NOT_NULL)
                 .build();
 
-        return accountRepository.findAll(spec)
+        return accountRepository.findAll(specification)
                 .stream()
                 .max(Comparator.comparing(Account::getCreatedAt));
 //        return Optional.ofNullable(nickname)
