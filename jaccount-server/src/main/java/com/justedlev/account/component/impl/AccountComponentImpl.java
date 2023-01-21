@@ -5,7 +5,6 @@ import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.enumeration.AccountStatusCode;
-import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
@@ -13,8 +12,6 @@ import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Account_;
-import com.justedlev.account.repository.entity.base.BaseEntity_;
-import com.justedlev.account.repository.specification.ComparisonOperator;
 import com.justedlev.account.repository.specification.SpecificationBuilder;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +25,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+
+import static com.justedlev.account.repository.specification.ComparisonOperator.EQUAL;
 
 @Component
 @RequiredArgsConstructor
@@ -140,10 +139,7 @@ public class AccountComponentImpl implements AccountComponent {
     @Override
     public Optional<Account> getByNickname(String nickname) {
         var spec = SpecificationBuilder
-                .<Account>where(Account_.NICKNAME, ComparisonOperator.EQUAL, nickname)
-                .and(BaseEntity_.CREATED_AT, ComparisonOperator.NOT_NULL)
-                .or(Account_.GENDER, ComparisonOperator.EQUAL, Gender.MALE)
-                .or(Account_.EMAIL, ComparisonOperator.IS_NULL)
+                .<Account>where(Account_.NICKNAME, EQUAL, nickname)
                 .build();
 
         return accountRepository.findAll(spec)

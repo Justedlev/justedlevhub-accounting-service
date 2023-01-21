@@ -77,9 +77,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse getByNickname(String nickname) {
-        var filter = AccountFilter.builder()
-                .nicknames(Set.of(nickname))
-                .build();
         var account = accountComponent.getByNickname(nickname)
                 .stream()
                 .findFirst()
