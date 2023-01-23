@@ -4,11 +4,10 @@ import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
-import com.justedlev.account.model.Mode;
 import com.justedlev.account.model.PhoneNumberInfo;
-import com.justedlev.account.repository.entity.base.BaseEntity;
 import com.justedlev.account.util.DateTimeUtils;
 import com.justedlev.account.util.Generator;
+import com.justedlev.common.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
@@ -17,7 +16,6 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
@@ -30,7 +28,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "accounts")
-public class Account extends BaseEntity implements Serializable {
+public class Account extends BaseEntity {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
