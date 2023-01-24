@@ -1,5 +1,6 @@
 package com.justedlev.account.model.request;
 
+import com.justedlev.common.model.request.PaginationRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

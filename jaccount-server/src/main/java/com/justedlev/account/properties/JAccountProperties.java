@@ -8,8 +8,8 @@ import java.time.Duration;
 
 @Data
 @ConfigurationPropertiesScan
-@ConfigurationProperties(prefix = "justedlev-service.account")
-public class AccountProperties {
+@ConfigurationProperties(prefix = "jaccount")
+public class JAccountProperties {
     private Duration deactivationTime;
     private Integer codeLength;
     private String clientId;

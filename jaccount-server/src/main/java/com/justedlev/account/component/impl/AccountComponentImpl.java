@@ -8,26 +8,26 @@ import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
-import com.justedlev.account.model.request.PaginationRequest;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.storage.client.StorageFeignClient;
+import com.justedlev.account.repository.entity.Account_;
+import com.justedlev.account.repository.specification.AndSpecification;
+import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
 import java.util.*;
+
+import static com.justedlev.account.repository.specification.QueryOperator.EQUAL;
+import static com.justedlev.account.repository.specification.QueryOperator.NOT_NULL;
 
 @Component
 @RequiredArgsConstructor
@@ -35,16 +35,8 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final PhoneNumberConverter phoneNumberConverter;
-    private final StorageFeignClient storageFeignClient;
+    private final JStorageFeignClient storageFeignClient;
     private final ModelMapper defaultMapper;
-
-    @Override
-    public List<Account> getPage(AccountFilter filter, PaginationRequest request) {
-        var page = PageRequest.of(request.getPage() - 1, request.getSize(),
-                Sort.Direction.DESC, "createdAt");
-
-        return accountRepository.findByFilter(filter, page);
-    }
 
     @Override
     public List<Account> getByFilter(AccountFilter filter) {
@@ -123,31 +115,11 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account update(Account entity, AccountRequest request) {
-        if (StringUtils.isNotBlank(request.getNickname())) {
-            entity.setNickname(request.getNickname());
-        }
-
-        if (ObjectUtils.isNotEmpty(request.getBirthDate())) {
-            var birthDate = Timestamp.valueOf(request.getBirthDate());
-            entity.setBirthDate(birthDate);
-        }
-
-        if (StringUtils.isNotBlank(request.getFirstName())) {
-            entity.setFirstName(request.getFirstName());
-        }
-
-        if (StringUtils.isNotBlank(request.getLastName())) {
-            entity.setLastName(request.getLastName());
-        }
-
-        if (ObjectUtils.isNotEmpty(request.getGender())) {
-            entity.setGender(request.getGender());
-        }
-
-        if (StringUtils.isNotBlank(request.getPhoneNumber())) {
-            var phone = phoneNumberConverter.convert(request.getPhoneNumber());
-            entity.setPhoneNumberInfo(phone);
-        }
+        defaultMapper.map(request, entity);
+        Optional.ofNullable(request.getPhoneNumber())
+                .filter(StringUtils::isNotBlank)
+                .map(phoneNumberConverter::convert)
+                .ifPresent(entity::setPhoneNumberInfo);
 
         return save(entity);
     }
@@ -167,16 +139,25 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Optional<Account> getByNickname(String nickname) {
-        return Optional.ofNullable(nickname)
-                .filter(StringUtils::isNotBlank)
-                .map(Set::of)
-                .map(current -> AccountFilter.builder()
-                        .nicknames(current)
-                        .build())
-                .map(this::getByFilter)
+        var specification = AndSpecification
+                .<Account>where(Account_.NICKNAME, EQUAL, nickname)
+                .and(Account_.EMAIL, NOT_NULL)
+                .and(Account_.ID, NOT_NULL)
+                .build();
+
+        return accountRepository.findAll(specification)
                 .stream()
-                .flatMap(Collection::stream)
-                .findFirst();
+                .max(Comparator.comparing(Account::getCreatedAt));
+//        return Optional.ofNullable(nickname)
+//                .filter(StringUtils::isNotBlank)
+//                .map(Set::of)
+//                .map(current -> AccountFilter.builder()
+//                        .nicknames(current)
+//                        .build())
+//                .map(this::getByFilter)
+//                .stream()
+//                .flatMap(Collection::stream)
+//                .max(Comparator.comparing(Account::getCreatedAt));
     }
 
     @Override

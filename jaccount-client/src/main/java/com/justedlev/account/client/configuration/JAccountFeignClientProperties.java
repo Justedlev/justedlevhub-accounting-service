@@ -9,8 +9,8 @@ import java.time.temporal.ChronoUnit;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "justedlev-service.account.client")
-public class AccountFeignClientProperties {
+@ConfigurationProperties(prefix = "jaccount.client")
+public class JAccountFeignClientProperties {
     private String url;
     private Duration connectTimeout = Duration.of(10L, ChronoUnit.SECONDS);
     private Duration readTimeout = Duration.of(2L, ChronoUnit.MINUTES);

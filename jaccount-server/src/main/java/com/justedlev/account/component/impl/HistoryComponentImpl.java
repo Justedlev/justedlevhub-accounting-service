@@ -7,6 +7,7 @@ import com.justedlev.account.model.response.AccountHistoryResponse;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
+import com.justedlev.common.entity.BaseEntity_;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,12 +24,17 @@ public class HistoryComponentImpl implements HistoryComponent {
 
     @Override
     public List<AccountHistoryResponse> getAccounts(HistoryRequest request) {
+        var page = PageRequest.of(
+                request.getPageRequest().getPage() - 1,
+                request.getPageRequest().getSize(),
+                Sort.Direction.DESC,
+                BaseEntity_.CREATED_AT
+        );
         var filter = AccountFilter.builder()
                 .emails(request.getEmails())
+                .pageable(page)
                 .build();
-        var page = PageRequest.of(request.getPageRequest().getPage() - 1,
-                request.getPageRequest().getSize(), Sort.Direction.DESC, "createdAt");
-        var accounts = accountRepository.findByFilter(filter, page)
+        var accounts = accountRepository.findByFilter(filter)
                 .parallelStream()
                 .map(accountMapper::mapToResponse)
                 .collect(Collectors.groupingBy(AccountResponse::getEmail));
@@ -38,6 +44,6 @@ public class HistoryComponentImpl implements HistoryComponent {
                         .email(current.getKey())
                         .accounts(current.getValue())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

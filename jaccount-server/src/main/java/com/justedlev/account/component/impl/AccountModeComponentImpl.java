@@ -5,7 +5,7 @@ import com.justedlev.account.component.AccountModeComponent;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.account.properties.AccountProperties;
+import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
@@ -13,9 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +23,7 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class AccountModeComponentImpl implements AccountModeComponent {
-    private final AccountProperties properties;
+    private final JAccountProperties properties;
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
 
@@ -60,7 +60,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
 
     private boolean filterOutByModeAt(Account account, long now, Duration duration) {
         return Optional.ofNullable(account.getModeAt())
-                .map(Timestamp::getTime)
+                .map(Date::getTime)
                 .map(current -> now - current)
                 .map(current -> current >= duration.toMillis())
                 .orElse(Boolean.FALSE);

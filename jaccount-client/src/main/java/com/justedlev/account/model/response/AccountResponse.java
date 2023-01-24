@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
+import com.justedlev.account.model.Mode;
 import com.justedlev.account.model.PhoneNumberInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

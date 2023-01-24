@@ -6,16 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class AccountFilter {
-    private Collection<String> ids;
+    private Collection<UUID> ids;
     private Collection<String> nicknames;
     private Collection<String> emails;
     private Collection<AccountStatusCode> statuses;
@@ -23,4 +25,5 @@ public class AccountFilter {
     private Collection<String> activationCodes;
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
+    private Pageable pageable;
 }

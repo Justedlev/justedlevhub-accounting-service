@@ -1,12 +1,16 @@
-justedlev-service:
-  storage:
-    client:
-      url: http://localhost:8765/j-storage-service/api
-  account:
-    deactivation-time: ${DEACTIVATION_TIME:15m}
-    code-length: ${CODE_LENGTH:4}
-    activity-time: ${ACTIVITY_TIME:10m}
-    offline-after-time: ${OFFLINE_AFTER_TIME:10m}
-    service:
-      email: ${SERVICE_MAIL_USERNAME}
-      host: ${SERVICE_HOST:http://localhost:${server.port}}${server.servlet.context-path}
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+jstorage:
+  client:
+    url: http://localhost:${server.port}${server.servlet.context-path}
+jaccount:
+  deactivation-time: ${DEACTIVATION_TIME:15m}
+  code-length: ${CODE_LENGTH:4}
+  activity-time: ${ACTIVITY_TIME:10m}
+  offline-after-time: ${OFFLINE_AFTER_TIME:10m}
+  service:
+    email: ${SERVICE_MAIL_USERNAME}
+    host: ${SERVICE_HOST:http://localhost:8765/${spring.application.name}${server.servlet.context-path}}
