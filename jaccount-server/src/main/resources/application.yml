@@ -38,8 +38,5 @@ jaccount:
   client:
     connect-timeout: 1m
     read-timeout: 10s
-  deactivation-time: ${DEACTIVATION_TIME:15m}
-  code-length: ${CODE_LENGTH:4}
-  activity-time: ${ACTIVITY_TIME:10m}
   service:
     name: ${SERVICE_NAME:J.Auth Service}
