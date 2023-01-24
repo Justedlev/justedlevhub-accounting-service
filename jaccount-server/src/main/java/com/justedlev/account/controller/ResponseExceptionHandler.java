@@ -1,8 +1,8 @@
 package com.justedlev.account.controller;
 
-import com.justedlev.model.response.ErrorDetailsResponse;
-import com.justedlev.model.response.ValidationErrorResponse;
-import com.justedlev.model.response.ViolationResponse;
+import com.justedlev.common.model.response.ErrorDetailsResponse;
+import com.justedlev.common.model.response.ValidationErrorResponse;
+import com.justedlev.common.model.response.ViolationResponse;
 import feign.FeignException;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +21,13 @@ import javax.validation.ConstraintViolationException;
 
 @Slf4j
 @ControllerAdvice
-public class ErrorHandler extends ResponseEntityExceptionHandler {
+public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {
             IllegalArgumentException.class,
             EntityExistsException.class,
             IllegalStateException.class
     })
-    public ResponseEntity<ErrorDetailsResponse> handleConflictException(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorDetailsResponse> handleConflictExceptions(Exception ex, WebRequest request) {
         log.error(ex.getMessage());
         ex.printStackTrace();
         var errorDetails = ErrorDetailsResponse.builder()
@@ -65,8 +65,8 @@ public class ErrorHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<ValidationErrorResponse> handleFeignException(ConstraintViolationException ex,
-                                                                        WebRequest request) {
+    public ResponseEntity<ValidationErrorResponse> handleConstraintViolationException(ConstraintViolationException ex,
+                                                                                      WebRequest request) {
         log.error(ex.getMessage());
         ex.printStackTrace();
         var violations = ex.getConstraintViolations()

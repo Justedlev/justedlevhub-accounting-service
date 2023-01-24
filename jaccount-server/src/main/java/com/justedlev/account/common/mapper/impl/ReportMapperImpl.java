@@ -1,7 +1,7 @@
 package com.justedlev.account.common.mapper.impl;
 
 import com.justedlev.account.common.mapper.ReportMapper;
-import com.justedlev.model.response.ReportResponse;
+import com.justedlev.common.model.response.ReportResponse;
 import org.springframework.stereotype.Component;
 
 @Component

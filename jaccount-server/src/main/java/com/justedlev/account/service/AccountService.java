@@ -3,9 +3,9 @@ package com.justedlev.account.service;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.model.request.PaginationRequest;
-import com.justedlev.model.response.PageResponse;
-import com.justedlev.model.response.ReportResponse;
+import com.justedlev.common.model.request.PaginationRequest;
+import com.justedlev.common.model.response.PageResponse;
+import com.justedlev.common.model.response.ReportResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
