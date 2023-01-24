@@ -3,14 +3,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:9876
 jstorage:
   client:
-    url: http://localhost:8765/api
+    url: http://localhost:${server.port}${server.servlet.context-path}
 jaccount:
   deactivation-time: ${DEACTIVATION_TIME:15m}
   code-length: ${CODE_LENGTH:4}
