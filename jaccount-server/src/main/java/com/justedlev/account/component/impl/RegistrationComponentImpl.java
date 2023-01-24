@@ -5,7 +5,7 @@ import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.RegistrationComponent;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.RegistrationRequest;
-import com.justedlev.model.response.ReportResponse;
+import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

@@ -7,7 +7,7 @@ import com.justedlev.account.model.response.AccountHistoryResponse;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
-import com.justedlev.account.repository.entity.base.BaseEntity_;
+import com.justedlev.common.entity.BaseEntity_;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
