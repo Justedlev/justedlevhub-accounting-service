@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @FeignClient(
-        name = "jaccounting-api-client",
+        name = "jaccount-api-client",
         url = "${jaccount.client.url}",
         configuration = JAccountFeignClientConfiguration.class
 )

@@ -10,10 +10,6 @@ import java.time.Duration;
 @ConfigurationPropertiesScan
 @ConfigurationProperties(prefix = "jaccount")
 public class JAccountProperties {
-    private Duration deactivationTime;
-    private Integer codeLength;
-    private String clientId;
-    private String clientSecret;
     private Duration activityTime;
     private Duration offlineAfterTime;
 }
