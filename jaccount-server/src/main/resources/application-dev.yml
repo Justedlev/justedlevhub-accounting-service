@@ -9,7 +9,7 @@ springdoc:
     url: /${spring.application.name}${server.servlet.context-path}/v3/api-docs
 jstorage:
   client:
-    url: ${GATEWAY_HOST}/storage/api/v1
+    url: ${GATEWAY_HOST}/storage/api/
 jaccount:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}
