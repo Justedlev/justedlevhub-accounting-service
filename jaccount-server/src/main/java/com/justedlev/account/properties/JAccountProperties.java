@@ -12,4 +12,14 @@ import java.time.Duration;
 public class JAccountProperties {
     private Duration activityTime;
     private Duration offlineAfterTime;
+    private Service service;
+
+    @Data
+    @ConfigurationPropertiesScan
+    @ConfigurationProperties(prefix = "jaccount.service")
+    public static class Service {
+        private String name;
+        private String email;
+        private String host;
+    }
 }

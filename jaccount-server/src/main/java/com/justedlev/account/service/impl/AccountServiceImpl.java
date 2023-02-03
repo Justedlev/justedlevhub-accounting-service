@@ -1,20 +1,25 @@
 package com.justedlev.account.service.impl;
 
+import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.common.mapper.ReportMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.AccountModeComponent;
 import com.justedlev.account.component.PageCounterComponent;
 import com.justedlev.account.constant.ExceptionConstant;
+import com.justedlev.account.constant.MailSubjectConstant;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
+import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.service.AccountService;
 import com.justedlev.common.entity.BaseEntity_;
 import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
+import com.justedlev.notification.model.request.SendTemplateMailRequest;
+import com.justedlev.notification.queue.JNotificationQueue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -23,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -33,6 +39,8 @@ public class AccountServiceImpl implements AccountService {
     private final ReportMapper reportMapper;
     private final PageCounterComponent pageCounterComponent;
     private final AccountModeComponent accountModeComponent;
+    private final JNotificationQueue notificationQueue;
+    private final JAccountProperties properties;
 
     @Override
     public PageResponse<List<AccountResponse>> getPage(PaginationRequest request) {
@@ -117,7 +125,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse create(AccountRequest request) {
         var account = accountComponent.create(request);
+        var saved = accountComponent.save(account);
+        var content = Map.of(
+                "{FULL_NAME}", saved.getNickname(),
+                "{CONFIRMATION_LINK}", String.format("%s%s/%s",
+                        properties.getService().getHost(), EndpointConstant.V1_ACCOUNT_CONFIRM, saved.getActivationCode()),
+                "{BEST_REGARDS_FROM}", properties.getService().getName()
+        );
+        var mail = SendTemplateMailRequest.builder()
+                .recipient(request.getEmail())
+                .subject(String.format(MailSubjectConstant.CONFIRMATION, request.getNickname()))
+                .templateName("account-confirmation")
+                .content(content)
+                .build();
+        notificationQueue.sendEmail(mail);
 
-        return accountMapper.mapToResponse(accountComponent.save(account));
+        return accountMapper.mapToResponse(saved);
     }
 }

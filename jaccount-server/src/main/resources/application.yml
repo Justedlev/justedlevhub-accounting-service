@@ -28,12 +28,26 @@ spring:
     user:
       name: ${USERNAME}
       password: ${PASSWORD}
+  rabbitmq:
+    host: ${cloudamqp.host}
+    port: ${cloudamqp.port}
+    password: ${cloudamqp.password}
+    username: ${cloudamqp.username}
+    virtual-host: ${cloudamqp.virtual-host}
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.uuid}
   client:
     service-url:
       default-zone: ${DISCOVERY_HOST}
+cloudamqp:
+  host: ${CLOUDAMQP_HOST}
+  port: ${CLOUDAMQP_PORT}
+  password: ${CLOUDAMQP_PASSWORD}
+  username: ${CLOUDAMQP_USERNAME}
+  virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
+  queues:
+    send-template-mail: send-template-mail-queue
 jaccount:
   client:
     connect-timeout: 1m
