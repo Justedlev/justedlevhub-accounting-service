@@ -13,6 +13,7 @@ import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
+import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.service.AccountService;
 import com.justedlev.common.entity.BaseEntity_;
 import com.justedlev.common.model.request.PaginationRequest;
@@ -21,10 +22,12 @@ import com.justedlev.common.model.response.ReportResponse;
 import com.justedlev.notification.model.request.SendTemplateMailRequest;
 import com.justedlev.notification.queue.JNotificationQueue;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -126,20 +129,28 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse create(AccountRequest request) {
         var account = accountComponent.create(request);
         var saved = accountComponent.save(account);
+        sendConfirmationEmail(saved);
+
+        return accountMapper.mapToResponse(saved);
+    }
+
+    @SneakyThrows
+    private void sendConfirmationEmail(Account account) {
+        var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getService().getHost())
+                .path(EndpointConstant.V1_ACCOUNT_CONFIRM)
+                .path(account.getActivationCode())
+                .build().toUriString();
         var content = Map.of(
-                "{FULL_NAME}", saved.getNickname(),
-                "{CONFIRMATION_LINK}", String.format("%s%s/%s",
-                        properties.getService().getHost(), EndpointConstant.V1_ACCOUNT_CONFIRM, saved.getActivationCode()),
+                "{FULL_NAME}", account.getNickname(),
+                "{CONFIRMATION_LINK}", confirmationLink,
                 "{BEST_REGARDS_FROM}", properties.getService().getName()
         );
         var mail = SendTemplateMailRequest.builder()
-                .recipient(request.getEmail())
-                .subject(String.format(MailSubjectConstant.CONFIRMATION, request.getNickname()))
+                .recipient(account.getEmail())
+                .subject(String.format(MailSubjectConstant.CONFIRMATION, properties.getService().getName()))
                 .templateName("account-confirmation")
                 .content(content)
                 .build();
         notificationQueue.sendEmail(mail);
-
-        return accountMapper.mapToResponse(saved);
     }
 }
