@@ -138,7 +138,7 @@ public class AccountServiceImpl implements AccountService {
     private void sendConfirmationEmail(Account account) {
         var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getService().getHost())
                 .path(EndpointConstant.V1_ACCOUNT_CONFIRM)
-                .path(account.getActivationCode())
+                .path("/" + account.getActivationCode())
                 .build().toUriString();
         var content = Map.of(
                 "{FULL_NAME}", account.getNickname(),
