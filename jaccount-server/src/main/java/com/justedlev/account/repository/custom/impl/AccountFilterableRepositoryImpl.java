@@ -66,7 +66,7 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         }
     }
 
-    private void applyPredicates(CriteriaQuery<Account> cq, Predicate... predicates) {
+    private <T> void applyPredicates(CriteriaQuery<T> cq, Predicate... predicates) {
         if (ArrayUtils.isNotEmpty(predicates)) {
             cq.where(predicates);
         }
@@ -81,8 +81,9 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var root = cq.from(Account.class);
+        applyPredicates(cq, predicates);
 
-        return cq.select(cb.count(root)).where(predicates);
+        return cq.select(cb.count(root));
     }
 
     private Predicate[] buildPredicates(AccountFilter filter, CriteriaBuilder cb, Root<Account> root) {
