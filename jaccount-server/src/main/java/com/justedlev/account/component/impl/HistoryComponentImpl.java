@@ -32,9 +32,9 @@ public class HistoryComponentImpl implements HistoryComponent {
         );
         var filter = AccountFilter.builder()
                 .emails(request.getEmails())
-                .pageable(page)
                 .build();
-        var accounts = accountRepository.findByFilter(filter)
+        var accounts = accountRepository.findByFilter(filter, page)
+                .getContent()
                 .parallelStream()
                 .map(accountMapper::mapToResponse)
                 .collect(Collectors.groupingBy(AccountResponse::getEmail));

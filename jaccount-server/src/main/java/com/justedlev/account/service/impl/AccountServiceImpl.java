@@ -5,7 +5,6 @@ import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.common.mapper.ReportMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.AccountModeComponent;
-import com.justedlev.account.component.PageCounterComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.constant.MailSubjectConstant;
 import com.justedlev.account.model.request.AccountRequest;
@@ -40,35 +39,24 @@ public class AccountServiceImpl implements AccountService {
     private final AccountComponent accountComponent;
     private final AccountMapper accountMapper;
     private final ReportMapper reportMapper;
-    private final PageCounterComponent pageCounterComponent;
     private final AccountModeComponent accountModeComponent;
     private final JNotificationQueue notificationQueue;
     private final JAccountProperties properties;
 
     @Override
     public PageResponse<List<AccountResponse>> getPage(PaginationRequest request) {
-        var pageCount = pageCounterComponent.accountPageCount(request.getSize());
-
-        if (pageCount < request.getPage()) {
-            throw new IllegalArgumentException(String.format("Maximum pages is %s", pageCount));
-        }
-
         var page = PageRequest.of(
                 request.getPage() - 1,
                 request.getSize(),
                 Sort.Direction.DESC,
                 BaseEntity_.CREATED_AT
         );
-        var filter = AccountFilter.builder()
-                .pageable(page)
-                .build();
-        var accounts = accountComponent.getByFilter(filter);
-        var data = accountMapper.mapToResponse(accounts);
+        var accountPage = accountComponent.getPage(page);
 
         return PageResponse.<List<AccountResponse>>builder()
-                .page(request.getPage())
-                .maxPages(pageCount)
-                .data(data)
+                .page(accountPage.getNumber())
+                .maxPages(accountPage.getTotalPages())
+                .data(accountMapper.mapToResponse(accountPage.getContent()))
                 .build();
     }
 

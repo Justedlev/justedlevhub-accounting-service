@@ -19,6 +19,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,6 +45,16 @@ public class AccountComponentImpl implements AccountComponent {
         return Optional.ofNullable(filter)
                 .map(accountRepository::findByFilter)
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Page<Account> getPageByFilter(AccountFilter filter, Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public Page<Account> getPage(Pageable pageable) {
+        return accountRepository.findAll(pageable);
     }
 
     @Override

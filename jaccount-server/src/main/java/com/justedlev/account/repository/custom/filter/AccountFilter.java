@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -25,5 +24,4 @@ public class AccountFilter {
     private Collection<String> activationCodes;
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
-    private Pageable pageable;
 }

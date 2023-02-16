@@ -8,12 +8,17 @@ import com.justedlev.account.util.Converter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -32,21 +37,55 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Account.class);
         var root = cq.from(Account.class);
-        applyFilter(cb, cq, root, filter);
-        var query = em.createQuery(cq);
+        var predicates = buildPredicates(filter, cb, root);
+        applyPredicates(cq, predicates);
 
-        if (ObjectUtils.isNotEmpty(filter.getPageable())) {
-            var pageable = filter.getPageable();
+        return em.createQuery(cq).getResultList();
+    }
+
+    @Override
+    public Page<Account> findByFilter(@NonNull AccountFilter filter, @NonNull Pageable pageable) {
+        var cb = em.getCriteriaBuilder();
+        var cq = cb.createQuery(Account.class);
+        var root = cq.from(Account.class);
+        var predicates = buildPredicates(filter, cb, root);
+        applyPredicates(cq, predicates);
+        var query = em.createQuery(cq);
+        applyPageable(pageable, cb, cq, root, query);
+        var content = query.getResultList();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicates));
+    }
+
+    private void applyPageable(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<Account> cq,
+                               Root<Account> root, TypedQuery<Account> query) {
+        if (pageable.isPaged()) {
             cq.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
             query.setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize());
         }
-
-        return query.getResultList();
     }
 
-    private void applyFilter(CriteriaBuilder cb, CriteriaQuery<Account> cq,
-                             Root<Account> root, @NonNull AccountFilter filter) {
+    private void applyPredicates(CriteriaQuery<Account> cq, Predicate... predicates) {
+        if (ArrayUtils.isNotEmpty(predicates)) {
+            cq.where(predicates);
+        }
+    }
+
+    private long executeCountQuery(Predicate... predicates) {
+        return em.createQuery(createCountQuery(predicates))
+                .getSingleResult();
+    }
+
+    private CriteriaQuery<Long> createCountQuery(Predicate... predicates) {
+        var cb = em.getCriteriaBuilder();
+        var cq = cb.createQuery(Long.class);
+        var root = cq.from(Account.class);
+
+        return cq.select(cb.count(root)).where(predicates);
+    }
+
+    private Predicate[] buildPredicates(AccountFilter filter, CriteriaBuilder cb, Root<Account> root) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(filter.getIds())) {
@@ -81,8 +120,6 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
             predicates.add(root.get(Account_.activationCode).in(filter.getActivationCodes()));
         }
 
-        if (CollectionUtils.isNotEmpty(predicates)) {
-            cq.where(predicates.toArray(Predicate[]::new));
-        }
+        return predicates.toArray(Predicate[]::new);
     }
 }
