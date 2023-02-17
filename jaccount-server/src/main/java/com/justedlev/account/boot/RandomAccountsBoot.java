@@ -15,8 +15,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
@@ -24,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RandomAccountsBoot implements ApplicationRunner {
     private static final String SYMBOLS = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
-    private static final Boolean FILL = Boolean.FALSE;
+    private static final Boolean FILL = Boolean.TRUE;
     private final AccountComponent accountComponent;
     private final PhoneNumberConverter phoneNumberConverter;
 
@@ -50,6 +52,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
                         .firstName(getRandomName())
                         .lastName(getRandomName())
                         .phoneNumberInfo(phone)
+                        .createdAt(new Timestamp(RandomUtils.nextLong(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3), System.currentTimeMillis())))
                         .build();
                 list.add(account);
             }
