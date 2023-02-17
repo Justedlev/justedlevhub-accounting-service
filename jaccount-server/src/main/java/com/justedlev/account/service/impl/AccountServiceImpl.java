@@ -64,6 +64,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public PageResponse<AccountResponse> getPageByFilter(AccountFilter filter, PaginationRequest pagination) {
+        pagination.getSorting().setParameters(Set.of(BaseEntity_.CREATED_AT));
         var accountPage = accountComponent.getPageByFilter(filter, pagination.toPageRequest());
 
         return PageResponse.<AccountResponse>builder()

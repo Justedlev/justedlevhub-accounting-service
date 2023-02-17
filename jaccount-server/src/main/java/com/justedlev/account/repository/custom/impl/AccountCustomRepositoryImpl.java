@@ -14,6 +14,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -53,17 +54,23 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         var root = cq.from(Account.class);
         var predicates = buildPredicates(filter, cb, root);
         applyPredicates(cq, predicates);
+        applyOrders(pageable.getSort(), cb, cq, root);
         var query = em.createQuery(cq);
-        applyPageable(pageable, cb, cq, root, query);
+        applyPageable(pageable, query);
         var content = query.getResultList();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicates));
     }
 
-    private void applyPageable(Pageable pageable, CriteriaBuilder cb, CriteriaQuery<Account> cq,
-                               Root<Account> root, TypedQuery<Account> query) {
+    private void applyOrders(Sort sort, CriteriaBuilder cb, CriteriaQuery<Account> cq, Root<Account> root) {
+        if (sort.isSorted()) {
+            var orders = QueryUtils.toOrders(sort, root, cb);
+            cq.orderBy(orders);
+        }
+    }
+
+    private void applyPageable(Pageable pageable, TypedQuery<Account> query) {
         if (pageable.isPaged()) {
-            cq.orderBy(QueryUtils.toOrders(pageable.getSort(), root, cb));
             query.setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize());
         }
