@@ -1,6 +1,6 @@
 package com.justedlev.account.repository.custom.impl;
 
-import com.justedlev.account.repository.custom.AccountFilterableRepository;
+import com.justedlev.account.repository.custom.AccountCustomRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Account_;
@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.query.QueryUtils;
@@ -28,7 +29,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class AccountFilterableRepositoryImpl implements AccountFilterableRepository {
+public class AccountCustomRepositoryImpl implements AccountCustomRepository {
     @PersistenceContext
     private final EntityManager em;
 
@@ -121,6 +122,30 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
             predicates.add(root.get(Account_.activationCode).in(filter.getActivationCodes()));
         }
 
+        if (StringUtils.isNotBlank(filter.getSearchText())) {
+            predicates.add(createSearchPredicate(filter.getSearchText(), cb, root));
+        }
+
         return predicates.toArray(Predicate[]::new);
+    }
+
+    private Predicate createSearchPredicate(String searchText, CriteriaBuilder cb, Root<Account> root) {
+        var percent = "%";
+        var q = percent + searchText + percent;
+        var nationalNumber = cb.function(
+                "jsonb_extract_path_text",
+                String.class,
+                root.get(Account_.phoneNumberInfo),
+                cb.literal("national")
+        );
+        var predicate = cb.or(
+                cb.like(root.get(Account_.email), q),
+                cb.like(root.get(Account_.nickname), q),
+                cb.like(root.get(Account_.firstName), q),
+                cb.like(root.get(Account_.lastName), q),
+                cb.like(nationalNumber, q)
+        );
+
+        return cb.and(predicate);
     }
 }

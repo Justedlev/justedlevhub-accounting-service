@@ -24,4 +24,5 @@ public class AccountFilter {
     private Collection<String> activationCodes;
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
+    private String searchText;
 }

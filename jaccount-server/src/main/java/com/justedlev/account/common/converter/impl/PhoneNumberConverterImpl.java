@@ -17,7 +17,7 @@ public class PhoneNumberConverterImpl implements PhoneNumberConverter {
     public PhoneNumberInfo convert(String phoneNumber) {
         var parsedPhoneNumber = phoneNumberUtil.parse(phoneNumber, null);
         var regionCode = phoneNumberUtil.getRegionCodeForNumber(parsedPhoneNumber);
-        var national = phoneNumberUtil.format(parsedPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.NATIONAL);
+        var national = parsedPhoneNumber.getNationalNumber();
         var international = phoneNumberUtil.format(parsedPhoneNumber, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
 
         return PhoneNumberInfo.builder()

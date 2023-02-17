@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface AccountFilterableRepository {
+public interface AccountCustomRepository {
     List<Account> findByFilter(AccountFilter filter);
 
     Page<Account> findByFilter(AccountFilter filter, Pageable pageable);
