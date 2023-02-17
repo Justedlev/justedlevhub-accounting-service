@@ -49,7 +49,7 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Page<Account> getPageByFilter(AccountFilter filter, Pageable pageable) {
-        return null;
+        return accountRepository.findByFilter(filter, pageable);
     }
 
     @Override

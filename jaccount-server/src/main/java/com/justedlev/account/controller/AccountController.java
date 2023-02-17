@@ -4,6 +4,7 @@ import com.justedlev.account.client.EndpointConstant;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
+import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.service.AccountService;
 import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
@@ -34,8 +35,14 @@ public class AccountController {
         return ResponseEntity.ok(accountService.create(request));
     }
 
+    @PostMapping
+    public ResponseEntity<PageResponse<AccountResponse>> findPage(AccountFilter filter,
+                                                                  @Valid @RequestBody PaginationRequest pagination) {
+        return ResponseEntity.ok(accountService.getPageByFilter(filter, pagination));
+    }
+
     @PostMapping(value = EndpointConstant.PAGE)
-    public ResponseEntity<PageResponse<List<AccountResponse>>> getPage(@Valid @RequestBody PaginationRequest request) {
+    public ResponseEntity<PageResponse<AccountResponse>> getPage(@Valid @RequestBody PaginationRequest request) {
         return ResponseEntity.ok(accountService.getPage(request));
     }
 

@@ -44,19 +44,34 @@ public class AccountServiceImpl implements AccountService {
     private final JAccountProperties properties;
 
     @Override
-    public PageResponse<List<AccountResponse>> getPage(PaginationRequest request) {
+    public PageResponse<AccountResponse> getPage(PaginationRequest request) {
         var page = PageRequest.of(
-                request.getPage() - 1,
+                request.getPage(),
                 request.getSize(),
                 Sort.Direction.DESC,
                 BaseEntity_.CREATED_AT
         );
         var accountPage = accountComponent.getPage(page);
 
-        return PageResponse.<List<AccountResponse>>builder()
-                .page(accountPage.getNumber())
-                .maxPages(accountPage.getTotalPages())
-                .data(accountMapper.mapToResponse(accountPage.getContent()))
+        return PageResponse.<AccountResponse>builder()
+                .pageNo(accountPage.getNumber() + 1)
+                .totalPages(accountPage.getTotalPages())
+                .content(accountMapper.mapToResponse(accountPage.getContent()))
+                .hasNext(accountPage.hasNext())
+                .hasPrevious(accountPage.hasPrevious())
+                .build();
+    }
+
+    @Override
+    public PageResponse<AccountResponse> getPageByFilter(AccountFilter filter, PaginationRequest pagination) {
+        var accountPage = accountComponent.getPageByFilter(filter, pagination.toPageRequest());
+
+        return PageResponse.<AccountResponse>builder()
+                .pageNo(accountPage.getNumber() + 1)
+                .totalPages(accountPage.getTotalPages())
+                .content(accountMapper.mapToResponse(accountPage.getContent()))
+                .hasNext(accountPage.hasNext())
+                .hasPrevious(accountPage.hasPrevious())
                 .build();
     }
 
