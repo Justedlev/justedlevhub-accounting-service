@@ -130,8 +130,7 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
     }
 
     private Predicate createSearchPredicate(String searchText, CriteriaBuilder cb, Root<Account> root) {
-        var percent = "%";
-        var q = percent + searchText + percent;
+        var q = getSearchRegex(searchText);
         var nationalNumber = cb.function(
                 "jsonb_extract_path_text",
                 String.class,
@@ -147,5 +146,13 @@ public class AccountCustomRepositoryImpl implements AccountCustomRepository {
         );
 
         return cb.and(predicate);
+    }
+
+    private String getSearchRegex(String searchText) {
+        var percent = "%";
+        var clear = searchText.startsWith("0") ?
+                searchText.replaceAll("^0", "") : searchText;
+
+        return percent + clear + percent;
     }
 }
