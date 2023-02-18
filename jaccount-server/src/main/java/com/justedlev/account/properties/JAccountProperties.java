@@ -10,10 +10,16 @@ import java.time.Duration;
 @ConfigurationPropertiesScan
 @ConfigurationProperties(prefix = "jaccount")
 public class JAccountProperties {
-    private Duration deactivationTime;
-    private Integer codeLength;
-    private String clientId;
-    private String clientSecret;
     private Duration activityTime;
     private Duration offlineAfterTime;
+    private Service service;
+
+    @Data
+    @ConfigurationPropertiesScan
+    @ConfigurationProperties(prefix = "jaccount.service")
+    public static class Service {
+        private String name;
+        private String email;
+        private String host;
+    }
 }

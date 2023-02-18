@@ -1,4 +1,4 @@
-package com.justedlev.account.common.converter.impl;
+package com.justedlev.account.common.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justedlev.account.model.PhoneNumberInfo;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Converter
 @Component
 @RequiredArgsConstructor
-public class PhoneNumberInfoConverter implements AttributeConverter<PhoneNumberInfo, String> {
+public class PhoneNumberInfoAttributeConverter implements AttributeConverter<PhoneNumberInfo, String> {
     private final ObjectMapper mapper;
 
     @Override

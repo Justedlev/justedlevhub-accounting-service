@@ -1,4 +1,4 @@
-package com.justedlev.account.repository.custom.filter;
+package com.justedlev.account.model.params;
 
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
@@ -9,20 +9,15 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.UUID;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AccountFilter {
-    private Collection<UUID> ids;
-    private Collection<String> nicknames;
-    private Collection<String> emails;
+public class AccountFilterParams {
     private Collection<AccountStatusCode> statuses;
     private Collection<ModeType> modes;
-    private Collection<String> activationCodes;
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
-    private String searchText;
+    private String q;
 }

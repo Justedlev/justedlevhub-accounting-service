@@ -1,10 +1,12 @@
-package com.justedlev.account.common.modelmapper;
+package com.justedlev.account.common.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BaseModelMapper extends ModelMapper {
-    BaseModelMapper() {
+    public BaseModelMapper() {
         this.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setSkipNullEnabled(true);

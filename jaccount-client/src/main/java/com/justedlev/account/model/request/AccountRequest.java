@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
 @Builder
@@ -16,8 +19,13 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Data
 public class AccountRequest {
+    @Email
+    @NotBlank
+    @NotNull
     @JsonDeserialize(converter = LowerCaseConverter.class)
     private String email;
+    @NotBlank
+    @NotNull
     @JsonDeserialize(converter = LowerCaseConverter.class)
     private String nickname;
     private String firstName;

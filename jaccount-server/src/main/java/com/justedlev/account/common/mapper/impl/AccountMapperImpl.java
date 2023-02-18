@@ -2,6 +2,7 @@ package com.justedlev.account.common.mapper.impl;
 
 import com.justedlev.account.common.converter.PhoneNumberConverter;
 import com.justedlev.account.common.mapper.AccountMapper;
+import com.justedlev.account.common.mapper.BaseModelMapper;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.PhoneNumberInfo;
 import com.justedlev.account.model.request.AccountRequest;
@@ -12,52 +13,49 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class AccountMapperImpl implements AccountMapper {
-    private final ModelMapper defaultMapper;
+    private final ModelMapper mapper = new BaseModelMapper();
     private final PhoneNumberConverter phoneNumberConverter;
 
     @Override
-    public AccountResponse mapToResponse(Account request) {
-        var response = defaultMapper.map(request, AccountResponse.class);
-        response.setRegistrationDate(request.getCreatedAt());
-        Optional.ofNullable(request.getAvatar())
+    public ModelMapper getMapper() {
+        return this.mapper;
+    }
+
+    @Override
+    public AccountResponse map(Account request) {
+        return mapper.map(request, AccountResponse.class);
+    }
+
+    @Override
+    public Account map(AccountRequest request) {
+        return mapper.map(request, Account.class);
+    }
+
+    @PostConstruct
+    private void init() {
+        mapper.createTypeMap(Account.class, AccountResponse.class)
+                .addMapping(Account::getCreatedAt, AccountResponse::setRegistrationDate)
+                .addMapping(this::getAvatarUrl, AccountResponse::setAvatarUrl);
+        mapper.createTypeMap(AccountRequest.class, Account.class)
+                .addMapping(this::convertToPhoneInfo, Account::setPhoneNumberInfo);
+    }
+
+    private String getAvatarUrl(Account account) {
+        return Optional.of(account)
+                .map(Account::getAvatar)
                 .map(Avatar::getUrl)
-                .ifPresent(response::setAvatarUrl);
-
-        return response;
+                .orElse(null);
     }
 
-    @Override
-    public List<AccountResponse> mapToResponse(List<Account> requests) {
-        return requests.stream()
-                .map(this::mapToResponse)
-                .distinct()
-                .toList();
-    }
-
-    @Override
-    public Account mapToEntity(AccountRequest request) {
-        var account = defaultMapper.map(request, Account.class);
-        var phoneNumber = convertToPhoneInfo(request.getPhoneNumber());
-        account.setPhoneNumberInfo(phoneNumber);
-
-        return account;
-    }
-
-    @Override
-    public List<Account> mapToEntity(List<AccountRequest> requests) {
-        return requests.parallelStream()
-                .map(this::mapToEntity)
-                .toList();
-    }
-
-    private PhoneNumberInfo convertToPhoneInfo(String phoneNumber) {
-        return Optional.ofNullable(phoneNumber)
+    private PhoneNumberInfo convertToPhoneInfo(AccountRequest accountRequest) {
+        return Optional.ofNullable(accountRequest)
+                .map(AccountRequest::getPhoneNumber)
                 .filter(StringUtils::isNotBlank)
                 .map(phoneNumberConverter::convert)
                 .orElse(null);

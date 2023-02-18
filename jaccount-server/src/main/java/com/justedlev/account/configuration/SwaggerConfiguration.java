@@ -29,9 +29,9 @@ public class SwaggerConfiguration {
 
     private Info getInfo() {
         return new Info()
-                .title("Justedlev Services API")
+                .title("JAccount Service APIs")
                 .version("0.0.1")
-                .description("Justedlev Services API Configuration")
+                .description("Justedlev Services APIs")
                 .termsOfService("swagger.io/terms/")
                 .license(getLicense());
     }

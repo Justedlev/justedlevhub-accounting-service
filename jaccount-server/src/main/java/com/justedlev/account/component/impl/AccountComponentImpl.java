@@ -1,6 +1,5 @@
 package com.justedlev.account.component.impl;
 
-import com.justedlev.account.common.converter.PhoneNumberConverter;
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
@@ -19,6 +18,8 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,15 +35,24 @@ import static com.justedlev.account.repository.specification.QueryOperator.NOT_N
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-    private final PhoneNumberConverter phoneNumberConverter;
     private final JStorageFeignClient storageFeignClient;
-    private final ModelMapper defaultMapper;
+    private final ModelMapper baseMapper;
 
     @Override
     public List<Account> getByFilter(AccountFilter filter) {
         return Optional.ofNullable(filter)
                 .map(accountRepository::findByFilter)
                 .orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Page<Account> getPageByFilter(AccountFilter filter, Pageable pageable) {
+        return accountRepository.findByFilter(filter, pageable);
+    }
+
+    @Override
+    public Page<Account> getPage(Pageable pageable) {
+        return accountRepository.findAll(pageable);
     }
 
     @Override
@@ -95,7 +105,7 @@ public class AccountComponentImpl implements AccountComponent {
         return getByEmail(request.getEmail())
                 .or(() -> getByNickname(request.getNickname()))
                 .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED))
-                .orElseGet(() -> accountMapper.mapToEntity(request));
+                .orElse(accountMapper.map(request));
     }
 
     @Override
@@ -115,11 +125,7 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account update(Account entity, AccountRequest request) {
-        defaultMapper.map(request, entity);
-        Optional.ofNullable(request.getPhoneNumber())
-                .filter(StringUtils::isNotBlank)
-                .map(phoneNumberConverter::convert)
-                .ifPresent(entity::setPhoneNumberInfo);
+        accountMapper.getMapper().map(request, entity);
 
         return save(entity);
     }
@@ -172,7 +178,8 @@ public class AccountComponentImpl implements AccountComponent {
         storageFeignClient.upload(List.of(photo))
                 .stream()
                 .findFirst()
-                .ifPresent(current -> account.setAvatar(defaultMapper.map(current, Avatar.class)));
+                .map(current -> baseMapper.map(current, Avatar.class))
+                .ifPresent(account::setAvatar);
 
         return save(account);
     }

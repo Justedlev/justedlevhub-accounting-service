@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Data
 @Builder
 public class PhoneNumberInfo implements Serializable {
-    private String national;
+    private Long national;
     private String international;
     private Integer countryCode;
     private String regionCode;

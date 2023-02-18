@@ -3,14 +3,18 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+springdoc:
+  swagger-ui:
+    config-url: /${spring.application.name}${server.servlet.context-path}/v3/api-docs/swagger-config
+    url: /${spring.application.name}${server.servlet.context-path}/v3/api-docs
 jstorage:
   client:
-    url: http://localhost:${server.port}${server.servlet.context-path}
+    url: ${GATEWAY_HOST}/jstorage-service/api/
 jaccount:
-  deactivation-time: ${DEACTIVATION_TIME:15m}
-  code-length: ${CODE_LENGTH:4}
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}
   service:
-    email: ${SERVICE_MAIL_USERNAME}
-    host: ${SERVICE_HOST:http://localhost:8765/${spring.application.name}${server.servlet.context-path}}
+    host: ${GATEWAY_HOST}/${spring.application.name}${server.servlet.context-path}
