@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public PageResponse<AccountResponse> getPage(PaginationRequest request) {
         var page = accountComponent.getPage(request.toPageRequest())
-                .map(accountMapper::toResponse);
+                .map(accountMapper::map);
 
         return PageResponse.from(page);
     }
@@ -57,7 +57,7 @@ public class AccountServiceImpl implements AccountService {
                 .addMapping(AccountFilterParams::getQ, AccountFilter::setSearchText)
                 .map(params);
         var page = accountComponent.getPageByFilter(filter, pagination.toPageRequest())
-                .map(accountMapper::toResponse);
+                .map(accountMapper::map);
 
         return PageResponse.from(page);
     }
@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, email)));
 
-        return accountMapper.toResponse(account);
+        return accountMapper.map(account);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
 
-        return accountMapper.toResponse(account);
+        return accountMapper.map(account);
     }
 
     @Override
@@ -98,14 +98,14 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse update(String nickname, AccountRequest request) {
         var account = accountComponent.update(nickname, request);
 
-        return accountMapper.toResponse(account);
+        return accountMapper.map(account);
     }
 
     @Override
     public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
         var account = accountComponent.update(nickname, photo);
 
-        return accountMapper.toResponse(account);
+        return accountMapper.map(account);
     }
 
     @Override
@@ -119,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
         var saved = accountComponent.save(account);
         sendConfirmationEmail(saved);
 
-        return accountMapper.toResponse(saved);
+        return accountMapper.map(saved);
     }
 
     @SneakyThrows

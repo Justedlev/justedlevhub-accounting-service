@@ -15,7 +15,7 @@ import java.util.Optional;
 @Converter
 @Component
 @RequiredArgsConstructor
-public class PhoneNumberInfoConverter implements AttributeConverter<PhoneNumberInfo, String> {
+public class PhoneNumberInfoAttributeConverter implements AttributeConverter<PhoneNumberInfo, String> {
     private final ObjectMapper mapper;
 
     @Override

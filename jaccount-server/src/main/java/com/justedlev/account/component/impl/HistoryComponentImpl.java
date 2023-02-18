@@ -36,7 +36,7 @@ public class HistoryComponentImpl implements HistoryComponent {
         var accounts = accountRepository.findByFilter(filter, page)
                 .getContent()
                 .parallelStream()
-                .map(accountMapper::toResponse)
+                .map(accountMapper::map)
                 .collect(Collectors.groupingBy(AccountResponse::getEmail));
 
         return accounts.entrySet().parallelStream()

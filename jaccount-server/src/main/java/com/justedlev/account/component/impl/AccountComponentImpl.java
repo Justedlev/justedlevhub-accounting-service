@@ -1,6 +1,5 @@
 package com.justedlev.account.component.impl;
 
-import com.justedlev.account.common.converter.PhoneNumberConverter;
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
@@ -36,7 +35,6 @@ import static com.justedlev.account.repository.specification.QueryOperator.NOT_N
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-    private final PhoneNumberConverter phoneNumberConverter;
     private final JStorageFeignClient storageFeignClient;
     private final ModelMapper baseMapper;
 
@@ -107,7 +105,7 @@ public class AccountComponentImpl implements AccountComponent {
         return getByEmail(request.getEmail())
                 .or(() -> getByNickname(request.getNickname()))
                 .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED))
-                .orElseGet(() -> accountMapper.toEntity(request));
+                .orElse(accountMapper.map(request));
     }
 
     @Override

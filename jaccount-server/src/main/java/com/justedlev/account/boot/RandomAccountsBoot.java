@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RandomAccountsBoot implements ApplicationRunner {
     private static final String SYMBOLS = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
-    private static final Boolean FILL = Boolean.TRUE;
+    private static final Boolean FILL = Boolean.FALSE;
     private final AccountComponent accountComponent;
     private final PhoneNumberConverter phoneNumberConverter;
 

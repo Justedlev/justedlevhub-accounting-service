@@ -14,7 +14,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -23,6 +22,21 @@ public class AccountMapperImpl implements AccountMapper {
     private final ModelMapper mapper = new BaseModelMapper();
     private final PhoneNumberConverter phoneNumberConverter;
 
+    @Override
+    public ModelMapper getMapper() {
+        return this.mapper;
+    }
+
+    @Override
+    public AccountResponse map(Account request) {
+        return mapper.map(request, AccountResponse.class);
+    }
+
+    @Override
+    public Account map(AccountRequest request) {
+        return mapper.map(request, Account.class);
+    }
+
     @PostConstruct
     private void init() {
         mapper.createTypeMap(Account.class, AccountResponse.class)
@@ -30,36 +44,6 @@ public class AccountMapperImpl implements AccountMapper {
                 .addMapping(this::getAvatarUrl, AccountResponse::setAvatarUrl);
         mapper.createTypeMap(AccountRequest.class, Account.class)
                 .addMapping(this::convertToPhoneInfo, Account::setPhoneNumberInfo);
-    }
-
-    @Override
-    public ModelMapper getMapper() {
-        return this.mapper;
-    }
-
-    @Override
-    public AccountResponse toResponse(Account request) {
-        return mapper.map(request, AccountResponse.class);
-    }
-
-    @Override
-    public List<AccountResponse> toResponses(List<Account> requests) {
-        return requests.stream()
-                .map(this::toResponse)
-                .distinct()
-                .toList();
-    }
-
-    @Override
-    public Account toEntity(AccountRequest request) {
-        return mapper.map(request, Account.class);
-    }
-
-    @Override
-    public List<Account> toEntities(List<AccountRequest> requests) {
-        return requests.parallelStream()
-                .map(this::toEntity)
-                .toList();
     }
 
     private String getAvatarUrl(Account account) {
