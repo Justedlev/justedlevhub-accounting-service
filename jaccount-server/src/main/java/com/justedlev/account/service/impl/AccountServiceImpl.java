@@ -7,6 +7,7 @@ import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.AccountModeComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.constant.MailSubjectConstant;
+import com.justedlev.account.model.params.AccountFilterParams;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
@@ -14,7 +15,6 @@ import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.service.AccountService;
-import com.justedlev.common.entity.BaseEntity_;
 import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
@@ -22,8 +22,7 @@ import com.justedlev.notification.model.request.SendTemplateMailRequest;
 import com.justedlev.notification.queue.JNotificationQueue;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -42,37 +41,25 @@ public class AccountServiceImpl implements AccountService {
     private final AccountModeComponent accountModeComponent;
     private final JNotificationQueue notificationQueue;
     private final JAccountProperties properties;
+    private final ModelMapper modelMapper;
 
     @Override
     public PageResponse<AccountResponse> getPage(PaginationRequest request) {
-        var page = PageRequest.of(
-                request.getPage(),
-                request.getSize(),
-                Sort.Direction.DESC,
-                BaseEntity_.CREATED_AT
-        );
-        var accountPage = accountComponent.getPage(page);
+        var page = accountComponent.getPage(request.toPageRequest())
+                .map(accountMapper::toResponse);
 
-        return PageResponse.<AccountResponse>builder()
-                .pageNo(accountPage.getNumber() + 1)
-                .totalPages(accountPage.getTotalPages())
-                .content(accountMapper.mapToResponse(accountPage.getContent()))
-                .hasNext(accountPage.hasNext())
-                .hasPrevious(accountPage.hasPrevious())
-                .build();
+        return PageResponse.from(page);
     }
 
     @Override
-    public PageResponse<AccountResponse> getPageByFilter(AccountFilter filter, PaginationRequest pagination) {
-        var accountPage = accountComponent.getPageByFilter(filter, pagination.toPageRequest());
+    public PageResponse<AccountResponse> getPageByFilter(AccountFilterParams params, PaginationRequest pagination) {
+        var filter = modelMapper.typeMap(AccountFilterParams.class, AccountFilter.class)
+                .addMapping(AccountFilterParams::getQ, AccountFilter::setSearchText)
+                .map(params);
+        var page = accountComponent.getPageByFilter(filter, pagination.toPageRequest())
+                .map(accountMapper::toResponse);
 
-        return PageResponse.<AccountResponse>builder()
-                .pageNo(accountPage.getNumber() + 1)
-                .totalPages(accountPage.getTotalPages())
-                .content(accountMapper.mapToResponse(accountPage.getContent()))
-                .hasNext(accountPage.hasNext())
-                .hasPrevious(accountPage.hasPrevious())
-                .build();
+        return PageResponse.from(page);
     }
 
     @Override
@@ -86,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, email)));
 
-        return accountMapper.mapToResponse(account);
+        return accountMapper.toResponse(account);
     }
 
     @Override
@@ -97,7 +84,7 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
 
-        return accountMapper.mapToResponse(account);
+        return accountMapper.toResponse(account);
     }
 
     @Override
@@ -111,16 +98,14 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse update(String nickname, AccountRequest request) {
         var account = accountComponent.update(nickname, request);
 
-        return accountMapper.mapToResponse(account);
+        return accountMapper.toResponse(account);
     }
 
     @Override
     public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
         var account = accountComponent.update(nickname, photo);
-        var response = accountMapper.mapToResponse(account);
-        response.setAvatarUrl(account.getAvatar().getUrl());
 
-        return response;
+        return accountMapper.toResponse(account);
     }
 
     @Override
@@ -134,7 +119,7 @@ public class AccountServiceImpl implements AccountService {
         var saved = accountComponent.save(account);
         sendConfirmationEmail(saved);
 
-        return accountMapper.mapToResponse(saved);
+        return accountMapper.toResponse(saved);
     }
 
     @SneakyThrows

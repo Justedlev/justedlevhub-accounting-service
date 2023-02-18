@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RandomAccountsBoot implements ApplicationRunner {
     private static final String SYMBOLS = "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890";
-    private static final Boolean FILL = Boolean.FALSE;
+    private static final Boolean FILL = Boolean.TRUE;
     private final AccountComponent accountComponent;
     private final PhoneNumberConverter phoneNumberConverter;
 
@@ -42,15 +42,15 @@ public class RandomAccountsBoot implements ApplicationRunner {
             List<Account> list = new ArrayList<>();
             for (int i = 0; i < count; i++) {
                 var phone = phoneNumberConverter.convert("+" + countries[getRandomIndex(countries.length)] + RandomUtils.nextInt(1000000, 9999999));
-                var username = getRandomName();
+                var nickname = RandomStringUtils.random(RandomUtils.nextInt(4, 9), SYMBOLS);
                 var account = Account.builder()
-                        .nickname(username)
-                        .email(username + "@mail.co")
+                        .nickname(nickname)
+                        .email(nickname + "@mail.co")
                         .status(accountStatuses[getRandomIndex(accountStatuses.length)])
                         .mode(modes[getRandomIndex(modes.length)])
                         .gender(genders[getRandomIndex(genders.length)])
-                        .firstName(getRandomName())
-                        .lastName(getRandomName())
+                        .firstName(RandomStringUtils.randomAlphanumeric(4, 8))
+                        .lastName(RandomStringUtils.randomAlphanumeric(4, 8))
                         .phoneNumberInfo(phone)
                         .createdAt(new Timestamp(RandomUtils.nextLong(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3), System.currentTimeMillis())))
                         .build();
@@ -64,9 +64,5 @@ public class RandomAccountsBoot implements ApplicationRunner {
 
     private int getRandomIndex(int length) {
         return RandomUtils.nextInt(0, length);
-    }
-
-    private String getRandomName() {
-        return RandomStringUtils.random(RandomUtils.nextInt(4, 9), SYMBOLS);
     }
 }

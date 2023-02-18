@@ -34,7 +34,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
         var res = accountRepository.saveAll(activeAccounts);
         log.info("Changed {} inactive accounts to mode : {}", activeAccounts.size(), request.getToMode());
 
-        return accountMapper.mapToResponse(res);
+        return accountMapper.toResponses(res);
     }
 
     private List<Account> getActiveAccount(UpdateAccountModeRequest request) {

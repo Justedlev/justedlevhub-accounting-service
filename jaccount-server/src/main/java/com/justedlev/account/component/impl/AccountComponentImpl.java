@@ -38,7 +38,7 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountMapper accountMapper;
     private final PhoneNumberConverter phoneNumberConverter;
     private final JStorageFeignClient storageFeignClient;
-    private final ModelMapper defaultMapper;
+    private final ModelMapper baseMapper;
 
     @Override
     public List<Account> getByFilter(AccountFilter filter) {
@@ -107,7 +107,7 @@ public class AccountComponentImpl implements AccountComponent {
         return getByEmail(request.getEmail())
                 .or(() -> getByNickname(request.getNickname()))
                 .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED))
-                .orElseGet(() -> accountMapper.mapToEntity(request));
+                .orElseGet(() -> accountMapper.toEntity(request));
     }
 
     @Override
@@ -127,11 +127,7 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account update(Account entity, AccountRequest request) {
-        defaultMapper.map(request, entity);
-        Optional.ofNullable(request.getPhoneNumber())
-                .filter(StringUtils::isNotBlank)
-                .map(phoneNumberConverter::convert)
-                .ifPresent(entity::setPhoneNumberInfo);
+        accountMapper.getMapper().map(request, entity);
 
         return save(entity);
     }
@@ -184,7 +180,8 @@ public class AccountComponentImpl implements AccountComponent {
         storageFeignClient.upload(List.of(photo))
                 .stream()
                 .findFirst()
-                .ifPresent(current -> account.setAvatar(defaultMapper.map(current, Avatar.class)));
+                .map(current -> baseMapper.map(current, Avatar.class))
+                .ifPresent(account::setAvatar);
 
         return save(account);
     }

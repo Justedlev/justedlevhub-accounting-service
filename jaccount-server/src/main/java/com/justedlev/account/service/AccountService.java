@@ -1,9 +1,9 @@
 package com.justedlev.account.service;
 
+import com.justedlev.account.model.params.AccountFilterParams;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
@@ -14,7 +14,7 @@ import java.util.List;
 public interface AccountService {
     PageResponse<AccountResponse> getPage(PaginationRequest request);
 
-    PageResponse<AccountResponse> getPageByFilter(AccountFilter filter, PaginationRequest pagination);
+    PageResponse<AccountResponse> getPageByFilter(AccountFilterParams params, PaginationRequest pagination);
 
     AccountResponse getByEmail(String email);
 

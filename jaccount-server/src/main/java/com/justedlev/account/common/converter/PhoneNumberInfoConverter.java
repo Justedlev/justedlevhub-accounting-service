@@ -1,4 +1,4 @@
-package com.justedlev.account.common.converter.impl;
+package com.justedlev.account.common.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.justedlev.account.model.PhoneNumberInfo;
