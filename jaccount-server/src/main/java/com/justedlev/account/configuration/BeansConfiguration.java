@@ -16,27 +16,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class BeansConfiguration {
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public PhoneNumberUtil phoneNumberUtil() {
+    PhoneNumberUtil phoneNumberUtil() {
         return PhoneNumberUtil.getInstance();
     }
 
     @Bean
-    public EmailValidator emailValidator() {
+    EmailValidator emailValidator() {
         return EmailValidator.getInstance();
     }
 
     @Bean
-    public JNotificationQueue notificationQueue(AmqpTemplate amqpTemplate, CloudAmqpProperties.Queues queues) {
+    JNotificationQueue notificationQueue(AmqpTemplate amqpTemplate, CloudAmqpProperties.Queues queues) {
         return new JNotificationQueueImpl(amqpTemplate, queues);
     }
 
     @Bean
-    public MessageConverter messageConverter() {
+    MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 }

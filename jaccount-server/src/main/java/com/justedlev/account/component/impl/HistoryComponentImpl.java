@@ -31,13 +31,13 @@ public class HistoryComponentImpl implements HistoryComponent {
                 BaseEntity_.CREATED_AT
         );
         var filter = AccountFilter.builder()
-                .emails(request.getEmails())
+//                .emails(request.getEmails())
                 .build();
         var accounts = accountRepository.findByFilter(filter, page)
                 .getContent()
                 .parallelStream()
                 .map(accountMapper::map)
-                .collect(Collectors.groupingBy(AccountResponse::getEmail));
+                .collect(Collectors.groupingBy(AccountResponse::getNickname));
 
         return accounts.entrySet().parallelStream()
                 .map(current -> AccountHistoryResponse.builder()

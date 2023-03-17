@@ -8,10 +8,11 @@ import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.repository.AccountRepository;
+import com.justedlev.account.repository.ContactRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
+import com.justedlev.account.repository.custom.filter.ContactFilter;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.account.repository.entity.Account_;
-import com.justedlev.account.repository.specification.AndSpecification;
+import com.justedlev.account.repository.entity.Contact;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -27,9 +28,6 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
-import static com.justedlev.account.repository.specification.QueryOperator.EQUAL;
-import static com.justedlev.account.repository.specification.QueryOperator.NOT_NULL;
-
 @Component
 @RequiredArgsConstructor
 public class AccountComponentImpl implements AccountComponent {
@@ -37,6 +35,7 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountMapper accountMapper;
     private final JStorageFeignClient storageFeignClient;
     private final ModelMapper baseMapper;
+    private final ContactRepository contactRepository;
 
     @Override
     public List<Account> getByFilter(AccountFilter filter) {
@@ -64,7 +63,7 @@ public class AccountComponentImpl implements AccountComponent {
                 .build();
         var account = accountRepository.findByFilter(filter)
                 .stream()
-                .findFirst()
+                .max(Comparator.comparing(Account::getCreatedAt))
                 .orElseThrow(() -> new EntityNotFoundException("Already activated"));
         account.setStatus(AccountStatusCode.ACTUAL);
 
@@ -102,10 +101,16 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account create(AccountRequest request) {
-        return getByEmail(request.getEmail())
-                .or(() -> getByNickname(request.getNickname()))
-                .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED))
-                .orElse(accountMapper.map(request));
+        var account = getByNickname(request.getNickname())
+                .or(() -> getByEmail(request.getEmail()))
+                .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED));
+
+        if (account.isPresent()) {
+            throw new EntityExistsException(
+                    String.format("Account %s already exists", request.getNickname()));
+        }
+
+        return accountMapper.map(request);
     }
 
     @Override
@@ -145,25 +150,16 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Optional<Account> getByNickname(String nickname) {
-        var specification = AndSpecification
-                .<Account>where(Account_.NICKNAME, EQUAL, nickname)
-                .and(Account_.EMAIL, NOT_NULL)
-                .and(Account_.ID, NOT_NULL)
-                .build();
-
-        return accountRepository.findAll(specification)
+        return Optional.ofNullable(nickname)
+                .filter(StringUtils::isNotBlank)
+                .map(Set::of)
+                .map(current -> AccountFilter.builder()
+                        .nicknames(current)
+                        .build())
+                .map(this::getByFilter)
                 .stream()
+                .flatMap(Collection::stream)
                 .max(Comparator.comparing(Account::getCreatedAt));
-//        return Optional.ofNullable(nickname)
-//                .filter(StringUtils::isNotBlank)
-//                .map(Set::of)
-//                .map(current -> AccountFilter.builder()
-//                        .nicknames(current)
-//                        .build())
-//                .map(this::getByFilter)
-//                .stream()
-//                .flatMap(Collection::stream)
-//                .max(Comparator.comparing(Account::getCreatedAt));
     }
 
     @Override
@@ -189,13 +185,14 @@ public class AccountComponentImpl implements AccountComponent {
         return Optional.ofNullable(email)
                 .filter(StringUtils::isNotBlank)
                 .map(Set::of)
-                .map(current -> AccountFilter.builder()
+                .map(current -> ContactFilter.builder()
                         .emails(current)
                         .build())
-                .map(this::getByFilter)
+                .map(contactRepository::findByFilter)
                 .stream()
                 .flatMap(Collection::stream)
-                .findFirst();
+                .map(Contact::getAccount)
+                .max(Comparator.comparing(Account::getCreatedAt));
     }
 
     private void validateActivationCode(String activationCode) {
