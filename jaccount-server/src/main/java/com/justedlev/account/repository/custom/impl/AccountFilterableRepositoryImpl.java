@@ -34,7 +34,8 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Account.class);
         var root = cq.from(Account.class);
-        root.fetch(Account_.contacts, JoinType.LEFT);
+        root.fetch(Account_.contacts, JoinType.LEFT)
+                .fetch(Contact_.phoneNumber, JoinType.LEFT);
         var predicateList = filter.toPredicates(cb, root);
         applyPredicates(cq, predicateList);
 

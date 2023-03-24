@@ -28,7 +28,7 @@ public interface JAccountFeignClient {
     AccountResponse create(@RequestBody AccountRequest request);
 
     @PostMapping(value = EndpointConstant.V1_ACCOUNT_PAGE)
-    PageResponse<List<AccountResponse>> getPage(@RequestBody PaginationRequest request);
+    PageResponse<AccountResponse> getPage(@RequestBody PaginationRequest request);
 
     @GetMapping(value = EndpointConstant.V1_ACCOUNT_NICKNAME)
     AccountResponse getAccountByNickname(@PathVariable String nickname);

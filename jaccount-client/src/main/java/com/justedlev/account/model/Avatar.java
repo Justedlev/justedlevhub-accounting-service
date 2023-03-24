@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +14,5 @@ import java.io.Serializable;
 @Builder
 public class Avatar implements Serializable {
     private String url;
-    private String fileName;
+    private UUID fileId;
 }
