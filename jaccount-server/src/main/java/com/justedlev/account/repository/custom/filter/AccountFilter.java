@@ -10,13 +10,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -31,9 +33,10 @@ public class AccountFilter implements Filter<Account> {
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
     private String searchText;
+    private ContactFilter contactFilter;
 
     @Override
-    public List<Predicate> toPredicates(CriteriaBuilder cb, Path<Account> path) {
+    public List<Predicate> build(CriteriaBuilder cb, Path<Account> path) {
         List<Predicate> predicates = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(getIds())) {
@@ -65,20 +68,5 @@ public class AccountFilter implements Filter<Account> {
         }
 
         return predicates;
-    }
-
-    @Override
-    public Optional<Predicate> search(CriteriaBuilder cb, Path<Account> path) {
-        return Optional.ofNullable(searchText)
-                .filter(StringUtils::isNotBlank)
-                .map(String::toLowerCase)
-                .map(String::strip)
-                .map(q -> q.replaceAll("\\s+", " "))
-                .map(q -> "%" + q + "%")
-                .map(q -> cb.or(
-                        cb.like(cb.lower(path.get(Account_.nickname)), q),
-                        cb.like(cb.lower(path.get(Account_.firstName)), q),
-                        cb.like(cb.lower(path.get(Account_.lastName)), q)
-                ));
     }
 }

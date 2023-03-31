@@ -33,21 +33,8 @@ public class Contact extends BaseEntity {
     @Email
     @Column(name = "email")
     private String email;
-    @ToString.Exclude
-    @OneToOne(fetch = FetchType.LAZY)
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.SAVE_UPDATE
-    })
-    @JoinTable(
-            name = "contacts_phone_numbers",
-            joinColumns = {@JoinColumn(name = "contact_id")},
-            inverseJoinColumns = {@JoinColumn(name = "phone_number_id")}
-    )
-    private PhoneNumber phoneNumber;
+    @Column(name = "phone_number")
+    private String phoneNumber;
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({

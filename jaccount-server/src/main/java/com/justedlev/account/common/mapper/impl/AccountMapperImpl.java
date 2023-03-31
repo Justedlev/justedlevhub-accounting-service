@@ -1,5 +1,6 @@
 package com.justedlev.account.common.mapper.impl;
 
+import com.justedlev.account.common.converter.PhoneNumberResponseConverter;
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.common.mapper.BaseModelMapper;
 import com.justedlev.account.model.Avatar;
@@ -8,8 +9,8 @@ import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.model.response.ContactResponse;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Contact;
-import com.justedlev.account.repository.entity.PhoneNumber;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AccountMapperImpl implements AccountMapper {
     private final ModelMapper mapper = new BaseModelMapper();
+    private final PhoneNumberResponseConverter phoneNumberResponseConverter;
 
     @Override
     public ModelMapper getMapper() {
@@ -40,7 +42,15 @@ public class AccountMapperImpl implements AccountMapper {
     private Set<ContactResponse> convertToContactResponse(Account request) {
         return request.getContacts()
                 .stream()
-                .map(current -> mapper.map(current, ContactResponse.class))
+                .map(current -> {
+                    var res = mapper.map(current, ContactResponse.class);
+                    Optional.ofNullable(current.getPhoneNumber())
+                            .filter(StringUtils::isNotBlank)
+                            .map(phoneNumberResponseConverter::convert)
+                            .ifPresent(res::setPhoneNumber);
+
+                    return res;
+                })
                 .collect(Collectors.toSet());
     }
 
@@ -70,16 +80,9 @@ public class AccountMapperImpl implements AccountMapper {
 
     private Contact convertToContact(AccountRequest accountRequest) {
         return Contact.builder()
-                .phoneNumber(convertToPhone(accountRequest))
+                .phoneNumber(accountRequest.getPhoneNumber())
                 .email(accountRequest.getEmail())
                 .main(Boolean.TRUE)
                 .build();
-    }
-
-    private PhoneNumber convertToPhone(AccountRequest accountRequest) {
-        return Optional.ofNullable(accountRequest)
-                .map(AccountRequest::getPhoneNumber)
-                .map(current -> mapper.map(current, PhoneNumber.class))
-                .orElse(null);
     }
 }

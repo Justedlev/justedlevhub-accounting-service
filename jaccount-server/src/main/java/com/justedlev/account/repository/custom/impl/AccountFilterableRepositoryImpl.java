@@ -30,14 +30,18 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
     private final EntityManager em;
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Account> findByFilter(@NonNull AccountFilter filter) {
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Account.class);
         var root = cq.from(Account.class);
-        root.fetch(Account_.contacts, JoinType.LEFT)
-                .fetch(Contact_.phoneNumber, JoinType.LEFT);
-        var predicateList = filter.toPredicates(cb, root);
-        applyPredicates(cq, predicateList);
+        var contactJoin = (Join<Account, Contact>) root.fetch(Account_.contacts, JoinType.LEFT);
+        var contactPredicates = filter.getContactFilter().build(cb, contactJoin);
+        var predicates = filter.build(cb, root);
+        predicates.addAll(contactPredicates);
+        createSearchPredicate(filter.getSearchText(), cb, root, contactJoin)
+                .ifPresent(predicates::add);
+        filter.apply(cq, predicates);
 
         return em.createQuery(cq).getResultList();
     }
@@ -48,35 +52,16 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Account.class);
         var root = cq.from(Account.class);
-        var contacts = (Join<Account, Contact>) root.fetch(Account_.contacts, JoinType.LEFT);
-        var phoneNumber = (Join<Contact, PhoneNumber>) contacts.fetch(Contact_.phoneNumber, JoinType.LEFT);
-        var predicates = applyPredicates(filter, cb, cq, root, contacts, phoneNumber);
+        var contactJoin = (Join<Account, Contact>) root.fetch(Account_.contacts, JoinType.LEFT);
+        var contactPredicates = filter.getContactFilter().build(cb, contactJoin);
+        var predicates = filter.build(cb, root);
+        predicates.addAll(contactPredicates);
+        createSearchPredicate(filter.getSearchText(), cb, root, contactJoin)
+                .ifPresent(predicates::add);
+        var predicateArray = filter.apply(cq, predicates);
         var content = applyPageable(pageable, cb, cq, root).getResultList();
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicates));
-    }
-
-    private Predicate[] applyPredicates(AccountFilter filter,
-                                        CriteriaBuilder cb,
-                                        CriteriaQuery<Account> cq,
-                                        Root<Account> root,
-                                        Join<Account, Contact> contacts,
-                                        Join<Contact, PhoneNumber> phoneNumber) {
-        var predicateList = filter.toPredicates(cb, root);
-        createSearchPredicate(filter, cb, root, contacts, phoneNumber)
-                .ifPresent(predicateList::add);
-
-        return applyPredicates(cq, predicateList);
-    }
-
-    private Predicate[] applyPredicates(CriteriaQuery<?> cq,
-                                        List<Predicate> predicateList) {
-        var predicateArray = predicateList.toArray(Predicate[]::new);
-        Optional.ofNullable(predicateArray)
-                .filter(ArrayUtils::isNotEmpty)
-                .ifPresent(cq::where);
-
-        return predicateArray;
+        return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicateArray));
     }
 
     private TypedQuery<Account> applyPageable(Pageable pageable, CriteriaBuilder cb,
@@ -104,8 +89,7 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Long.class);
         var root = cq.from(Account.class);
-        root.join(Account_.contacts, JoinType.LEFT)
-                .join(Contact_.phoneNumber, JoinType.LEFT);
+        root.join(Account_.contacts, JoinType.LEFT);
         Optional.ofNullable(predicates)
                 .filter(ArrayUtils::isNotEmpty)
                 .ifPresent(cq::where);
@@ -113,12 +97,11 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
         return cq.select(cb.count(root));
     }
 
-    private Optional<Predicate> createSearchPredicate(AccountFilter filter,
+    private Optional<Predicate> createSearchPredicate(String searchText,
                                                       CriteriaBuilder cb,
                                                       Path<Account> root,
-                                                      Join<Account, Contact> contacts,
-                                                      Join<Contact, PhoneNumber> phoneNumber) {
-        return Optional.ofNullable(filter.getSearchText())
+                                                      Join<Account, Contact> contacts) {
+        return Optional.ofNullable(searchText)
                 .filter(StringUtils::isNotBlank)
                 .map(String::toLowerCase)
                 .map(String::strip)
@@ -129,10 +112,7 @@ public class AccountFilterableRepositoryImpl implements AccountFilterableReposit
                         cb.like(cb.lower(root.get(Account_.firstName)), q),
                         cb.like(cb.lower(root.get(Account_.lastName)), q),
                         cb.like(cb.lower(contacts.get(Contact_.email)), q),
-                        cb.like(cb.lower(phoneNumber.get(PhoneNumber_.national).as(String.class)), q),
-                        cb.like(cb.lower(phoneNumber.get(PhoneNumber_.international)), q),
-                        cb.like(cb.lower(phoneNumber.get(PhoneNumber_.countryCode).as(String.class)), q),
-                        cb.like(cb.lower(phoneNumber.get(PhoneNumber_.regionCode)), q)
+                        cb.like(cb.lower(contacts.get(Contact_.phoneNumber)), q)
                 ));
     }
 }

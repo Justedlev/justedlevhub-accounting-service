@@ -3,11 +3,12 @@ package com.justedlev.account.repository.custom.impl;
 import com.justedlev.account.repository.custom.ContactFilterableRepository;
 import com.justedlev.account.repository.custom.filter.ContactFilter;
 import com.justedlev.account.repository.entity.Account;
+import com.justedlev.account.repository.entity.Account_;
 import com.justedlev.account.repository.entity.Contact;
 import com.justedlev.account.repository.entity.Contact_;
-import com.justedlev.account.repository.entity.PhoneNumber;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,9 +34,13 @@ public class ContactFilterableRepositoryImpl implements ContactFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Contact.class);
         var root = cq.from(Contact.class);
-        root.fetch(Contact_.account, JoinType.LEFT);
-        var predicateList = filter.toPredicates(cb, root);
-        applyPredicates(cq, predicateList);
+        var accountJoin = (Join<Contact, Account>) root.fetch(Contact_.account, JoinType.LEFT);
+        var contactPredicates = filter.getAccountFilter().build(cb, accountJoin);
+        var predicates = filter.build(cb, root);
+        predicates.addAll(contactPredicates);
+        createSearchPredicate(filter.getSearchText(), cb, root, accountJoin)
+                .ifPresent(predicates::add);
+        filter.apply(cq, predicates);
 
         return em.createQuery(cq).getResultList();
     }
@@ -46,12 +51,16 @@ public class ContactFilterableRepositoryImpl implements ContactFilterableReposit
         var cb = em.getCriteriaBuilder();
         var cq = cb.createQuery(Contact.class);
         var root = cq.from(Contact.class);
-        var account = (Join<Contact, Account>) root.fetch(Contact_.account, JoinType.LEFT);
-        var phoneNumber = (Join<Contact, PhoneNumber>) root.fetch(Contact_.phoneNumber, JoinType.LEFT);
-        var predicates = applyPredicates(filter, cb, cq, root, account, phoneNumber);
+        var accountJoin = (Join<Contact, Account>) root.fetch(Contact_.account, JoinType.LEFT);
+        var contactPredicates = filter.getAccountFilter().build(cb, accountJoin);
+        var predicates = filter.build(cb, root);
+        predicates.addAll(contactPredicates);
+        createSearchPredicate(filter.getSearchText(), cb, root, accountJoin)
+                .ifPresent(predicates::add);
+        var predicateArray = filter.apply(cq, predicates);
         var content = applyPageable(pageable, cb, cq, root).getResultList();
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicates));
+        return PageableExecutionUtils.getPage(content, pageable, () -> executeCountQuery(predicateArray));
     }
 
     private TypedQuery<Contact> applyPageable(Pageable pageable, CriteriaBuilder cb,
@@ -80,7 +89,6 @@ public class ContactFilterableRepositoryImpl implements ContactFilterableReposit
         var cq = cb.createQuery(Long.class);
         var root = cq.from(Contact.class);
         root.join(Contact_.account, JoinType.LEFT);
-        root.join(Contact_.phoneNumber, JoinType.LEFT);
         Optional.ofNullable(predicates)
                 .filter(ArrayUtils::isNotEmpty)
                 .ifPresent(cq::where);
@@ -88,24 +96,22 @@ public class ContactFilterableRepositoryImpl implements ContactFilterableReposit
         return cq.select(cb.count(root));
     }
 
-    private Predicate[] applyPredicates(ContactFilter filter,
-                                        CriteriaBuilder cb,
-                                        CriteriaQuery<Contact> cq,
-                                        Root<Contact> root,
-                                        Join<Contact, Account> account,
-                                        Join<Contact, PhoneNumber> phoneNumber) {
-        var predicateList = filter.toPredicates(cb, root);
-
-        return applyPredicates(cq, predicateList);
-    }
-
-    private Predicate[] applyPredicates(CriteriaQuery<?> cq,
-                                        List<Predicate> predicateList) {
-        var predicateArray = predicateList.toArray(Predicate[]::new);
-        Optional.ofNullable(predicateArray)
-                .filter(ArrayUtils::isNotEmpty)
-                .ifPresent(cq::where);
-
-        return predicateArray;
+    private Optional<Predicate> createSearchPredicate(String searchText,
+                                                      CriteriaBuilder cb,
+                                                      Path<Contact> root,
+                                                      Join<Contact, Account> accountJoin) {
+        return Optional.ofNullable(searchText)
+                .filter(StringUtils::isNotBlank)
+                .map(String::toLowerCase)
+                .map(String::strip)
+                .map(q -> q.replaceAll("\\s+", " "))
+                .map(q -> "%" + q + "%")
+                .map(q -> cb.or(
+                        cb.like(cb.lower(accountJoin.get(Account_.nickname)), q),
+                        cb.like(cb.lower(accountJoin.get(Account_.firstName)), q),
+                        cb.like(cb.lower(accountJoin.get(Account_.lastName)), q),
+                        cb.like(cb.lower(root.get(Contact_.email)), q),
+                        cb.like(cb.lower(root.get(Contact_.phoneNumber)), q)
+                ));
     }
 }

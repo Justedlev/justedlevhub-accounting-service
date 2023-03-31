@@ -1,6 +1,5 @@
 package com.justedlev.account.boot;
 
-import com.justedlev.account.common.converter.PhoneNumberConverter;
 import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
@@ -33,7 +32,6 @@ public class RandomAccountsBoot implements ApplicationRunner {
     private static final Boolean FILL = Boolean.TRUE;
     private final AccountComponent accountComponent;
     private final JAccountProperties accountProperties;
-    private final PhoneNumberConverter phoneNumberConverter;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -47,10 +45,9 @@ public class RandomAccountsBoot implements ApplicationRunner {
             List<Account> list = new ArrayList<>();
             for (int i = 0; i < RandomUtils.nextInt(50, 100); i++) {
                 var phoneNumber = phonePrefix + RandomUtils.nextInt(100000000, 999999999);
-                var phone = phoneNumberConverter.convert(phoneNumber);
                 var nickname = RandomStringUtils.randomAlphanumeric(4, 8);
                 var contact = Contact.builder()
-                        .phoneNumber(phone)
+                        .phoneNumber(phoneNumber)
                         .email(nickname + emailPostfix)
                         .main(true)
                         .build();
@@ -78,7 +75,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
     private Set<Contact> randomContacts(String phonePrefix, String emailPostfix) {
         return IntStream.range(0, RandomUtils.nextInt(1, 5))
                 .mapToObj(i -> Contact.builder()
-                        .phoneNumber(phoneNumberConverter.convert(phonePrefix + RandomUtils.nextInt(100000000, 999999999)))
+                        .phoneNumber(phonePrefix + RandomUtils.nextInt(100000000, 999999999))
                         .email(RandomStringUtils.randomAlphanumeric(4, 8) + emailPostfix)
                         .build())
                 .collect(Collectors.toSet());

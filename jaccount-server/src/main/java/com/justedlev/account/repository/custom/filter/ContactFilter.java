@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Path;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @AllArgsConstructor
@@ -24,28 +22,16 @@ import java.util.Optional;
 public class ContactFilter implements Filter<Contact> {
     private Collection<String> emails;
     private String searchText;
+    private AccountFilter accountFilter;
 
     @Override
-    public List<Predicate> toPredicates(CriteriaBuilder cb, Path<Contact> path) {
+    public List<Predicate> build(CriteriaBuilder cb, Path<Contact> path) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if(CollectionUtils.isNotEmpty(getEmails())){
+        if (CollectionUtils.isNotEmpty(getEmails())) {
             predicates.add(path.get(Contact_.email).in(getEmails()));
         }
 
         return predicates;
-    }
-
-    @Override
-    public Optional<Predicate> search(CriteriaBuilder cb, Path<Contact> path) {
-        return Optional.ofNullable(searchText)
-                .filter(StringUtils::isNotBlank)
-                .map(String::toLowerCase)
-                .map(String::strip)
-                .map(q -> q.replaceAll("\\s+", " "))
-                .map(q -> "%" + q + "%")
-                .map(q -> cb.or(
-                        cb.like(cb.lower(path.get(Contact_.email)), q)
-                ));
     }
 }
