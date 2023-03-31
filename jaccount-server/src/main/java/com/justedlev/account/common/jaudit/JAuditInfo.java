@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface JAudit {
+public @interface JAuditInfo {
     boolean ignore() default false;
 
-    String comment() default "";
+    String comment() default "{OLD} changed to {NEW} in field {FIELD}";
 
-    Class<? extends JAuditValueConverter<?, ?>> valueConverter() default JAuditValueConverter.None.class;
+    Class<? extends JAuditValueConverter<?>> valueConverter() default JAuditValueConverter.None.class;
 }

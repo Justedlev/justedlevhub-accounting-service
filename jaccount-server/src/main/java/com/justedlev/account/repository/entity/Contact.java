@@ -1,5 +1,6 @@
 package com.justedlev.account.repository.entity;
 
+import com.justedlev.account.common.jaudit.JAuditListener;
 import com.justedlev.common.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@EntityListeners(JAuditListener.class)
 @Table(name = "contacts")
 public class Contact extends BaseEntity {
     @Id
@@ -35,6 +37,9 @@ public class Contact extends BaseEntity {
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
+    @Version
+    @Column(name = "version")
+    private Long version;
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({

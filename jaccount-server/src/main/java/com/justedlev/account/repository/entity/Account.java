@@ -1,5 +1,7 @@
 package com.justedlev.account.repository.entity;
 
+import com.justedlev.account.common.jaudit.JAuditInfo;
+import com.justedlev.account.common.jaudit.JAuditListener;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -28,6 +30,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@EntityListeners(JAuditListener.class)
 @Table(name = "accounts")
 public class Account extends BaseEntity {
     @Id
@@ -35,10 +38,13 @@ public class Account extends BaseEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "account_id")
     private UUID id;
+    @JAuditInfo
     @Column(name = "nick_name", nullable = false)
     private String nickname;
+    @JAuditInfo
     @Column(name = "first_name")
     private String firstName;
+    @JAuditInfo
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "birth_date")
@@ -63,6 +69,9 @@ public class Account extends BaseEntity {
     @Builder.Default
     @Column(name = "mode_at", nullable = false)
     private Timestamp modeAt = DateTimeUtils.nowTimestamp();
+    @Version
+    @Column(name = "version")
+    private Long version;
     @ToString.Exclude
     @OneToMany(mappedBy = "account")
     @Cascade({
