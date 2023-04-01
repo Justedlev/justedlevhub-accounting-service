@@ -33,14 +33,4 @@ public class JAudit extends BaseEntity implements Serializable {
     @NotEmpty
     @Column(name = "payload")
     private String payload;
-    @NotNull
-    @NotBlank
-    @NotEmpty
-    @Column(name = "operation")
-    @Enumerated(EnumType.STRING)
-    private Operation operation;
-
-    public enum Operation {
-        UPDATED, CREATED, DELETED
-    }
 }

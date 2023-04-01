@@ -7,10 +7,8 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface JAuditManager {
+public interface JAuditComponent {
     List<JAudit> getByFilter(JAuditFilter filter);
 
     Page<JAudit> getPageByFilter(JAuditFilter filter, PaginationRequest paginationRequest);
-
-    JAudit save(Object entity, JAudit.Operation operation);
 }

@@ -12,6 +12,10 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class JAuditUtils {
+    private JAuditUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static Collection<?> mapToEntities(JoinPoint jp) {
         return Optional.of(jp.getArgs())
                 .filter(ArrayUtils::isNotEmpty)
@@ -23,6 +27,7 @@ public final class JAuditUtils {
                 .stream()
                 .flatMap(Function.identity())
                 .filter(current -> current.getClass().isAnnotationPresent(Entity.class))
+                .filter(current -> current.getClass().isAnnotationPresent(JAuditable.class))
                 .toList();
     }
 
@@ -38,7 +43,8 @@ public final class JAuditUtils {
                 .filter(ArrayUtils::isNotEmpty)
                 .map(Arrays::stream)
                 .flatMap(Stream::findFirst)
-                .filter(current -> current.getClass().isAnnotationPresent(Entity.class));
+                .filter(current -> current.getClass().isAnnotationPresent(Entity.class))
+                .filter(current -> current.getClass().isAnnotationPresent(JAuditable.class));
     }
 
     public static <E> Optional<E> mapToEntity(JoinPoint jp, Class<E> clazz) {

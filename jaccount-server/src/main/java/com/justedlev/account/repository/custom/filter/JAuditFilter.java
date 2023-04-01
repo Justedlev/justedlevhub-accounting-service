@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JAuditFilter implements Filter<JAudit> {
-    private Collection<JAudit.Operation> operations;
+    private Collection<Long> ids;
 
     @Override
     public List<Predicate> build(CriteriaBuilder cb, Path<JAudit> path) {

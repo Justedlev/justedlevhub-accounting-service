@@ -1,7 +1,7 @@
 package com.justedlev.account.repository.entity;
 
 import com.justedlev.account.common.jaudit.JAuditInfo;
-import com.justedlev.account.common.jaudit.JAuditListener;
+import com.justedlev.account.common.jaudit.JAuditable;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -30,8 +30,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@EntityListeners(JAuditListener.class)
 @Table(name = "accounts")
+@JAuditable
 public class Account extends BaseEntity {
     @Id
     @GeneratedValue(generator = "UUID")
