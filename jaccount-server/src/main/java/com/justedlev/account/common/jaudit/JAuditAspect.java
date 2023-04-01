@@ -5,6 +5,7 @@ import com.justedlev.account.repository.JAuditRepository;
 import com.justedlev.account.repository.entity.JAudit;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -16,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.List;
 
+@Slf4j
 @Aspect
 @Component
 @RequiredArgsConstructor
@@ -57,7 +59,8 @@ public class JAuditAspect {
         var auditList = result.stream()
                 .map(this::mapToJaudit)
                 .toList();
-        jAuditRepository.saveAll(auditList);
+        var res = jAuditRepository.saveAll(auditList);
+        log.info("Created {} audit objects", res.size());
     }
 
     @SneakyThrows
