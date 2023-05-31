@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Data
@@ -17,7 +17,7 @@ import java.util.Collection;
 public class AccountFilterParams {
     private Collection<AccountStatusCode> statuses;
     private Collection<ModeType> modes;
-    private Timestamp modeAtFrom;
-    private Timestamp modeAtTo;
+    private LocalDateTime modeAtFrom;
+    private LocalDateTime modeAtTo;
     private String q;
 }

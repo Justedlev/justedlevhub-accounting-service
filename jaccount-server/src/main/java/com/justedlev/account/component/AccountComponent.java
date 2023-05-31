@@ -16,11 +16,11 @@ import java.util.Optional;
 
 public interface AccountComponent extends UpdateEntity<AccountRequest, Account>, CreateEntity<AccountRequest, Account>,
         SaveEntity<Account>, DeleteEntity<Account> {
-    List<Account> getByFilter(AccountFilter filter);
+    List<Account> findByFilter(AccountFilter filter);
 
-    Page<Account> getPageByFilter(AccountFilter filter, Pageable pageable);
+    Page<Account> findPageByFilter(AccountFilter filter, Pageable pageable);
 
-    Page<Account> getPage(Pageable pageable);
+    Page<Account> findPage(Pageable pageable);
 
     Account confirm(String activationCode);
 
@@ -30,9 +30,9 @@ public interface AccountComponent extends UpdateEntity<AccountRequest, Account>,
 
     Account activate(String nickname);
 
-    Optional<Account> getByEmail(String email);
+    Optional<Account> findByEmail(String email);
 
-    Optional<Account> getByNickname(String nickname);
+    Optional<Account> findByNickname(String nickname);
 
     Account update(String nickname, MultipartFile photo);
 }

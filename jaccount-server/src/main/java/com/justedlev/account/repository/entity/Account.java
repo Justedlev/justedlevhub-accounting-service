@@ -1,7 +1,5 @@
 package com.justedlev.account.repository.entity;
 
-import com.justedlev.account.common.jaudit.JAuditInfo;
-import com.justedlev.account.common.jaudit.JAuditable;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -12,15 +10,13 @@ import com.justedlev.common.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @SuperBuilder
@@ -30,21 +26,17 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "accounts")
-@JAuditable
-public class Account extends BaseEntity {
+@Table(name = "account")
+public class Account extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "account_id")
     private UUID id;
-    @JAuditInfo
     @Column(name = "nick_name", nullable = false)
     private String nickname;
-    @JAuditInfo
     @Column(name = "first_name")
     private String firstName;
-    @JAuditInfo
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "birth_date")
@@ -72,23 +64,6 @@ public class Account extends BaseEntity {
     @Version
     @Column(name = "version")
     private Long version;
-    @ToString.Exclude
-    @OneToMany(mappedBy = "account")
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.SAVE_UPDATE
-    })
-    private Set<Contact> contacts;
-
-    public Contact getMainContact() {
-        return contacts.stream()
-                .filter(Contact::isMain)
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException("Cant find contact for account " + getId()));
-    }
 
     public void setMode(ModeType mode) {
         this.mode = mode;

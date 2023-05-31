@@ -1,6 +1,5 @@
 package com.justedlev.account.repository.custom.filter;
 
-import com.justedlev.account.repository.entity.JAudit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

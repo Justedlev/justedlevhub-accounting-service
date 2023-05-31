@@ -5,12 +5,11 @@ import com.justedlev.common.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -22,8 +21,8 @@ import java.util.UUID;
 @Setter
 @Entity
 @JAuditable
-@Table(name = "contacts")
-public class Contact extends BaseEntity {
+@Table(name = "contact")
+public class Contact extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -40,21 +39,6 @@ public class Contact extends BaseEntity {
     @Version
     @Column(name = "version")
     private Long version;
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.SAVE_UPDATE
-    })
-    @JoinTable(
-            name = "accounts_contacts",
-            joinColumns = {@JoinColumn(name = "contact_id")},
-            inverseJoinColumns = {@JoinColumn(name = "account_id")}
-    )
-    private Account account;
 
     @Override
     public boolean equals(Object o) {

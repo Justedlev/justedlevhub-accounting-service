@@ -38,19 +38,19 @@ public class AccountComponentImpl implements AccountComponent {
     private final ContactRepository contactRepository;
 
     @Override
-    public List<Account> getByFilter(AccountFilter filter) {
+    public List<Account> findByFilter(AccountFilter filter) {
         return Optional.ofNullable(filter)
                 .map(accountRepository::findByFilter)
                 .orElse(Collections.emptyList());
     }
 
     @Override
-    public Page<Account> getPageByFilter(AccountFilter filter, Pageable pageable) {
+    public Page<Account> findPageByFilter(AccountFilter filter, Pageable pageable) {
         return accountRepository.findByFilter(filter, pageable);
     }
 
     @Override
-    public Page<Account> getPage(Pageable pageable) {
+    public Page<Account> findPage(Pageable pageable) {
         return accountRepository.findAll(pageable);
     }
 
@@ -79,7 +79,7 @@ public class AccountComponentImpl implements AccountComponent {
         var filter = AccountFilter.builder()
                 .nicknames(Set.of(nickname))
                 .build();
-        var accounts = getByFilter(filter);
+        var accounts = findByFilter(filter);
         var account = accounts.stream()
                 .filter(current -> current.getNickname().equalsIgnoreCase(nickname))
                 .max(Comparator.comparing(Account::getCreatedAt))
@@ -101,8 +101,8 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account create(AccountRequest request) {
-        var account = getByNickname(request.getNickname())
-                .or(() -> getByEmail(request.getEmail()))
+        var account = findByNickname(request.getNickname())
+                .or(() -> findByEmail(request.getEmail()))
                 .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED));
 
         if (account.isPresent()) {
@@ -149,14 +149,14 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Optional<Account> getByNickname(String nickname) {
+    public Optional<Account> findByNickname(String nickname) {
         return Optional.ofNullable(nickname)
                 .filter(StringUtils::isNotBlank)
                 .map(Set::of)
                 .map(current -> AccountFilter.builder()
                         .nicknames(current)
                         .build())
-                .map(this::getByFilter)
+                .map(this::findByFilter)
                 .stream()
                 .flatMap(Collection::stream)
                 .max(Comparator.comparing(Account::getCreatedAt));
@@ -165,7 +165,7 @@ public class AccountComponentImpl implements AccountComponent {
     @Override
     @SneakyThrows
     public Account update(String nickname, MultipartFile photo) {
-        var account = getByNickname(nickname)
+        var account = findByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
         Optional.ofNullable(account.getAvatar())
@@ -181,7 +181,7 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Optional<Account> getByEmail(String email) {
+    public Optional<Account> findByEmail(String email) {
         return Optional.ofNullable(email)
                 .filter(StringUtils::isNotBlank)
                 .map(Set::of)
@@ -209,6 +209,6 @@ public class AccountComponentImpl implements AccountComponent {
                 .nicknames(Set.of(nickname))
                 .build();
 
-        return CollectionUtils.isNotEmpty(getByFilter(filter));
+        return CollectionUtils.isNotEmpty(findByFilter(filter));
     }
 }

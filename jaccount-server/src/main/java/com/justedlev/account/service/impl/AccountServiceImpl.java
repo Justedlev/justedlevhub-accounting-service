@@ -16,6 +16,7 @@ import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -37,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public PageResponse<AccountResponse> getPage(PaginationRequest request) {
-        var page = accountComponent.getPage(request.toPegeable());
+        var page = accountComponent.findPage(request.toPegeable());
 
         return PageResponse.from(page, accountMapper::map);
     }
@@ -47,8 +49,16 @@ public class AccountServiceImpl implements AccountService {
     public PageResponse<AccountResponse> getPageByFilter(AccountFilterParams params, PaginationRequest pagination) {
         var filter = modelMapper.typeMap(AccountFilterParams.class, AccountFilter.class)
                 .addMapping(AccountFilterParams::getQ, AccountFilter::setSearchText)
+                .addMappings(mapping -> mapping
+                        .when(Conditions.isNotNull())
+                        .map(source -> Timestamp.valueOf(source.getModeAtTo()), AccountFilter::setModeAtTo)
+                )
+                .addMappings(mapping -> mapping
+                        .when(Conditions.isNotNull())
+                        .map(source -> Timestamp.valueOf(source.getModeAtFrom()), AccountFilter::setModeAtFrom)
+                )
                 .map(params);
-        var page = accountComponent.getPageByFilter(filter, pagination.toPegeable());
+        var page = accountComponent.findPageByFilter(filter, pagination.toPegeable());
 
         return PageResponse.from(page, accountMapper::map);
     }
@@ -58,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
         var filter = AccountFilter.builder()
 //                .emails(Set.of(email))
                 .build();
-        var account = accountComponent.getByFilter(filter)
+        var account = accountComponent.findByFilter(filter)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -69,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse getByNickname(String nickname) {
-        var account = accountComponent.getByNickname(nickname)
+        var account = accountComponent.findByNickname(nickname)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(

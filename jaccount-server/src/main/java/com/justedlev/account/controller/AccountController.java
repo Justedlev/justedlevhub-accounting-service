@@ -36,8 +36,10 @@ public class AccountController {
     }
 
     @PostMapping
-    public ResponseEntity<PageResponse<AccountResponse>> findPage(@ModelAttribute AccountFilterParams params,
-                                                                  @Valid @RequestBody PaginationRequest pagination) {
+    public ResponseEntity<PageResponse<AccountResponse>> findPage(
+            @ModelAttribute @Valid AccountFilterParams params,
+            @Valid @RequestBody PaginationRequest pagination
+    ) {
         return ResponseEntity.ok(accountService.getPageByFilter(params, pagination));
     }
 
@@ -54,18 +56,25 @@ public class AccountController {
     }
 
     @PutMapping(value = EndpointConstant.NICKNAME_UPDATE)
-    public ResponseEntity<AccountResponse> updateAccount(@PathVariable
-                                                         @NotBlank(message = "Nickname cannot be empty.")
-                                                         String nickname,
-                                                         @Valid @RequestBody AccountRequest request) {
+    public ResponseEntity<AccountResponse> updateAccount(
+            @PathVariable
+            @NotBlank(message = "Nickname cannot be empty.")
+            String nickname,
+            @Valid @RequestBody AccountRequest request
+    ) {
         return ResponseEntity.ok(accountService.update(nickname, request));
     }
 
-    @PostMapping(value = EndpointConstant.NICKNAME_UPDATE_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AccountResponse> updateAccountAvatar(@PathVariable
-                                                               @NotBlank(message = "Nickname cannot be empty.")
-                                                               String nickname,
-                                                               @RequestPart MultipartFile file) {
+    @PostMapping(
+            value = EndpointConstant.NICKNAME_UPDATE_AVATAR,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    public ResponseEntity<AccountResponse> updateAccountAvatar(
+            @PathVariable
+            @NotBlank(message = "Nickname cannot be empty.")
+            String nickname,
+            @RequestPart MultipartFile file
+    ) {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 

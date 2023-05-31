@@ -4,6 +4,7 @@ import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
+import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Contact;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
+import org.modelmapper.TypeMap;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
@@ -32,6 +34,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
     private static final Boolean FILL = Boolean.TRUE;
     private final AccountComponent accountComponent;
     private final JAccountProperties accountProperties;
+    private final TypeMap<Account, AccountResponse> typeMap;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -51,8 +54,6 @@ public class RandomAccountsBoot implements ApplicationRunner {
                         .email(nickname + emailPostfix)
                         .main(true)
                         .build();
-                var contacts = randomContacts(phonePrefix, emailPostfix);
-                contacts.add(contact);
                 var account = Account.builder()
                         .nickname(nickname)
                         .status(accountStatuses[getRandomIndex(accountStatuses.length)])
@@ -61,9 +62,10 @@ public class RandomAccountsBoot implements ApplicationRunner {
                         .firstName(RandomStringUtils.randomAlphanumeric(4, 8))
                         .lastName(RandomStringUtils.randomAlphanumeric(4, 8))
                         .createdAt(new Timestamp(RandomUtils.nextLong(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3), System.currentTimeMillis())))
-                        .contacts(contacts)
+                        .contacts(randomContacts(phonePrefix, emailPostfix))
+                        .contact(contact)
                         .build();
-                contacts.forEach(c -> c.setAccount(account));
+                var r = typeMap.map(account);
                 list.add(account);
             }
 
