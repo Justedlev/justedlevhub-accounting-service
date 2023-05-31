@@ -30,8 +30,6 @@ public interface AccountComponent extends UpdateEntity<AccountRequest, Account>,
 
     Account activate(String nickname);
 
-    Optional<Account> findByEmail(String email);
-
     Optional<Account> findByNickname(String nickname);
 
     Account update(String nickname, MultipartFile photo);

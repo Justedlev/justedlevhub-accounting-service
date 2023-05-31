@@ -8,11 +8,8 @@ import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.repository.AccountRepository;
-import com.justedlev.account.repository.ContactRepository;
 import com.justedlev.account.repository.custom.filter.AccountFilter;
-import com.justedlev.account.repository.custom.filter.ContactFilter;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.account.repository.entity.Contact;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -35,7 +32,6 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountMapper accountMapper;
     private final JStorageFeignClient storageFeignClient;
     private final ModelMapper baseMapper;
-    private final ContactRepository contactRepository;
 
     @Override
     public List<Account> findByFilter(AccountFilter filter) {
@@ -101,14 +97,14 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account create(AccountRequest request) {
-        var account = findByNickname(request.getNickname())
-                .or(() -> findByEmail(request.getEmail()))
-                .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED));
-
-        if (account.isPresent()) {
-            throw new EntityExistsException(
-                    String.format("Account %s already exists", request.getNickname()));
-        }
+//        var account = findByNickname(request.getNickname())
+//                .or(() -> findByEmail(request.getEmail()))
+//                .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED));
+//
+//        if (account.isPresent()) {
+//            throw new EntityExistsException(
+//                    String.format("Account %s already exists", request.getNickname()));
+//        }
 
         return accountMapper.map(request);
     }
@@ -178,21 +174,6 @@ public class AccountComponentImpl implements AccountComponent {
                 .ifPresent(account::setAvatar);
 
         return save(account);
-    }
-
-    @Override
-    public Optional<Account> findByEmail(String email) {
-        return Optional.ofNullable(email)
-                .filter(StringUtils::isNotBlank)
-                .map(Set::of)
-                .map(current -> ContactFilter.builder()
-                        .emails(current)
-                        .build())
-                .map(contactRepository::findByFilter)
-                .stream()
-                .flatMap(Collection::stream)
-                .map(Contact::getAccount)
-                .max(Comparator.comparing(Account::getCreatedAt));
     }
 
     private void validateActivationCode(String activationCode) {

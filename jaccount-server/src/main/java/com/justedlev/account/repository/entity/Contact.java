@@ -1,6 +1,5 @@
 package com.justedlev.account.repository.entity;
 
-import com.justedlev.account.common.jaudit.JAuditable;
 import com.justedlev.common.entity.BaseEntity;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -20,7 +19,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@JAuditable
 @Table(name = "contact")
 public class Contact extends BaseEntity implements Serializable {
     @Id
