@@ -1,6 +1,7 @@
 package com.justedlev.account.boot;
 
 import com.justedlev.account.component.AccountComponent;
+import com.justedlev.account.component.ContactComponent;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -33,6 +34,7 @@ import java.util.stream.IntStream;
 public class RandomAccountsBoot implements ApplicationRunner {
     private static final Boolean FILL = Boolean.TRUE;
     private final AccountComponent accountComponent;
+    private final ContactComponent contactComponent;
     private final JAccountProperties accountProperties;
     private final TypeMap<Account, AccountResponse> typeMap;
 
@@ -54,6 +56,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
                         .email(nickname + emailPostfix)
                         .main(true)
                         .build();
+
                 var account = Account.builder()
                         .nickname(nickname)
                         .status(accountStatuses[getRandomIndex(accountStatuses.length)])
@@ -62,10 +65,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
                         .firstName(RandomStringUtils.randomAlphanumeric(4, 8))
                         .lastName(RandomStringUtils.randomAlphanumeric(4, 8))
                         .createdAt(new Timestamp(RandomUtils.nextLong(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(3), System.currentTimeMillis())))
-                        .contacts(randomContacts(phonePrefix, emailPostfix))
-                        .contact(contact)
                         .build();
-                var r = typeMap.map(account);
                 list.add(account);
             }
 
