@@ -1,4 +1,4 @@
-package com.justedlev.account.repository.custom.filter;
+package com.justedlev.account.repository.specification.filter;
 
 import org.apache.commons.collections4.CollectionUtils;
 

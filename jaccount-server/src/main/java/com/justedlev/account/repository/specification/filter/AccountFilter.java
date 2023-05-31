@@ -1,4 +1,4 @@
-package com.justedlev.account.repository.custom.filter;
+package com.justedlev.account.repository.specification.filter;
 
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
