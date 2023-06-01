@@ -2,29 +2,20 @@ package com.justedlev.account.repository.specification.filter;
 
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
-import com.justedlev.account.repository.entity.Account;
-import com.justedlev.account.repository.entity.Account_;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountFilter implements Filter<Account> {
+public class AccountFilter {
     private Collection<UUID> ids;
     private Collection<String> nicknames;
     private Collection<AccountStatusCode> statuses;
@@ -33,40 +24,4 @@ public class AccountFilter implements Filter<Account> {
     private Timestamp modeAtFrom;
     private Timestamp modeAtTo;
     private String searchText;
-    private ContactFilter contactFilter;
-
-    @Override
-    public List<Predicate> build(CriteriaBuilder cb, Path<Account> path) {
-        List<Predicate> predicates = new ArrayList<>();
-
-        if (CollectionUtils.isNotEmpty(getIds())) {
-            predicates.add(path.get(Account_.id).in(getIds()));
-        }
-
-        if (CollectionUtils.isNotEmpty(getNicknames())) {
-            predicates.add(path.get(Account_.nickname).in(getNicknames()));
-        }
-
-        if (CollectionUtils.isNotEmpty(getModes())) {
-            predicates.add(path.get(Account_.mode).in(getModes()));
-        }
-
-        if (ObjectUtils.isNotEmpty(getModeAtFrom())) {
-            predicates.add(cb.greaterThanOrEqualTo(path.get(Account_.modeAt), getModeAtFrom()));
-        }
-
-        if (ObjectUtils.isNotEmpty(getModeAtTo())) {
-            predicates.add(cb.lessThanOrEqualTo(path.get(Account_.modeAt), getModeAtTo()));
-        }
-
-        if (CollectionUtils.isNotEmpty(getStatuses())) {
-            predicates.add(path.get(Account_.status).in(getStatuses()));
-        }
-
-        if (CollectionUtils.isNotEmpty(getActivationCodes())) {
-            predicates.add(path.get(Account_.activationCode).in(getActivationCodes()));
-        }
-
-        return predicates;
-    }
 }

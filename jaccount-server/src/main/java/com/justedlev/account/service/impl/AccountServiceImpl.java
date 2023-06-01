@@ -10,7 +10,7 @@ import com.justedlev.account.model.params.AccountFilterParams;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
-import com.justedlev.account.repository.custom.filter.AccountFilter;
+import com.justedlev.account.repository.specification.filter.AccountFilter;
 import com.justedlev.account.service.AccountService;
 import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;

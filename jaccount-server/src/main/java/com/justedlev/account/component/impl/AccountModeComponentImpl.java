@@ -7,8 +7,9 @@ import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.AccountRepository;
-import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
+import com.justedlev.account.repository.specification.AccountSpecification;
+import com.justedlev.account.repository.specification.filter.AccountFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
         var now = System.currentTimeMillis();
         var duration = getDuration(request.getToMode());
 
-        return accountRepository.findByFilter(filter)
+        return accountRepository.findAll(AccountSpecification.from(filter))
                 .parallelStream()
                 .filter(current -> filterOutByModeAt(current, now, duration))
                 .toList();

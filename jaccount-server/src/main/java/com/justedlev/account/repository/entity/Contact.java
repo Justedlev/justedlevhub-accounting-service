@@ -26,9 +26,6 @@ public class Contact extends BaseEntity implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "contact_id")
     private UUID id;
-    @Builder.Default
-    @Column(name = "main", nullable = false)
-    private boolean main = Boolean.FALSE;
     @Email
     @Column(name = "email")
     private String email;

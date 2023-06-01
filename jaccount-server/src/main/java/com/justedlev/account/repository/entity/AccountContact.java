@@ -1,14 +1,14 @@
 package com.justedlev.account.repository.entity;
 
 
+import com.justedlev.account.repository.entity.embedabble.AccountContactId;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.UUID;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -18,10 +18,10 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "account_contact")
-@Embeddable
 public class AccountContact {
-    @Column(name = "account_id")
-    private UUID accountId;
-    @Column(name = "contact_id")
-    private UUID contactId;
+    @EmbeddedId
+    private AccountContactId id;
+    @Builder.Default
+    @Column(name = "main", nullable = false)
+    private boolean main = Boolean.FALSE;
 }

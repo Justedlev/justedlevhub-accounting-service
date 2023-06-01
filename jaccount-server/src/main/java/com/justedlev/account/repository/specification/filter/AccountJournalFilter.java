@@ -11,7 +11,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ContactFilter {
-    private Collection<String> emails;
-    private String searchText;
+public class AccountJournalFilter {
+    private Collection<Long> ids;
 }

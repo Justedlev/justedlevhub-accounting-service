@@ -10,14 +10,12 @@ import com.justedlev.account.model.response.ContactResponse;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Contact;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -40,26 +38,27 @@ public class AccountMapperImpl implements AccountMapper {
     }
 
     private Set<ContactResponse> convertToContactResponse(Account request) {
-        return request.getContacts()
-                .stream()
-                .map(current -> {
-                    var res = mapper.map(current, ContactResponse.class);
-                    Optional.ofNullable(current.getPhoneNumber())
-                            .filter(StringUtils::isNotBlank)
-                            .map(phoneNumberResponseConverter::convert)
-                            .ifPresent(res::setPhoneNumber);
-
-                    return res;
-                })
-                .collect(Collectors.toSet());
+//        return request.getContacts()
+//                .stream()
+//                .map(current -> {
+//                    var res = mapper.map(current, ContactResponse.class);
+//                    Optional.ofNullable(current.getPhoneNumber())
+//                            .filter(StringUtils::isNotBlank)
+//                            .map(phoneNumberResponseConverter::convert)
+//                            .ifPresent(res::setPhoneNumber);
+//
+//                    return res;
+//                })
+//                .collect(Collectors.toSet());
+        return null;
     }
 
     @Override
     public Account map(AccountRequest request) {
         var account = mapper.map(request, Account.class);
         var contact = convertToContact(request);
-        contact.setAccount(account);
-        account.setContacts(Set.of(contact));
+//        contact.setAccount(account);
+//        account.setContacts(Set.of(contact));
 
         return account;
     }
@@ -82,7 +81,6 @@ public class AccountMapperImpl implements AccountMapper {
         return Contact.builder()
                 .phoneNumber(accountRequest.getPhoneNumber())
                 .email(accountRequest.getEmail())
-                .main(Boolean.TRUE)
                 .build();
     }
 }

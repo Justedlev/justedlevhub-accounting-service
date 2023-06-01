@@ -6,15 +6,12 @@ import com.justedlev.account.constant.MailSubjectConstant;
 import com.justedlev.account.constant.MailTemplateConstant;
 import com.justedlev.account.properties.JAccountProperties;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.account.repository.entity.Contact;
 import com.justedlev.notification.model.request.SendTemplateMailRequest;
 import com.justedlev.notification.queue.JNotificationQueue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.Comparator;
 import java.util.Map;
 
 @Component
@@ -38,11 +35,12 @@ public class NotificationComponentImpl implements NotificationComponent {
     }
 
     private String getRecipient(Account account) {
-        return account.getContacts()
-                .stream()
-                .min(Comparator.comparing(Contact::getCreatedAt))
-                .map(Contact::getEmail)
-                .orElseThrow(() -> new EntityNotFoundException("Cant find contact for account " + account.getId()));
+//        return account.getContacts()
+//                .stream()
+//                .min(Comparator.comparing(Contact::getCreatedAt))
+//                .map(Contact::getEmail)
+//                .orElseThrow(() -> new EntityNotFoundException("Cant find contact for account " + account.getId()));
+        return null;
     }
 
     private Map<String, String> buildContent(Account account) {

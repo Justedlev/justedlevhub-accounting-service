@@ -54,7 +54,6 @@ public class RandomAccountsBoot implements ApplicationRunner {
                 var contact = Contact.builder()
                         .phoneNumber(phoneNumber)
                         .email(nickname + emailPostfix)
-                        .main(true)
                         .build();
 
                 var account = Account.builder()

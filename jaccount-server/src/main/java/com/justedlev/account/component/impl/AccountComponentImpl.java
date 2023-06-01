@@ -8,8 +8,9 @@ import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.repository.AccountRepository;
-import com.justedlev.account.repository.custom.filter.AccountFilter;
 import com.justedlev.account.repository.entity.Account;
+import com.justedlev.account.repository.specification.AccountSpecification;
+import com.justedlev.account.repository.specification.filter.AccountFilter;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -36,13 +37,14 @@ public class AccountComponentImpl implements AccountComponent {
     @Override
     public List<Account> findByFilter(AccountFilter filter) {
         return Optional.ofNullable(filter)
-                .map(accountRepository::findByFilter)
+                .map(AccountSpecification::from)
+                .map(accountRepository::findAll)
                 .orElse(Collections.emptyList());
     }
 
     @Override
     public Page<Account> findPageByFilter(AccountFilter filter, Pageable pageable) {
-        return accountRepository.findByFilter(filter, pageable);
+        return accountRepository.findAll(AccountSpecification.from(filter), pageable);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class AccountComponentImpl implements AccountComponent {
                 .activationCodes(Set.of(activationCode))
                 .statuses(Set.of(AccountStatusCode.UNCONFIRMED))
                 .build();
-        var account = accountRepository.findByFilter(filter)
+        var account = accountRepository.findAll(AccountSpecification.from(filter))
                 .stream()
                 .max(Comparator.comparing(Account::getCreatedAt))
                 .orElseThrow(() -> new EntityNotFoundException("Already activated"));
