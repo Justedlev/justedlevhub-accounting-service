@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.UUID;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountFilter {
+public class AccountFilter implements Serializable {
     private Collection<UUID> ids;
     private Collection<String> nicknames;
     private Collection<AccountStatusCode> statuses;

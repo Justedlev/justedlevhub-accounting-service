@@ -1,10 +1,12 @@
 package com.justedlev.account.repository.specification;
 
 import com.justedlev.account.repository.entity.AccountJournal;
+import com.justedlev.account.repository.entity.AccountJournal_;
 import com.justedlev.account.repository.specification.filter.AccountJournalFilter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -28,6 +30,9 @@ public class AccountJournalSpecification implements Specification<AccountJournal
                                  @NonNull CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
+        if (CollectionUtils.isNotEmpty(filter.getIds())) {
+            predicates.add(root.get(AccountJournal_.id).in(filter.getIds()));
+        }
 
         return cb.and(predicates.toArray(Predicate[]::new));
     }

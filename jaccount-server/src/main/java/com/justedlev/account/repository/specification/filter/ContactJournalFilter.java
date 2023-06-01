@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ContactJournalFilter {
+public class ContactJournalFilter implements Serializable {
     private Collection<Long> ids;
 }

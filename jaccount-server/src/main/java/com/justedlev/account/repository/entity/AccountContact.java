@@ -5,10 +5,7 @@ import com.justedlev.account.repository.entity.embedabble.AccountContactId;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -24,4 +21,12 @@ public class AccountContact {
     @Builder.Default
     @Column(name = "main", nullable = false)
     private boolean main = Boolean.FALSE;
+    @ManyToOne
+    @MapsId("accountId")
+    @JoinColumn(name = "account_id")
+    private Account account;
+    @ManyToOne
+    @MapsId("contactId")
+    @JoinColumn(name = "contact_id")
+    private Contact contact;
 }
