@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @Entity
 @DynamicUpdate
 @Table(name = "account_contact")
-public class AccountContact {
+public class AccountContact implements Serializable {
     @EmbeddedId
     private AccountContactId id;
     @Builder.Default
