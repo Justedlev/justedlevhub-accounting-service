@@ -68,7 +68,7 @@ public class RandomAccountsBoot implements ApplicationRunner {
                 list.add(account);
             }
 
-//            var res = accountComponent.saveAll(list);
+            var res = accountComponent.saveAll(list);
 //            log.info("Created {} random accounts", res.size());
         }
     }

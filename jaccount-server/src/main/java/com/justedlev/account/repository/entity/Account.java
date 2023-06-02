@@ -1,5 +1,6 @@
 package com.justedlev.account.repository.entity;
 
+import com.justedlev.account.common.AuditColumn;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -35,23 +36,36 @@ public class Account extends Auditable implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "account_id")
     private UUID id;
+    @AuditColumn
     @Column(name = "nick_name", nullable = false)
     private String nickname;
+    @AuditColumn
     @Column(name = "first_name")
     private String firstName;
+    @AuditColumn
     @Column(name = "last_name")
     private String lastName;
+    @AuditColumn
     @Column(name = "birth_date")
     private Timestamp birthDate;
+    @AuditColumn
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+    @AuditColumn
     @Type(type = "jsonb")
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;
     @Builder.Default
-    @Column(name = "activation_code", length = 32, nullable = false, unique = true)
+    @Column(
+            name = "activation_code",
+            length = 32,
+            nullable = false,
+            unique = true,
+            updatable = false
+    )
     private String activationCode = Generator.generateActivationCode();
+    @AuditColumn
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 30, nullable = false)

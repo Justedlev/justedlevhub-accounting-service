@@ -1,6 +1,6 @@
 package com.justedlev.account.repository.entity;
 
-import com.justedlev.common.entity.Imprint;
+import com.justedlev.common.entity.Auditable;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,13 +20,18 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
-@Table(name = "account_journal")
-public class AccountJournal extends Imprint implements Serializable {
+@Table(name = "audit_log")
+public class AuditLog extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
     private UUID id;
+    @Column(name = "entity_id")
+    private String entityId;
+    @Column(name = "entity_type")
+    private String entityType;
+    @Singular
     @Type(type = "jsonb")
     @Column(name = "imprints", columnDefinition = "jsonb")
     private Set<Imprint> imprints;

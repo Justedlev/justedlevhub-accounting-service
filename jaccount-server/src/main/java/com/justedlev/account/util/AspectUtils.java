@@ -1,4 +1,4 @@
-package com.justedlev.account.component.aspect;
+package com.justedlev.account.util;
 
 import org.aspectj.lang.JoinPoint;
 

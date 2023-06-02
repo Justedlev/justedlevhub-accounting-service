@@ -11,5 +11,5 @@ import java.util.UUID;
 public interface AccountRepository extends JpaRepository<Account, UUID>, JpaSpecificationExecutor<Account> {
     List<Account> findByNicknameIn(Collection<String> nicknames);
 
-    List<Account> findByContactsEmailIn(Collection<String> emails);
+//    List<Account> findByContactsEmailIn(Collection<String> emails);
 }

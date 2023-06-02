@@ -8,7 +8,7 @@ import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.specification.AccountSpecification;
 import com.justedlev.account.repository.specification.filter.AccountFilter;
-import com.justedlev.common.entity.BaseEntity_;
+import com.justedlev.common.entity.Auditable_;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -29,7 +29,7 @@ public class HistoryComponentImpl implements HistoryComponent {
                 request.getPageRequest().getPage() - 1,
                 request.getPageRequest().getSize(),
                 Sort.Direction.DESC,
-                BaseEntity_.CREATED_AT
+                Auditable_.CREATED_AT
         );
         var filter = AccountFilter.builder()
 //                .emails(request.getEmails())
