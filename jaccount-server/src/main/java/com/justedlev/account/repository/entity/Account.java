@@ -6,10 +6,11 @@ import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.Avatar;
 import com.justedlev.account.util.DateTimeUtils;
 import com.justedlev.account.util.Generator;
-import com.justedlev.common.entity.BaseEntity;
+import com.justedlev.common.entity.Auditable;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
@@ -26,8 +27,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "account")
-public class Account extends BaseEntity implements Serializable {
+public class Account extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -54,10 +56,12 @@ public class Account extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 30, nullable = false)
     private AccountStatusCode status = AccountStatusCode.UNCONFIRMED;
+    @Getter
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "mode", nullable = false)
     private ModeType mode = ModeType.OFFLINE;
+    @Getter
     @Builder.Default
     @Column(name = "mode_at", nullable = false)
     private Timestamp modeAt = DateTimeUtils.nowTimestamp();

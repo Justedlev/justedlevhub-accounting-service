@@ -1,9 +1,10 @@
 package com.justedlev.account.repository.entity;
 
-import com.justedlev.common.entity.BaseEntity;
+import com.justedlev.common.entity.Auditable;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,8 +20,9 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "contact")
-public class Contact extends BaseEntity implements Serializable {
+public class Contact extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -40,7 +42,7 @@ public class Contact extends BaseEntity implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Contact contact = (Contact) o;
-        return id != null && Objects.equals(id, contact.id);
+        return getId() != null && Objects.equals(getId(), contact.getId());
     }
 
     @Override

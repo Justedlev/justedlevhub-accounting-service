@@ -4,6 +4,7 @@ package com.justedlev.account.repository.entity;
 import com.justedlev.account.repository.entity.embedabble.AccountContactId;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -14,6 +15,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
+@DynamicUpdate
 @Table(name = "account_contact")
 public class AccountContact {
     @EmbeddedId
