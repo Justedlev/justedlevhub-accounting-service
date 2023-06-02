@@ -29,7 +29,7 @@ public class AccountJournalAspect {
     public void savePointcutHandler(JoinPoint joinPoint) {
         AspectUtils.mapToEntity(joinPoint, Account.class)
                 .ifPresent(account -> {
-                    var
+
                 });
     }
 

@@ -4,6 +4,8 @@ import com.justedlev.account.repository.entity.AccountJournal;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.UUID;
+
 public interface AccountJournalRepository extends
-        JpaRepository<AccountJournal, Long>, JpaSpecificationExecutor<AccountJournal> {
+        JpaRepository<AccountJournal, UUID>, JpaSpecificationExecutor<AccountJournal> {
 }

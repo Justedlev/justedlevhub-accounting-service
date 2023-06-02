@@ -4,9 +4,11 @@ import com.justedlev.common.entity.Imprint;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.UUID;
 
 @SuperBuilder
 @AllArgsConstructor
@@ -19,7 +21,8 @@ import java.io.Serializable;
 @Table(name = "contact_journal")
 public class ContactJournal extends Imprint implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
-    private Long id;
+    private UUID id;
 }
