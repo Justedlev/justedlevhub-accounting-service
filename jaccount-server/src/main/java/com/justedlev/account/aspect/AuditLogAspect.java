@@ -1,5 +1,6 @@
-package com.justedlev.account.component.audit;
+package com.justedlev.account.aspect;
 
+import com.justedlev.account.component.audit.AuditLogger;
 import com.justedlev.account.util.AspectUtils;
 import com.justedlev.common.entity.Auditable;
 import lombok.RequiredArgsConstructor;

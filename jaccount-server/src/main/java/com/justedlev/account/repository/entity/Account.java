@@ -34,7 +34,7 @@ public class Account extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "account_id")
+    @Column(name = "account_id", updatable = false)
     private UUID id;
     @AuditColumn
     @Column(name = "nick_name", nullable = false)
