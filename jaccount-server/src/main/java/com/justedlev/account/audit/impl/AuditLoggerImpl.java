@@ -99,17 +99,12 @@ public class AuditLoggerImpl implements AuditLogger {
         return findAnnotatedFields(auditable, Id.class)
                 .stream()
                 .findFirst()
-                .flatMap(field -> getFieldValue(auditable, field))
-                .map(Object::toString);
+                .map(field -> getFieldValue(auditable, field));
     }
 
     private Imprint getImprint(Auditable auditable, Field field, Map<String, String> oldValueMap) {
-        var newValue = getFieldValue(auditable, field)
-                .map(Object::toString)
-                .orElse(null);
-        var oldValue = Optional.of(field.getName())
-                .map(oldValueMap::get)
-                .orElse(null);
+        var newValue = getFieldValue(auditable, field);
+        var oldValue = oldValueMap.get(field.getName());
 
         if (Objects.equals(newValue, oldValue)) return null;
 
@@ -138,8 +133,10 @@ public class AuditLoggerImpl implements AuditLogger {
                 .findFirst();
     }
 
-    public Optional<Object> getFieldValue(Auditable auditable, Field field) {
+    public String getFieldValue(Auditable auditable, Field field) {
         return findGetMethod(auditable, field)
-                .map(method -> invokeMethod(method, auditable));
+                .map(method -> invokeMethod(method, auditable))
+                .map(Object::toString)
+                .orElse(null);
     }
 }
