@@ -4,7 +4,6 @@ import com.justedlev.account.audit.AuditColumn;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
-import com.justedlev.account.model.Avatar;
 import com.justedlev.account.util.DateTimeUtils;
 import com.justedlev.account.util.Generator;
 import com.justedlev.common.entity.Auditable;

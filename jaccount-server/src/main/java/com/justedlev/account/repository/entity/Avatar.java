@@ -1,4 +1,4 @@
-package com.justedlev.account.model;
+package com.justedlev.account.repository.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,6 +1,6 @@
 package com.justedlev.account.common.mapper.converter;
 
-import com.justedlev.account.model.Avatar;
+import com.justedlev.account.repository.entity.Avatar;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
 import org.springframework.stereotype.Component;
