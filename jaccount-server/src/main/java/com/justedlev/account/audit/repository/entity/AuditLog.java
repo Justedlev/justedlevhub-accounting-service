@@ -9,7 +9,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 
 @SuperBuilder
@@ -34,5 +34,5 @@ public class AuditLog extends Auditable implements Serializable {
     @Singular
     @Type(type = "jsonb")
     @Column(name = "imprints", columnDefinition = "jsonb")
-    private Set<Imprint> imprints;
+    private List<Imprint> imprints;
 }

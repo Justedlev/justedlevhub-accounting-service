@@ -65,7 +65,7 @@ public class AuditLoggerImpl implements AuditLogger {
         var lastImprints = Optional.ofNullable(entityId)
                 .map(auditeMap::get)
                 .map(AuditLog::getImprints)
-                .orElse(Collections.emptySet());
+                .orElse(Collections.emptyList());
         var oldValueMap = lastImprints.stream()
                 .collect(Collectors.toMap(Imprint::getFieldName, Imprint::getNewValue));
         var imprints = getImprints(auditable, fields, oldValueMap);
