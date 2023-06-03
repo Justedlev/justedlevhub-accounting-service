@@ -55,9 +55,11 @@ public class Account extends Auditable implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+    @AuditColumn(hide = true)
     @Type(type = "jsonb")
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;
+    @AuditColumn(hide = true)
     @Builder.Default
     @Column(
             name = "activation_code",
