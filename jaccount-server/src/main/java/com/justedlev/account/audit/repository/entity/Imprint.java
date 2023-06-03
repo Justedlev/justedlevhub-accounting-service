@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class Imprint implements Serializable {
     private boolean hide;
     private String fieldName;
-    private String fieldType;
+    private Class<?> fieldType;
     private String oldValue;
     private String newValue;
 }

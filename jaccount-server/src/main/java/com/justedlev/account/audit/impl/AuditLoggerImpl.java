@@ -111,7 +111,7 @@ public class AuditLoggerImpl implements AuditLogger {
         var auditColumn = field.getAnnotation(AuditColumn.class);
 
         return Imprint.builder()
-                .fieldType(field.getType().getName())
+                .fieldType(field.getType())
                 .fieldName(field.getName())
                 .newValue(newValue)
                 .oldValue(oldValue)
