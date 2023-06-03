@@ -5,6 +5,7 @@ import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;
 
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class AccountMapperImpl implements AccountMapper {
     private final TypeMap<Account, AccountResponse> account2AccountResponse;
-    private final TypeMap<AccountRequest, Account> accountRequest2Account;
+    private final ModelMapper mapper;
 
     @Override
     public AccountResponse map(Account account) {
@@ -21,11 +22,11 @@ public class AccountMapperImpl implements AccountMapper {
 
     @Override
     public void map(AccountRequest request, Account account) {
-        accountRequest2Account.map(request, account);
+        mapper.map(request, account);
     }
 
     @Override
     public Account map(AccountRequest request) {
-        return accountRequest2Account.map(request);
+        return mapper.map(request, Account.class);
     }
 }

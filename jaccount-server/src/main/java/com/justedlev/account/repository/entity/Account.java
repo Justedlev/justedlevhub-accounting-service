@@ -1,6 +1,6 @@
 package com.justedlev.account.repository.entity;
 
-import com.justedlev.account.common.AuditColumn;
+import com.justedlev.account.audit.AuditColumn;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.Gender;
 import com.justedlev.account.enumeration.ModeType;
@@ -8,12 +8,14 @@ import com.justedlev.account.model.Avatar;
 import com.justedlev.account.util.DateTimeUtils;
 import com.justedlev.account.util.Generator;
 import com.justedlev.common.entity.Auditable;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -29,6 +31,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "account")
 public class Account extends Auditable implements Serializable {
     @Id
@@ -52,7 +55,6 @@ public class Account extends Auditable implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
-    @AuditColumn
     @Type(type = "jsonb")
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;

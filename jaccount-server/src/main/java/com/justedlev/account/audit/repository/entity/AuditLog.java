@@ -1,11 +1,13 @@
 package com.justedlev.account.audit.repository.entity;
 
 import com.justedlev.common.entity.Auditable;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "audit_log")
 public class AuditLog extends Auditable implements Serializable {
     @Id

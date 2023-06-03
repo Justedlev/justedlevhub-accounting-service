@@ -1,14 +1,17 @@
 package com.justedlev.account.common.mapper;
 
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Component
 public class CustomModelMapper extends ModelMapper {
-    public CustomModelMapper() {
+    public CustomModelMapper(Set<Converter<?, ?>> converters) {
+        converters.forEach(this::addConverter);
         this.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setSkipNullEnabled(true);

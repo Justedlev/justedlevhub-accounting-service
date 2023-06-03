@@ -1,11 +1,11 @@
 package com.justedlev.account.audit.impl;
 
+import com.justedlev.account.audit.AuditColumn;
 import com.justedlev.account.audit.AuditLogFinder;
 import com.justedlev.account.audit.AuditLogger;
 import com.justedlev.account.audit.repository.AuditLogRepository;
 import com.justedlev.account.audit.repository.entity.AuditLog;
 import com.justedlev.account.audit.repository.entity.Imprint;
-import com.justedlev.account.common.AuditColumn;
 import com.justedlev.common.entity.Auditable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +67,7 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(AuditLog::getImprints)
                 .orElse(Collections.emptyList());
         var oldValueMap = lastImprints.stream()
+                .filter(imprint -> Objects.nonNull(imprint.getNewValue()))
                 .collect(Collectors.toMap(Imprint::getFieldName, Imprint::getNewValue));
         var imprints = getImprints(auditable, fields, oldValueMap);
 
@@ -110,7 +111,7 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(oldValueMap::get)
                 .orElse(null);
 
-        if (!Objects.equals(newValue, oldValue)) return null;
+        if (Objects.equals(newValue, oldValue)) return null;
 
         return Imprint.builder()
                 .fieldType(field.getType().getName())
