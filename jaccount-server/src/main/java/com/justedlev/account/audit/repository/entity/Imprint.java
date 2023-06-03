@@ -12,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Imprint implements Serializable {
+    private boolean hide;
     private String fieldName;
     private String fieldType;
     private String oldValue;

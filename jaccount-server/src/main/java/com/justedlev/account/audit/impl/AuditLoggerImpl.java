@@ -113,11 +113,14 @@ public class AuditLoggerImpl implements AuditLogger {
 
         if (Objects.equals(newValue, oldValue)) return null;
 
+        var auditColumn = field.getAnnotation(AuditColumn.class);
+
         return Imprint.builder()
                 .fieldType(field.getType().getName())
                 .fieldName(field.getName())
                 .newValue(newValue)
                 .oldValue(oldValue)
+                .hide(auditColumn.hide())
                 .build();
     }
 
