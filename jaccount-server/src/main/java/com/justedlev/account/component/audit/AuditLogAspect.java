@@ -29,15 +29,25 @@ public class AuditLogAspect {
     @Async
     @After("savePointcut()")
     public void savePointcutHandler(JoinPoint joinPoint) {
-        AspectUtils.mapToEntity(joinPoint, Auditable.class)
-                .ifPresent(auditable -> auditLogger.audit(auditable)
-                        .ifPresent(auditLog ->
-                                log.info("Audit was created for: " + auditable.getClass().getName())));
+        try {
+            AspectUtils.mapToEntity(joinPoint, Auditable.class)
+                    .ifPresent(auditable -> auditLogger.audit(auditable)
+                            .ifPresent(auditLog ->
+                                    log.info("Audit was created for: {}", auditable.getClass().getName())));
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
     }
 
     @Async
     @After("saveAllPointcut()")
     public void saveAllPointcutHandler(JoinPoint joinPoint) {
-        auditLogger.auditAll(AspectUtils.mapToEntities(joinPoint, Auditable.class));
+        try {
+            var autitableCollection = AspectUtils.mapToEntities(joinPoint, Auditable.class);
+            var audits = auditLogger.auditAll(autitableCollection);
+            log.info("{} audit logs was created for: {}", audits.size(), autitableCollection.getClass());
+        } catch (Exception ex) {
+            log.error(ex.getMessage(), ex);
+        }
     }
 }

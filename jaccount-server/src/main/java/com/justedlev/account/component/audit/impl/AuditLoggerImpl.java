@@ -6,17 +6,25 @@ import com.justedlev.account.component.audit.AuditLogger;
 import com.justedlev.account.repository.AuditLogRepository;
 import com.justedlev.account.repository.entity.AuditLog;
 import com.justedlev.account.repository.entity.Imprint;
-import com.justedlev.account.util.AuditUtils;
 import com.justedlev.common.entity.Auditable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nonapi.io.github.classgraph.json.Id;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.reflections.ReflectionUtils.getFields;
+import static org.reflections.ReflectionUtils.getMethods;
+import static org.reflections.util.ReflectionUtilsPredicates.withAnnotation;
+import static org.reflections.util.ReflectionUtilsPredicates.withName;
+import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 @Slf4j
 @Component
@@ -40,25 +48,34 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(auditable -> buildAuditLog(auditable, auditeMap))
                 .filter(Objects::nonNull)
                 .toList();
+
         return auditLogRepository.saveAll(auditLogs);
     }
 
     private AuditLog buildAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap) {
         return findEntityId(auditable)
                 .filter(auditeMap::containsKey)
-                .map(entityId -> {
-                    var fields = AuditUtils.findAnnotatedFields(auditable, AuditColumn.class);
-                    var lastAudit = auditeMap.get(entityId);
-                    var imprints = fields.stream()
-                            .map(field -> getImprint(auditable, field, lastAudit))
-                            .collect(Collectors.toSet());
-                    return AuditLog.builder()
-                            .entityId(entityId)
-                            .entityType(auditable.getClass().getName())
-                            .imprints(imprints)
-                            .build();
-                })
+                .map(entityId -> toAuditLog(auditable, auditeMap, entityId))
                 .orElse(null);
+    }
+
+    private AuditLog toAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap, String entityId) {
+        var fields = findAnnotatedFields(auditable, AuditColumn.class);
+        var entityType = auditable.getClass().getSimpleName();
+        var lastAudit = auditeMap.get(entityId);
+        var imprints = getImprints(auditable, fields, lastAudit);
+
+        return AuditLog.builder()
+                .entityId(entityId)
+                .entityType(entityType)
+                .imprints(imprints)
+                .build();
+    }
+
+    private Set<Imprint> getImprints(Auditable auditable, Set<Field> fields, AuditLog lastAudit) {
+        return fields.stream()
+                .map(field -> getImprint(auditable, field, lastAudit))
+                .collect(Collectors.toSet());
     }
 
     private Set<String> getAuditableEntityIds(Collection<Auditable> auditableCollection) {
@@ -70,15 +87,15 @@ public class AuditLoggerImpl implements AuditLogger {
     }
 
     private Optional<String> findEntityId(Auditable auditable) {
-        return AuditUtils.findAnnotatedFields(auditable, Id.class)
+        return findAnnotatedFields(auditable, Id.class)
                 .stream()
                 .findFirst()
-                .flatMap(field -> AuditUtils.getFieldValue(auditable, field))
+                .flatMap(field -> getFieldValue(auditable, field))
                 .map(Object::toString);
     }
 
     private Imprint getImprint(Auditable auditable, Field field, AuditLog lastAudit) {
-        var value = AuditUtils.getFieldValue(auditable, field)
+        var value = getFieldValue(auditable, field)
                 .map(Object::toString)
                 .orElse(null);
         var oldValue = lastAudit.getImprints()
@@ -93,5 +110,24 @@ public class AuditLoggerImpl implements AuditLogger {
                 .newValue(value)
                 .oldValue(oldValue)
                 .build();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<Field> findAnnotatedFields(Auditable auditable, Class<? extends Annotation> annotation) {
+        return getFields(auditable.getClass(), withAnnotation(annotation));
+    }
+
+    @SuppressWarnings("unchecked")
+    public Optional<Method> findGetMethod(Auditable auditable, Field field) {
+        var methodGet = "get" + StringUtils.capitalize(field.getName());
+
+        return getMethods(auditable.getClass(), withName(methodGet))
+                .stream()
+                .findFirst();
+    }
+
+    public Optional<Object> getFieldValue(Auditable auditable, Field field) {
+        return findGetMethod(auditable, field)
+                .map(method -> invokeMethod(method, auditable));
     }
 }
