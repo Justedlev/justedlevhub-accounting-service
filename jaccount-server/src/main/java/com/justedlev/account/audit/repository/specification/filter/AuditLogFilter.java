@@ -1,4 +1,4 @@
-package com.justedlev.account.repository.specification.filter;
+package com.justedlev.account.audit.repository.specification.filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

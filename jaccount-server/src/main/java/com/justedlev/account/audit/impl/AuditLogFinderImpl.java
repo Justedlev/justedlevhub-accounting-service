@@ -1,10 +1,10 @@
-package com.justedlev.account.component.audit.impl;
+package com.justedlev.account.audit.impl;
 
-import com.justedlev.account.component.audit.AuditLogFinder;
-import com.justedlev.account.repository.AuditLogRepository;
-import com.justedlev.account.repository.entity.AuditLog;
-import com.justedlev.account.repository.specification.AuditLogSpecification;
-import com.justedlev.account.repository.specification.filter.AuditLogFilter;
+import com.justedlev.account.audit.AuditLogFinder;
+import com.justedlev.account.audit.repository.AuditLogRepository;
+import com.justedlev.account.audit.repository.entity.AuditLog;
+import com.justedlev.account.audit.repository.specification.AuditLogSpecification;
+import com.justedlev.account.audit.repository.specification.filter.AuditLogFilter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;

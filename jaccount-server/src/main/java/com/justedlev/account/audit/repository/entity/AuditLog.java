@@ -1,4 +1,4 @@
-package com.justedlev.account.repository.entity;
+package com.justedlev.account.audit.repository.entity;
 
 import com.justedlev.common.entity.Auditable;
 import lombok.*;

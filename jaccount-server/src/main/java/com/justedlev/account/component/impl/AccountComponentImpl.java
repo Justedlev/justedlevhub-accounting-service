@@ -128,7 +128,7 @@ public class AccountComponentImpl implements AccountComponent {
 
     @Override
     public Account update(Account entity, AccountRequest request) {
-        accountMapper.getMapper().map(request, entity);
+        accountMapper.map(request, entity);
 
         return save(entity);
     }

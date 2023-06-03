@@ -2,10 +2,7 @@ package com.justedlev.account.util;
 
 import org.aspectj.lang.JoinPoint;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -22,6 +19,7 @@ public final class AspectUtils {
                 .map(obj -> (Iterable<?>) obj)
                 .map(Iterable::spliterator)
                 .map(spliterator -> StreamSupport.stream(spliterator, false)
+                        .filter(Objects::nonNull)
                         .filter(entityType::isInstance)
                         .map(entityType::cast)
                         .toList())

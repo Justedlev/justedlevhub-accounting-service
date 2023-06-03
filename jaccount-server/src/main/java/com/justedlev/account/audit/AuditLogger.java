@@ -1,6 +1,6 @@
-package com.justedlev.account.component.audit;
+package com.justedlev.account.audit;
 
-import com.justedlev.account.repository.entity.AuditLog;
+import com.justedlev.account.audit.repository.entity.AuditLog;
 import com.justedlev.common.entity.Auditable;
 
 import java.util.Collection;

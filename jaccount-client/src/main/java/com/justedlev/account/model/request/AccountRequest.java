@@ -7,28 +7,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class AccountRequest {
-    @Email
-    @NotBlank
-    @NotNull
-    private String email;
-    @NotBlank
-    @NotNull
     private String nickname;
     private String firstName;
     private String lastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Timestamp birthDate;
-    private String phoneNumber;
+    private LocalDateTime birthDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
 }

@@ -16,7 +16,6 @@ import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -24,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -47,17 +45,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional(timeout = 120, isolation = Isolation.READ_UNCOMMITTED)
     public PageResponse<AccountResponse> getPageByFilter(AccountFilterParams params, PaginationRequest pagination) {
-        var filter = modelMapper.typeMap(AccountFilterParams.class, AccountFilter.class)
-                .addMapping(AccountFilterParams::getQ, AccountFilter::setSearchText)
-                .addMappings(mapping -> mapping
-                        .when(Conditions.isNotNull())
-                        .map(source -> Timestamp.valueOf(source.getModeAtTo()), AccountFilter::setModeAtTo)
-                )
-                .addMappings(mapping -> mapping
-                        .when(Conditions.isNotNull())
-                        .map(source -> Timestamp.valueOf(source.getModeAtFrom()), AccountFilter::setModeAtFrom)
-                )
-                .map(params);
+        var filter = modelMapper.map(params, AccountFilter.class);
         var page = accountComponent.findPageByFilter(filter, pagination.toPegeable());
 
         return PageResponse.from(page, accountMapper::map);

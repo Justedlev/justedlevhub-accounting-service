@@ -1,6 +1,6 @@
-package com.justedlev.account.repository;
+package com.justedlev.account.audit.repository;
 
-import com.justedlev.account.repository.entity.AuditLog;
+import com.justedlev.account.audit.repository.entity.AuditLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

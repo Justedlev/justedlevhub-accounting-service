@@ -1,15 +1,13 @@
-package com.justedlev.account.aspect;
+package com.justedlev.account.audit;
 
-import com.justedlev.account.component.audit.AuditLogger;
 import com.justedlev.account.util.AspectUtils;
 import com.justedlev.common.entity.Auditable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class AuditLogAspect {
     private final AuditLogger auditLogger;
 
-    @Pointcut("execution(* com.justedlev.account.repository.*+.save*(..))")
+    @Pointcut("execution(* com.justedlev.account.repository.*.save*(..))")
     public void savePointcut() {
     }
 
@@ -27,8 +25,7 @@ public class AuditLogAspect {
     public void saveAllPointcut() {
     }
 
-    @Async
-    @After("savePointcut()")
+    @Before("savePointcut()")
     public void savePointcutHandler(JoinPoint joinPoint) {
         try {
             AspectUtils.mapToEntity(joinPoint, Auditable.class)
@@ -40,8 +37,7 @@ public class AuditLogAspect {
         }
     }
 
-    @Async
-    @After("saveAllPointcut()")
+    @Before("saveAllPointcut()")
     public void saveAllPointcutHandler(JoinPoint joinPoint) {
         try {
             var autitableCollection = AspectUtils.mapToEntities(joinPoint, Auditable.class);

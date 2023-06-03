@@ -1,30 +1,30 @@
 package com.justedlev.account.configuration;
 
-import com.justedlev.account.model.Avatar;
+import com.justedlev.account.common.mapper.converter.Avatar2String;
+import com.justedlev.account.common.mapper.converter.LocalDateTime2Timestamp;
+import com.justedlev.account.common.mapper.converter.String2PhoneNumberResponse;
+import com.justedlev.account.common.mapper.converter.Timestamp2LocalDateTime;
 import com.justedlev.account.model.params.AccountFilterParams;
+import com.justedlev.account.model.request.AccountRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.model.response.ContactResponse;
-import com.justedlev.account.model.response.PhoneNumberResponse;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.entity.Contact;
 import com.justedlev.account.repository.specification.filter.AccountFilter;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.Conditions;
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 @Configuration
 @RequiredArgsConstructor
 public class TypeMappersConfiguration {
-    private final Converter<String, PhoneNumberResponse> string2PhoneNumberResponseConverter;
-    private final Converter<LocalDateTime, Timestamp> localDateTime2TimestampConverter;
+    private final String2PhoneNumberResponse string2PhoneNumberResponse;
+    private final LocalDateTime2Timestamp localDateTime2Timestamp;
+    private final Timestamp2LocalDateTime timestamp2LocalDateTime;
+    private final Avatar2String avatar2String;
 
     @Bean
     public TypeMap<AccountFilterParams, AccountFilter> accountFilterParams2AccountFilter(ModelMapper modelMapper) {
@@ -33,29 +33,7 @@ public class TypeMappersConfiguration {
                 .addMappings(
                         mapping -> mapping
                                 .when(Conditions.isNotNull())
-                                .using(localDateTime2TimestampConverter)
-                )
-                .addMappings(
-                        mapping -> mapping
-                                .when(Conditions.isNotNull())
-                                .using(localDateTime2TimestampConverter)
-                );
-    }
-
-    @Bean
-    public TypeMap<Account, AccountResponse> account2AccountResponse(ModelMapper modelMapper) {
-        return modelMapper.createTypeMap(Account.class, AccountResponse.class)
-                .addMapping(Account::getCreatedAt, AccountResponse::setRegistrationDate)
-                .addMappings(
-                        mapping -> mapping
-                                .when(Conditions.isNotNull())
-                                .map(
-                                        source -> Optional.of(source)
-                                                .map(Account::getAvatar)
-                                                .map(Avatar::getUrl)
-                                                .orElse(null),
-                                        AccountResponse::setAvatarUrl
-                                )
+                                .using(localDateTime2Timestamp)
                 );
     }
 
@@ -65,7 +43,38 @@ public class TypeMappersConfiguration {
                 .addMappings(
                         mapping -> mapping
                                 .when(Conditions.isNotNull())
-                                .using(string2PhoneNumberResponseConverter)
+                                .using(string2PhoneNumberResponse)
+                );
+    }
+
+    @Bean
+    public TypeMap<Account, AccountResponse> account2AccountResponse(ModelMapper mapper) {
+        return mapper.createTypeMap(Account.class, AccountResponse.class)
+                .addMappings(
+                        mapping -> mapping
+                                .when(Conditions.isNotNull())
+                                .using(timestamp2LocalDateTime)
+                )
+                .addMappings(
+                        mapping -> mapping
+                                .when(Conditions.isNotNull())
+                                .using(timestamp2LocalDateTime)
+                                .map(Account::getCreatedAt, AccountResponse::setRegistrationDate)
+                )
+                .addMappings(
+                        mapping -> mapping
+                                .when(Conditions.isNotNull())
+                                .using(avatar2String)
+                );
+    }
+
+    @Bean
+    public TypeMap<AccountRequest, Account> accountRequest2Account(ModelMapper mapper) {
+        return mapper.createTypeMap(AccountRequest.class, Account.class)
+                .addMappings(
+                        mapping -> mapping
+                                .when(Conditions.isNotNull())
+                                .using(localDateTime2Timestamp)
                 );
     }
 }

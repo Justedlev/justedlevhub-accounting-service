@@ -1,8 +1,8 @@
-package com.justedlev.account.repository.specification;
+package com.justedlev.account.audit.repository.specification;
 
-import com.justedlev.account.repository.entity.AuditLog;
-import com.justedlev.account.repository.entity.AuditLog_;
-import com.justedlev.account.repository.specification.filter.AuditLogFilter;
+import com.justedlev.account.audit.repository.entity.AuditLog;
+import com.justedlev.account.audit.repository.entity.AuditLog_;
+import com.justedlev.account.audit.repository.specification.filter.AuditLogFilter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

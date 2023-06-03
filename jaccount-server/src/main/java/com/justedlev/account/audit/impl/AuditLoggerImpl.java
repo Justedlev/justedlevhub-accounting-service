@@ -1,19 +1,20 @@
-package com.justedlev.account.component.audit.impl;
+package com.justedlev.account.audit.impl;
 
+import com.justedlev.account.audit.AuditLogFinder;
+import com.justedlev.account.audit.AuditLogger;
+import com.justedlev.account.audit.repository.AuditLogRepository;
+import com.justedlev.account.audit.repository.entity.AuditLog;
+import com.justedlev.account.audit.repository.entity.Imprint;
 import com.justedlev.account.common.AuditColumn;
-import com.justedlev.account.component.audit.AuditLogFinder;
-import com.justedlev.account.component.audit.AuditLogger;
-import com.justedlev.account.repository.AuditLogRepository;
-import com.justedlev.account.repository.entity.AuditLog;
-import com.justedlev.account.repository.entity.Imprint;
 import com.justedlev.common.entity.Auditable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import nonapi.io.github.classgraph.json.Id;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.Id;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -42,7 +43,7 @@ public class AuditLoggerImpl implements AuditLogger {
 
     @Override
     public List<AuditLog> auditAll(Collection<Auditable> auditableCollection) {
-        var ids = getAuditableEntityIds(auditableCollection);
+        var ids = getEntityIds(auditableCollection);
         var auditeMap = auditLogFinder.findLastGroupByEntityIds(ids);
         var auditLogs = auditableCollection.stream()
                 .map(auditable -> buildAuditLog(auditable, auditeMap))
@@ -54,7 +55,6 @@ public class AuditLoggerImpl implements AuditLogger {
 
     private AuditLog buildAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap) {
         return findEntityId(auditable)
-                .filter(auditeMap::containsKey)
                 .map(entityId -> toAuditLog(auditable, auditeMap, entityId))
                 .orElse(null);
     }
@@ -62,8 +62,15 @@ public class AuditLoggerImpl implements AuditLogger {
     private AuditLog toAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap, String entityId) {
         var fields = findAnnotatedFields(auditable, AuditColumn.class);
         var entityType = auditable.getClass().getSimpleName();
-        var lastAudit = auditeMap.get(entityId);
-        var imprints = getImprints(auditable, fields, lastAudit);
+        var lastImprints = Optional.ofNullable(entityId)
+                .map(auditeMap::get)
+                .map(AuditLog::getImprints)
+                .orElse(Collections.emptySet());
+        var oldValueMap = lastImprints.stream()
+                .collect(Collectors.toMap(Imprint::getFieldName, Imprint::getNewValue));
+        var imprints = getImprints(auditable, fields, oldValueMap);
+
+        if (CollectionUtils.isEmpty(imprints)) return null;
 
         return AuditLog.builder()
                 .entityId(entityId)
@@ -72,13 +79,14 @@ public class AuditLoggerImpl implements AuditLogger {
                 .build();
     }
 
-    private Set<Imprint> getImprints(Auditable auditable, Set<Field> fields, AuditLog lastAudit) {
+    private Set<Imprint> getImprints(Auditable auditable, Set<Field> fields, Map<String, String> oldValueMap) {
         return fields.stream()
-                .map(field -> getImprint(auditable, field, lastAudit))
+                .map(field -> getImprint(auditable, field, oldValueMap))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
     }
 
-    private Set<String> getAuditableEntityIds(Collection<Auditable> auditableCollection) {
+    private Set<String> getEntityIds(Collection<Auditable> auditableCollection) {
         return auditableCollection.stream()
                 .map(this::findEntityId)
                 .filter(Optional::isPresent)
@@ -94,20 +102,20 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(Object::toString);
     }
 
-    private Imprint getImprint(Auditable auditable, Field field, AuditLog lastAudit) {
-        var value = getFieldValue(auditable, field)
+    private Imprint getImprint(Auditable auditable, Field field, Map<String, String> oldValueMap) {
+        var newValue = getFieldValue(auditable, field)
                 .map(Object::toString)
                 .orElse(null);
-        var oldValue = lastAudit.getImprints()
-                .stream()
-                .filter(imprint -> imprint.getFieldName().equalsIgnoreCase(field.getName()))
-                .findFirst()
-                .map(Imprint::getNewValue)
+        var oldValue = Optional.of(field.getName())
+                .map(oldValueMap::get)
                 .orElse(null);
+
+        if (!Objects.equals(newValue, oldValue)) return null;
+
         return Imprint.builder()
-                .fieldName(field.getName())
                 .fieldType(field.getType().getName())
-                .newValue(value)
+                .fieldName(field.getName())
+                .newValue(newValue)
                 .oldValue(oldValue)
                 .build();
     }

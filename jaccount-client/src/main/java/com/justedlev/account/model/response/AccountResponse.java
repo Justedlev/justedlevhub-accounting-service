@@ -9,8 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -21,7 +20,7 @@ public class AccountResponse {
     private String firstName;
     private String lastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date birthDate;
+    private LocalDateTime birthDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
@@ -29,8 +28,6 @@ public class AccountResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private ModeType mode;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private Date registrationDate;
+    private LocalDateTime registrationDate;
     private String avatarUrl;
-    private ContactResponse mainContact;
-    private Set<ContactResponse> contacts;
 }
