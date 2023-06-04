@@ -1,26 +1,24 @@
-package com.justedlev.account.component.impl;
+package com.justedlev.account.component.account.impl;
 
 import com.justedlev.account.common.mapper.AccountMapper;
-import com.justedlev.account.component.AccountComponent;
+import com.justedlev.account.component.account.AccountComponent;
 import com.justedlev.account.constant.ExceptionConstant;
 import com.justedlev.account.enumeration.AccountStatusCode;
 import com.justedlev.account.enumeration.ModeType;
-import com.justedlev.account.model.request.AccountRequest;
+import com.justedlev.account.model.request.CreateAccountRequest;
+import com.justedlev.account.model.request.UpdateAccountRequest;
 import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.entity.Account;
-import com.justedlev.account.repository.entity.Avatar;
 import com.justedlev.account.repository.specification.AccountSpecification;
 import com.justedlev.account.repository.specification.filter.AccountFilter;
 import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -32,7 +30,7 @@ public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final JStorageFeignClient storageFeignClient;
-    private final ModelMapper baseMapper;
+    private final ModelMapper mapper;
 
     @Override
     public List<Account> findByFilter(AccountFilter filter) {
@@ -48,13 +46,7 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Page<Account> findPage(Pageable pageable) {
-        return accountRepository.findAll(pageable);
-    }
-
-    @Override
     public Account confirm(String activationCode) {
-        validateActivationCode(activationCode);
         var filter = AccountFilter.builder()
                 .activationCodes(Set.of(activationCode))
                 .statuses(Set.of(AccountStatusCode.UNCONFIRMED))
@@ -69,25 +61,6 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Account update(String nickname, AccountRequest request) {
-        if (isNicknameTaken(request.getNickname())) {
-            throw new EntityExistsException(String.format(ExceptionConstant.NICKNAME_TAKEN, nickname));
-        }
-
-        var filter = AccountFilter.builder()
-                .nicknames(Set.of(nickname))
-                .build();
-        var accounts = findByFilter(filter);
-        var account = accounts.stream()
-                .filter(current -> current.getNickname().equalsIgnoreCase(nickname))
-                .max(Comparator.comparing(Account::getCreatedAt))
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
-
-        return update(account, request);
-    }
-
-    @Override
     public Account deactivate(String nickname) {
         return null;
     }
@@ -98,15 +71,15 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Account create(AccountRequest request) {
-//        var account = findByNickname(request.getNickname())
-//                .or(() -> findByEmail(request.getEmail()))
-//                .filter(current -> !current.getStatus().equals(AccountStatusCode.DELETED));
-//
-//        if (account.isPresent()) {
-//            throw new EntityExistsException(
-//                    String.format("Account %s already exists", request.getNickname()));
-//        }
+    public Account create(CreateAccountRequest request) {
+        var filter = AccountFilter.builder()
+                .nickname(request.getNickname())
+                .excludeStatus(AccountStatusCode.DELETED)
+                .build();
+        if (accountRepository.exists(AccountSpecification.from(filter))) {
+            throw new EntityExistsException(
+                    String.format("Account %s already exists", request.getNickname()));
+        }
 
         return accountMapper.map(request);
     }
@@ -124,13 +97,6 @@ public class AccountComponentImpl implements AccountComponent {
                 .filter(CollectionUtils::isNotEmpty)
                 .map(accountRepository::saveAll)
                 .orElse(Collections.emptyList());
-    }
-
-    @Override
-    public Account update(Account entity, AccountRequest request) {
-        accountMapper.map(request, entity);
-
-        return save(entity);
     }
 
     @Override
@@ -160,38 +126,17 @@ public class AccountComponentImpl implements AccountComponent {
                 .max(Comparator.comparing(Account::getCreatedAt));
     }
 
-    @Override
-    @SneakyThrows
-    public Account update(String nickname, MultipartFile photo) {
-        var account = findByNickname(nickname)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
-        Optional.ofNullable(account.getAvatar())
-                .map(Avatar::getFileId)
-                .ifPresent(storageFeignClient::delete);
-        storageFeignClient.upload(List.of(photo))
+    public Account update(UpdateAccountRequest request) {
+        var filter = AccountFilter.builder()
+                .nickname(request.getNickname())
+                .excludeStatus(AccountStatusCode.DELETED)
+                .build();
+        var account = accountRepository.findAll(AccountSpecification.from(filter))
                 .stream()
                 .findFirst()
-                .map(current -> baseMapper.map(current, Avatar.class))
-                .ifPresent(account::setAvatar);
+                .orElseThrow(() -> new EntityNotFoundException("Not exist"));
+        accountMapper.map(request, account);
 
-        return save(account);
-    }
-
-    private void validateActivationCode(String activationCode) {
-        if (StringUtils.isBlank(activationCode))
-            throw new IllegalArgumentException("Code not valid");
-    }
-
-    private boolean isNicknameTaken(String nickname) {
-        if (StringUtils.isBlank(nickname)) {
-            return false;
-        }
-
-        var filter = AccountFilter.builder()
-                .nicknames(Set.of(nickname))
-                .build();
-
-        return CollectionUtils.isNotEmpty(findByFilter(filter));
+        return accountRepository.save(account);
     }
 }

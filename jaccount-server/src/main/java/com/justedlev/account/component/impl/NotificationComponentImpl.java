@@ -1,6 +1,6 @@
 package com.justedlev.account.component.impl;
 
-import com.justedlev.account.client.EndpointConstant;
+import com.justedlev.account.client.AccountV1Endpoints;
 import com.justedlev.account.component.NotificationComponent;
 import com.justedlev.account.constant.MailSubjectConstant;
 import com.justedlev.account.constant.MailTemplateConstant;
@@ -45,7 +45,7 @@ public class NotificationComponentImpl implements NotificationComponent {
 
     private Map<String, String> buildContent(Account account) {
         var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getService().getHost())
-                .path(EndpointConstant.V1_ACCOUNT_CONFIRM)
+                .path(AccountV1Endpoints.V1_ACCOUNT_CONFIRM)
                 .path("/" + account.getActivationCode())
                 .build().toUriString();
 

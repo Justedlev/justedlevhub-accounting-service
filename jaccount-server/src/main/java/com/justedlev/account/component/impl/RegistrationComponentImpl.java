@@ -1,9 +1,9 @@
 package com.justedlev.account.component.impl;
 
 import com.justedlev.account.common.mapper.ReportMapper;
-import com.justedlev.account.component.AccountComponent;
 import com.justedlev.account.component.RegistrationComponent;
-import com.justedlev.account.model.request.AccountRequest;
+import com.justedlev.account.component.account.AccountComponent;
+import com.justedlev.account.model.request.CreateAccountRequest;
 import com.justedlev.account.model.request.RegistrationRequest;
 import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class RegistrationComponentImpl implements RegistrationComponent {
         return reportMapper.toReport();
     }
 
-    private AccountRequest toAccountRequest(RegistrationRequest request) {
-        return defaultMapper.map(request, AccountRequest.class);
+    private CreateAccountRequest toAccountRequest(RegistrationRequest request) {
+        return defaultMapper.map(request, CreateAccountRequest.class);
     }
 }

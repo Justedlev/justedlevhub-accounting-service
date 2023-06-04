@@ -1,12 +1,12 @@
 package com.justedlev.account.controller;
 
-import com.justedlev.account.client.EndpointConstant;
-import com.justedlev.account.model.params.AccountFilterParams;
-import com.justedlev.account.model.request.AccountRequest;
+import com.justedlev.account.client.AccountV1Endpoints;
+import com.justedlev.account.model.request.AccountFilterRequest;
+import com.justedlev.account.model.request.CreateAccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
+import com.justedlev.account.model.request.UpdateAccountRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.service.AccountService;
-import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
@@ -23,53 +23,40 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
-@RequestMapping(EndpointConstant.V1_ACCOUNT)
+@RequestMapping(AccountV1Endpoints.V1_ACCOUNT)
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
     private final AccountService accountService;
 
-    @PostMapping(value = EndpointConstant.CREATE)
+    @PostMapping(value = AccountV1Endpoints.PAGE)
+    public ResponseEntity<PageResponse<AccountResponse>> findPage(@Valid @RequestBody AccountFilterRequest request) {
+        return ResponseEntity.ok(accountService.findPageByFilter(request));
+    }
+
+    @GetMapping(value = AccountV1Endpoints.NICKNAME)
+    public ResponseEntity<AccountResponse> findByNickname(@PathVariable
+                                                          @NotBlank(message = "Nickname cannot be empty.")
+                                                          String nickname) {
+        return ResponseEntity.ok(accountService.findByNickname(nickname));
+    }
+
+    @PostMapping(value = AccountV1Endpoints.CREATE)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AccountResponse> create(@Valid @RequestBody AccountRequest request) {
+    public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
         return ResponseEntity.ok(accountService.create(request));
     }
 
-    @PostMapping
-    public ResponseEntity<PageResponse<AccountResponse>> findPage(
-            @ModelAttribute @Valid AccountFilterParams params,
-            @Valid @RequestBody PaginationRequest pagination
-    ) {
-        return ResponseEntity.ok(accountService.getPageByFilter(params, pagination));
-    }
-
-    @PostMapping(value = EndpointConstant.PAGE)
-    public ResponseEntity<PageResponse<AccountResponse>> getPage(@Valid @RequestBody PaginationRequest request) {
-        return ResponseEntity.ok(accountService.getPage(request));
-    }
-
-    @GetMapping(value = EndpointConstant.NICKNAME)
-    public ResponseEntity<AccountResponse> getAccountByNickname(@PathVariable
-                                                                @NotBlank(message = "Nickname cannot be empty.")
-                                                                String nickname) {
-        return ResponseEntity.ok(accountService.getByNickname(nickname));
-    }
-
-    @PutMapping(value = EndpointConstant.NICKNAME_UPDATE)
-    public ResponseEntity<AccountResponse> updateAccount(
-            @PathVariable
-            @NotBlank(message = "Nickname cannot be empty.")
-            String nickname,
-            @Valid @RequestBody AccountRequest request
-    ) {
-        return ResponseEntity.ok(accountService.update(nickname, request));
+    @PutMapping(value = AccountV1Endpoints.UPDATE)
+    public ResponseEntity<AccountResponse> update(@Valid @RequestBody UpdateAccountRequest request) {
+        return ResponseEntity.ok(accountService.update(request));
     }
 
     @PostMapping(
-            value = EndpointConstant.NICKNAME_UPDATE_AVATAR,
+            value = AccountV1Endpoints.NICKNAME_UPDATE_AVATAR,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
-    public ResponseEntity<AccountResponse> updateAccountAvatar(
+    public ResponseEntity<AccountResponse> updateAvatar(
             @PathVariable
             @NotBlank(message = "Nickname cannot be empty.")
             String nickname,
@@ -78,14 +65,14 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
-    @GetMapping(value = EndpointConstant.CONFIRM_CODE)
+    @GetMapping(value = AccountV1Endpoints.CONFIRM_CODE)
     public ResponseEntity<ReportResponse> confirm(@PathVariable
                                                   @NotEmpty(message = "Confirm code cannot be empty.")
                                                   String code) {
         return ResponseEntity.ok(accountService.confirm(code));
     }
 
-    @PostMapping(value = EndpointConstant.UPDATE_MODE)
+    @PostMapping(value = AccountV1Endpoints.UPDATE_MODE)
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }

@@ -55,6 +55,10 @@ public class AccountSpecification implements Specification<Account> {
             predicates.add(root.get(Account_.status).in(filter.getStatuses()));
         }
 
+        if (CollectionUtils.isNotEmpty(filter.getExcludeStatuses())) {
+            predicates.add(cb.not(root.get(Account_.status).in(filter.getExcludeStatuses())));
+        }
+
         if (CollectionUtils.isNotEmpty(filter.getActivationCodes())) {
             predicates.add(root.get(Account_.activationCode).in(filter.getActivationCodes()));
         }

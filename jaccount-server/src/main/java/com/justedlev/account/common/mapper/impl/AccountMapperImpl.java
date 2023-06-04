@@ -1,7 +1,8 @@
 package com.justedlev.account.common.mapper.impl;
 
 import com.justedlev.account.common.mapper.AccountMapper;
-import com.justedlev.account.model.request.AccountRequest;
+import com.justedlev.account.model.request.CreateAccountRequest;
+import com.justedlev.account.model.request.UpdateAccountRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,12 @@ public class AccountMapperImpl implements AccountMapper {
     }
 
     @Override
-    public void map(AccountRequest request, Account account) {
+    public void map(UpdateAccountRequest request, Account account) {
         mapper.map(request, account);
     }
 
     @Override
-    public Account map(AccountRequest request) {
+    public Account map(CreateAccountRequest request) {
         return mapper.map(request, Account.class);
     }
 }

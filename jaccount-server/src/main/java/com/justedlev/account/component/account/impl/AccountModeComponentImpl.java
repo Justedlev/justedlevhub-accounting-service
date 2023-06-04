@@ -1,7 +1,7 @@
-package com.justedlev.account.component.impl;
+package com.justedlev.account.component.account.impl;
 
 import com.justedlev.account.common.mapper.AccountMapper;
-import com.justedlev.account.component.AccountModeComponent;
+import com.justedlev.account.component.account.AccountModeComponent;
 import com.justedlev.account.enumeration.ModeType;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
 import com.justedlev.account.model.response.AccountResponse;

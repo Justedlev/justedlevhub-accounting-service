@@ -2,17 +2,18 @@ package com.justedlev.account.service.impl;
 
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.common.mapper.ReportMapper;
-import com.justedlev.account.component.AccountComponent;
-import com.justedlev.account.component.AccountModeComponent;
 import com.justedlev.account.component.NotificationComponent;
+import com.justedlev.account.component.account.AccountAvatarComponent;
+import com.justedlev.account.component.account.AccountComponent;
+import com.justedlev.account.component.account.AccountModeComponent;
 import com.justedlev.account.constant.ExceptionConstant;
-import com.justedlev.account.model.params.AccountFilterParams;
-import com.justedlev.account.model.request.AccountRequest;
+import com.justedlev.account.model.request.AccountFilterRequest;
+import com.justedlev.account.model.request.CreateAccountRequest;
 import com.justedlev.account.model.request.UpdateAccountModeRequest;
+import com.justedlev.account.model.request.UpdateAccountRequest;
 import com.justedlev.account.model.response.AccountResponse;
 import com.justedlev.account.repository.specification.filter.AccountFilter;
 import com.justedlev.account.service.AccountService;
-import com.justedlev.common.model.request.PaginationRequest;
 import com.justedlev.common.model.response.PageResponse;
 import com.justedlev.common.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,45 +29,26 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
+    private final AccountAvatarComponent accountAvatarComponent;
     private final AccountComponent accountComponent;
     private final AccountMapper accountMapper;
     private final ReportMapper reportMapper;
     private final AccountModeComponent accountModeComponent;
-    private final ModelMapper modelMapper;
+    private final ModelMapper mapper;
     private final NotificationComponent notificationComponent;
 
     @Override
-    public PageResponse<AccountResponse> getPage(PaginationRequest request) {
-        var page = accountComponent.findPage(request.toPegeable());
-
-        return PageResponse.from(page, accountMapper::map);
-    }
-
-    @Override
     @Transactional(timeout = 120, isolation = Isolation.READ_UNCOMMITTED)
-    public PageResponse<AccountResponse> getPageByFilter(AccountFilterParams params, PaginationRequest pagination) {
-        var filter = modelMapper.map(params, AccountFilter.class);
-        var page = accountComponent.findPageByFilter(filter, pagination.toPegeable());
+    public PageResponse<AccountResponse> findPageByFilter(AccountFilterRequest request) {
+        var filter = mapper.map(request, AccountFilter.class);
+        var pageable = request.getPage().toPegeable();
+        var page = accountComponent.findPageByFilter(filter, pageable);
 
         return PageResponse.from(page, accountMapper::map);
     }
 
     @Override
-    public AccountResponse getByEmail(String email) {
-        var filter = AccountFilter.builder()
-//                .emails(Set.of(email))
-                .build();
-        var account = accountComponent.findByFilter(filter)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ExceptionConstant.USER_NOT_EXISTS, email)));
-
-        return accountMapper.map(account);
-    }
-
-    @Override
-    public AccountResponse getByNickname(String nickname) {
+    public AccountResponse findByNickname(String nickname) {
         var account = accountComponent.findByNickname(nickname)
                 .stream()
                 .findFirst()
@@ -84,15 +66,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse update(String nickname, AccountRequest request) {
-        var account = accountComponent.update(nickname, request);
+    public AccountResponse update(UpdateAccountRequest request) {
+        var account = accountComponent.update(request);
 
         return accountMapper.map(account);
     }
 
     @Override
     public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
-        var account = accountComponent.update(nickname, photo);
+        var account = accountAvatarComponent.updateAvatar(nickname, photo);
 
         return accountMapper.map(account);
     }
@@ -103,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse create(AccountRequest request) {
+    public AccountResponse create(CreateAccountRequest request) {
         var account = accountComponent.create(request);
         var saved = accountComponent.save(account);
         notificationComponent.sendConfirmationEmail(saved);
