@@ -6,14 +6,11 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @SuperBuilder
@@ -38,10 +35,6 @@ public class Contact extends Auditable implements Serializable {
     @Version
     @Column(name = "version")
     private Long version;
-    @ToString.Exclude
-    @OneToMany(mappedBy = "contact")
-    @Fetch(FetchMode.SUBSELECT)
-    private Set<AccountContact> accountContacts;
 
     @Override
     public boolean equals(Object o) {
