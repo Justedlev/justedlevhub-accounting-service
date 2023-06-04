@@ -26,7 +26,7 @@ public class HistoryComponentImpl implements HistoryComponent {
     @Override
     public List<AccountHistoryResponse> getAccounts(HistoryRequest request) {
         var page = PageRequest.of(
-                request.getPageRequest().getPage() - 1,
+                request.getPageRequest().getPageNo() - 1,
                 request.getPageRequest().getSize(),
                 Sort.Direction.DESC,
                 Auditable_.CREATED_AT

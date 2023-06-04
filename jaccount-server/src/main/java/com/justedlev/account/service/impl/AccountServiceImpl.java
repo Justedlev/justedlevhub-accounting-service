@@ -39,7 +39,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional(timeout = 120, isolation = Isolation.READ_UNCOMMITTED)
     public PageResponse<AccountResponse> findPageByFilter(AccountFilterRequest request) {
         var filter = mapper.map(request, AccountFilter.class);
-        var pageable = request.getPage().toPegeable();
+        var pageable = request.getPage().toPageable();
         var page = accountComponent.findPageByFilter(filter, pageable);
 
         return PageResponse.from(page, accountMapper::map);
