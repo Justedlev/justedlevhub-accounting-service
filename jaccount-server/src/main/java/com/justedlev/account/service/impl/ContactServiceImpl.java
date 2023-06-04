@@ -22,7 +22,7 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public PageResponse<ContactResponse> findByFilter(ContactFilterParams params, PaginationRequest request) {
         var filter = defaultMapper.map(params, ContactFilter.class);
-        var page = contactFinder.findPageByFilter(filter, request.toPegeable());
+        var page = contactFinder.findPageByFilter(filter, request.toPageable());
 
         return PageResponse.from(page, contact -> defaultMapper.map(contact, ContactResponse.class));
     }
