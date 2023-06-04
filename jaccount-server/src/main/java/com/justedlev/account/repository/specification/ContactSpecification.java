@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,8 +31,20 @@ public class ContactSpecification implements Specification<Contact> {
                                  @NonNull CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(filter.getEmails())) {
-            predicates.add(root.get(Contact_.email).in(filter.getEmails()));
+        if (CollectionUtils.isNotEmpty(filter.getValues())) {
+            predicates.add(root.get(Contact_.value).in(filter.getValues()));
+        }
+
+        if (CollectionUtils.isNotEmpty(filter.getTypes())) {
+            predicates.add(root.get(Contact_.type).in(filter.getTypes()));
+        }
+
+        if (StringUtils.isNotBlank(filter.getFreeSearch())) {
+            var q = "%" + filter.getFreeSearch().toLowerCase() + "%";
+
+            predicates.add(cb.and(
+                    cb.like(cb.lower(root.get(Contact_.value)), q)
+            ));
         }
 
         return cb.and(predicates.toArray(Predicate[]::new));

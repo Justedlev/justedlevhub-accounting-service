@@ -1,7 +1,7 @@
-package com.justedlev.account.component;
+package com.justedlev.account.service;
 
 import com.justedlev.account.model.request.RegistrationRequest;
 
-public interface RegistrationComponent {
+public interface RegistrationService {
     void registration(RegistrationRequest request);
 }

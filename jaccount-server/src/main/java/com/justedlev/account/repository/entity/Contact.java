@@ -1,16 +1,19 @@
 package com.justedlev.account.repository.entity;
 
+import com.justedlev.account.enumeration.ContactType;
 import com.justedlev.common.entity.Auditable;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @SuperBuilder
@@ -28,14 +31,17 @@ public class Contact extends Auditable implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "contact_id")
     private UUID id;
-    @Email
-    @Column(name = "email")
-    private String email;
-    @Column(name = "phone_number")
-    private String phoneNumber;
+    @Column(name = "type", nullable = false, updatable = false)
+    private ContactType type;
+    @Column(name = "value")
+    private String value;
     @Version
     @Column(name = "version")
     private Long version;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "contact")
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<AccountContact> accountContacts;
 
     @Override
     public boolean equals(Object o) {

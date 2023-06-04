@@ -3,6 +3,7 @@ package com.justedlev.account.repository;
 import com.justedlev.account.repository.entity.AccountContact;
 import com.justedlev.account.repository.entity.embedabble.AccountContactId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
@@ -10,7 +11,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AccountContactRepository extends JpaRepository<AccountContact, AccountContactId> {
+public interface AccountContactRepository extends JpaRepository<AccountContact, AccountContactId>,
+        JpaSpecificationExecutor<AccountContact> {
     @Query("SELECT AC FROM AccountContact AC WHERE AC.id.accountId IN ?1")
     List<AccountContact> findAllByAccountIds(Collection<UUID> accountIds);
 

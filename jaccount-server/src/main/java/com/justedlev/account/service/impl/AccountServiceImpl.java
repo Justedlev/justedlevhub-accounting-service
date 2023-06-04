@@ -2,7 +2,6 @@ package com.justedlev.account.service.impl;
 
 import com.justedlev.account.common.mapper.AccountMapper;
 import com.justedlev.account.common.mapper.ReportMapper;
-import com.justedlev.account.component.NotificationComponent;
 import com.justedlev.account.component.account.AccountAvatarComponent;
 import com.justedlev.account.component.account.AccountComponent;
 import com.justedlev.account.component.account.AccountModeComponent;
@@ -35,7 +34,6 @@ public class AccountServiceImpl implements AccountService {
     private final ReportMapper reportMapper;
     private final AccountModeComponent accountModeComponent;
     private final ModelMapper mapper;
-    private final NotificationComponent notificationComponent;
 
     @Override
     @Transactional(timeout = 120, isolation = Isolation.READ_UNCOMMITTED)
@@ -87,9 +85,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse create(CreateAccountRequest request) {
         var account = accountComponent.create(request);
-        var saved = accountComponent.save(account);
-        notificationComponent.sendConfirmationEmail(saved);
 
-        return accountMapper.map(saved);
+        return accountMapper.map(account);
     }
 }

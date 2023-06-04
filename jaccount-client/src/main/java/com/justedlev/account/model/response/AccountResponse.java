@@ -28,6 +28,6 @@ public class AccountResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private ModeType mode;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDateTime registrationDate;
+    private LocalDateTime registeredAt;
     private String avatarUrl;
 }

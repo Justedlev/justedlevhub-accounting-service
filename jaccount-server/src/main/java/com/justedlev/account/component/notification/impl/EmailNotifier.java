@@ -1,7 +1,9 @@
-package com.justedlev.account.component.impl;
+package com.justedlev.account.component.notification.impl;
 
 import com.justedlev.account.client.AccountV1Endpoints;
-import com.justedlev.account.component.NotificationComponent;
+import com.justedlev.account.component.notification.NotificationContext;
+import com.justedlev.account.component.notification.NotificationType;
+import com.justedlev.account.component.notification.TypedNotifier;
 import com.justedlev.account.constant.MailSubjectConstant;
 import com.justedlev.account.constant.MailTemplateConstant;
 import com.justedlev.account.properties.JAccountProperties;
@@ -16,14 +18,14 @@ import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
-public class NotificationComponentImpl implements NotificationComponent {
+public class EmailNotifier implements TypedNotifier {
     private final JNotificationQueue notificationQueue;
     private final JAccountProperties properties;
 
     @Override
-    public void sendConfirmationEmail(Account account) {
-        var content = buildContent(account);
-        var recipient = getRecipient(account);
+    public void notice(NotificationContext context) {
+        var content = buildContent(context.getAccount());
+        var recipient = context.getContact().getValue();
         var subject = String.format(MailSubjectConstant.CONFIRMATION, properties.getService().getName());
         var mail = SendTemplateMailRequest.builder()
                 .templateName(MailTemplateConstant.ACCOUNT_CONFIRMATION)
@@ -34,13 +36,9 @@ public class NotificationComponentImpl implements NotificationComponent {
         notificationQueue.sendEmail(mail);
     }
 
-    private String getRecipient(Account account) {
-//        return account.getContacts()
-//                .stream()
-//                .min(Comparator.comparing(Contact::getCreatedAt))
-//                .map(Contact::getEmail)
-//                .orElseThrow(() -> new EntityNotFoundException("Cant find contact for account " + account.getId()));
-        return null;
+    @Override
+    public NotificationType getType() {
+        return NotificationType.CONFIRMATION_EMAIL;
     }
 
     private Map<String, String> buildContent(Account account) {

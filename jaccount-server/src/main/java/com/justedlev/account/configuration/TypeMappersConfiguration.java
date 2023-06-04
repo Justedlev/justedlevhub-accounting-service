@@ -22,6 +22,6 @@ public class TypeMappersConfiguration {
     @Bean
     public TypeMap<Account, AccountResponse> account2AccountResponse(ModelMapper mapper) {
         return mapper.createTypeMap(Account.class, AccountResponse.class)
-                .addMapping(Account::getCreatedAt, AccountResponse::setRegistrationDate);
+                .addMapping(Account::getCreatedAt, AccountResponse::setRegisteredAt);
     }
 }

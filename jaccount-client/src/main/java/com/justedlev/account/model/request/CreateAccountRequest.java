@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Builder
@@ -14,6 +17,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 public class CreateAccountRequest {
+    @NotNull
+    @NotBlank
+    @NotEmpty
     private String nickname;
     private String firstName;
     private String lastName;

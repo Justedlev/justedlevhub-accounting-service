@@ -11,11 +11,9 @@ import com.justedlev.account.repository.AccountRepository;
 import com.justedlev.account.repository.entity.Account;
 import com.justedlev.account.repository.specification.AccountSpecification;
 import com.justedlev.account.repository.specification.filter.AccountFilter;
-import com.justedlev.storage.client.JStorageFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -29,8 +27,6 @@ import java.util.*;
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
-    private final JStorageFeignClient storageFeignClient;
-    private final ModelMapper mapper;
 
     @Override
     public List<Account> findByFilter(AccountFilter filter) {
@@ -76,12 +72,15 @@ public class AccountComponentImpl implements AccountComponent {
                 .nickname(request.getNickname())
                 .excludeStatus(AccountStatusCode.DELETED)
                 .build();
+
         if (accountRepository.exists(AccountSpecification.from(filter))) {
             throw new EntityExistsException(
                     String.format("Account %s already exists", request.getNickname()));
         }
 
-        return accountMapper.map(request);
+        var account = accountMapper.map(request);
+
+        return accountRepository.save(account);
     }
 
     @Override

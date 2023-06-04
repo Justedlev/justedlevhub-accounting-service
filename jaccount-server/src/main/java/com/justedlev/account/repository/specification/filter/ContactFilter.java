@@ -1,9 +1,7 @@
 package com.justedlev.account.repository.specification.filter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.justedlev.account.enumeration.ContactType;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -13,6 +11,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @Builder
 public class ContactFilter implements Serializable {
-    private Collection<String> emails;
-    private String searchText;
+    private String freeSearch;
+    @Singular
+    private Collection<String> values;
+    @Singular
+    private Collection<ContactType> types;
 }
