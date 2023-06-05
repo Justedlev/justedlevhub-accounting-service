@@ -1,12 +1,14 @@
 package com.justedlev.account.properties;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 import java.time.Duration;
 
-@Data
+@Getter
+@Setter
 @ConfigurationPropertiesScan
 @ConfigurationProperties(prefix = "jaccount")
 public class JAccountProperties {
@@ -14,7 +16,8 @@ public class JAccountProperties {
     private Duration offlineAfterTime;
     private Service service;
 
-    @Data
+    @Getter
+    @Setter
     @ConfigurationPropertiesScan
     @ConfigurationProperties(prefix = "jaccount.service")
     public static class Service {
