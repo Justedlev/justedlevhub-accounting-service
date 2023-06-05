@@ -17,11 +17,6 @@
     <name>jaccount-service</name>
     <description>J.Account Server</description>
 
-    <modules>
-        <module>jaccount-client</module>
-        <module>jaccount-server</module>
-    </modules>
-
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -44,9 +39,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.justedlev</groupId>
-            <artifactId>jcommon</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>com.justedlevhub</groupId>
+            <artifactId>justedlevhub-sdk</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <!--Utils-->

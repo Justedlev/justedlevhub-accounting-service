@@ -1,8 +1,8 @@
 package com.justedlev.account.configuration;
 
+import com.justedlev.account.properties.CloudAmqpProperties;
 import com.justedlev.account.properties.JAccountProperties;
-import com.justedlev.notification.properties.CloudAmqpProperties;
-import com.justedlev.notification.properties.JNotificationProperties;
+import com.justedlev.account.properties.JNotificationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
         JNotificationProperties.class,
         JNotificationProperties.Service.class,
         CloudAmqpProperties.class,
-        CloudAmqpProperties.Queues.class
+        CloudAmqpProperties.Queue.class
 })
 public class PropertiesConfiguration {
 }
