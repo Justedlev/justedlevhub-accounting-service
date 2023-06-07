@@ -45,12 +45,9 @@ cloudamqp:
   password: ${CLOUDAMQP_PASSWORD}
   username: ${CLOUDAMQP_USERNAME}
   virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
-  queues:
+  queue:
     send-template-mail: send-template-mail-queue
 jaccount:
-  client:
-    connect-timeout: 1m
-    read-timeout: 10s
   service:
     email: ${SERVICE_MAIL_USERNAME}
     name: ${SERVICE_NAME:JustedlevHub}
