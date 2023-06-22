@@ -4,6 +4,6 @@
   / /   / /_/ / / ___ / /__/ /__/ /_/ / /_/ / / / / /_    ___/ /  __/ /   | |/ / / /__/  __/   / /
  / /    \____(_)_/  |_\___/\___/\____/\__,_/_/ /_/\__/   /____/\___/_/    |___/_/\___/\___/  _/ /
 /__/                                                                                        /__/
-
-Version: ${application.formatted-version} :: ${application.title}
+{-...-}
+${application.title} ${application.version}
 Powered by Spring Boot ${spring-boot.formatted-version}

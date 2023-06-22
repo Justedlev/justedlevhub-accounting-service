@@ -12,7 +12,7 @@ import com.justedlevhub.api.model.request.UpdateAccountRequest;
 import com.justedlevhub.api.type.AccountStatus;
 import com.justedlevhub.api.type.ModeType;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

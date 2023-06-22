@@ -10,8 +10,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableJpaAuditing
 @EnableAsync
 @EnableDiscoveryClient
-public class JAccountServiceApplication {
+public class AccountServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(JAccountServiceApplication.class, args);
+        SpringApplication.run(AccountServiceApplication.class, args);
     }
 }
