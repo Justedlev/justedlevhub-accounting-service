@@ -13,6 +13,9 @@ springdoc:
 jstorage:
   client:
     url: ${GATEWAY_HOST}/api/v1/
+logging:
+  level:
+    com.justedlevhub.account: DEBUG
 jaccount:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}

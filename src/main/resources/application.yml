@@ -2,6 +2,10 @@ server:
   port: ${SERVER_PORT:0}
   servlet:
     context-path: /api
+logging:
+  file:
+    name: ${logging.file.path}/latest.log
+    path: ./logs
 spring:
   application:
     name: jaccount-service
