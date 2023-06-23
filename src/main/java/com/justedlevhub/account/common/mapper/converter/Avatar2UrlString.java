@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class Avatar2String implements Converter<Avatar, String> {
+public class Avatar2UrlString implements Converter<Avatar, String> {
     @Override
     public String convert(MappingContext<Avatar, String> mappingContext) {
         return Optional.ofNullable(mappingContext.getSource())

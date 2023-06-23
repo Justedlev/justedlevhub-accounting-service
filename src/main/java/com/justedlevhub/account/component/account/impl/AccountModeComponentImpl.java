@@ -1,6 +1,5 @@
 package com.justedlevhub.account.component.account.impl;
 
-import com.justedlevhub.account.common.mapper.AccountMapper;
 import com.justedlevhub.account.component.account.AccountModeComponent;
 import com.justedlevhub.account.properties.JAccountProperties;
 import com.justedlevhub.account.repository.AccountRepository;
@@ -12,6 +11,7 @@ import com.justedlevhub.api.model.response.AccountResponse;
 import com.justedlevhub.api.type.ModeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -26,7 +26,7 @@ import java.util.Optional;
 public class AccountModeComponentImpl implements AccountModeComponent {
     private final JAccountProperties properties;
     private final AccountRepository accountRepository;
-    private final AccountMapper accountMapper;
+    private final ModelMapper mapper;
 
     @Override
     public List<AccountResponse> updateMode(UpdateAccountModeRequest request) {
@@ -36,7 +36,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
         log.info("Changed {} inactive accounts to mode : {}", activeAccounts.size(), request.getToMode());
 
         return res.parallelStream()
-                .map(accountMapper::map)
+                .map(account -> mapper.map(account, AccountResponse.class))
                 .toList();
     }
 

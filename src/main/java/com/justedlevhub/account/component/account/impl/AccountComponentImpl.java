@@ -1,6 +1,5 @@
 package com.justedlevhub.account.component.account.impl;
 
-import com.justedlevhub.account.common.mapper.AccountMapper;
 import com.justedlevhub.account.component.account.AccountComponent;
 import com.justedlevhub.account.constant.ExceptionConstant;
 import com.justedlevhub.account.repository.AccountRepository;
@@ -14,6 +13,7 @@ import com.justedlevhub.api.type.ModeType;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
-    private final AccountMapper accountMapper;
+    private final ModelMapper mapper;
 
     @Override
     public List<Account> findByFilter(AccountFilter filter) {
@@ -78,7 +78,7 @@ public class AccountComponentImpl implements AccountComponent {
                     String.format("Account %s already exists", request.getNickname()));
         }
 
-        var account = accountMapper.map(request);
+        var account = mapper.map(request, Account.class);
 
         return accountRepository.save(account);
     }
@@ -134,7 +134,7 @@ public class AccountComponentImpl implements AccountComponent {
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
-        accountMapper.map(request, account);
+        mapper.map(request, account);
 
         return accountRepository.save(account);
     }
