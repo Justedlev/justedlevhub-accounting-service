@@ -1,7 +1,7 @@
 package com.justedlevhub.account.component.notification.manager;
 
-import com.justedlevhub.account.component.notification.NotificationContext;
+import com.justedlevhub.account.component.notification.NotificationCommand;
 
 public interface NotificationManager {
-    void notice(NotificationContext context);
+    void notice(NotificationCommand context);
 }

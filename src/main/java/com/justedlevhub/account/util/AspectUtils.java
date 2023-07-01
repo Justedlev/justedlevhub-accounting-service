@@ -1,16 +1,15 @@
 package com.justedlevhub.account.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class AspectUtils {
-    private AspectUtils() {
-        throw new IllegalStateException("Utility class");
-    }
-
     public static <E> Collection<E> mapToEntities(JoinPoint joinPoint, Class<E> entityType) {
         return Optional.of(joinPoint.getArgs())
                 .map(Arrays::stream)

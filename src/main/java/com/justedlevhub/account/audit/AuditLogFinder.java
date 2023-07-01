@@ -12,7 +12,5 @@ public interface AuditLogFinder {
 
     List<AuditLog> findByEntityIds(Collection<String> entityIds);
 
-    Map<String, List<AuditLog>> findGroupByEntityIds(Collection<String> entityIds);
-
-    Map<String, AuditLog> findLastGroupByEntityIds(Collection<String> entityIds);
+    Map<String, AuditLog> findGroupByEntityIds(Collection<String> entityIds);
 }

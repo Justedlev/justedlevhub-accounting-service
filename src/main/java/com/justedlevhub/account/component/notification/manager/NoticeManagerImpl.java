@@ -1,6 +1,6 @@
 package com.justedlevhub.account.component.notification.manager;
 
-import com.justedlevhub.account.component.notification.NotificationContext;
+import com.justedlevhub.account.component.notification.NotificationCommand;
 import com.justedlevhub.account.component.notification.NotificationType;
 import com.justedlevhub.account.component.notification.TypedNotifier;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ public class NoticeManagerImpl implements NotificationManager {
     }
 
     @Override
-    public void notice(NotificationContext context) {
+    public void notice(NotificationCommand context) {
         typedNotifiers.get(context.getType()).notice(context);
     }
 }

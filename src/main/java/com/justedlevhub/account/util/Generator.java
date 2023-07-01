@@ -1,16 +1,15 @@
 package com.justedlevhub.account.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Generator {
-    private Generator() {
-        throw new IllegalStateException("Util class");
-    }
-
     public static Integer generateNumberCode(int length) {
         StringBuilder stringBuilder = new StringBuilder();
         Stream.generate(() -> randomInt(9))

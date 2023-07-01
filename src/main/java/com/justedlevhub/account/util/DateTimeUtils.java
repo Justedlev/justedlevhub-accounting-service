@@ -1,5 +1,7 @@
 package com.justedlevhub.account.util;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.sql.Timestamp;
@@ -10,11 +12,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 
-public final class DateTimeUtils {
-    private DateTimeUtils() {
-        throw new IllegalStateException("Util class");
-    }
-
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class DateTimeUtils {
     public static Timestamp toTimestamp(Long millis) {
         return Timestamp.valueOf(LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault()));
     }

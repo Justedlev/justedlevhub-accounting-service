@@ -1,11 +1,11 @@
 spring:
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
 springdoc:
   swagger-ui:
     config-url: /${spring.application.name}${server.servlet.context-path}/v3/api-docs/swagger-config
@@ -15,7 +15,12 @@ jstorage:
     url: ${GATEWAY_HOST}/api/v1/
 logging:
   level:
+    web: DEBUG
     com.justedlevhub.account: DEBUG
+    org:
+      hibernate:
+        SQL: DEBUG
+        type.descriptor.sql: TRACE
 jaccount:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}

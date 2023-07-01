@@ -5,6 +5,8 @@ import com.justedlevhub.api.type.ContactType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -35,6 +37,20 @@ public class Contact extends Auditable implements Serializable {
     @Version
     @Column(name = "version")
     private Long version;
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "account_contact",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id")
+    )
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    private Account account;
 
     @Override
     public boolean equals(Object o) {

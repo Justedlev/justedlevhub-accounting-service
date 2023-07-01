@@ -4,6 +4,7 @@ import com.justedlevhub.account.component.account.AccountAvatarComponent;
 import com.justedlevhub.account.component.account.AccountComponent;
 import com.justedlevhub.account.component.account.AccountModeComponent;
 import com.justedlevhub.account.constant.ExceptionConstant;
+import com.justedlevhub.account.properties.JAccountProperties;
 import com.justedlevhub.account.repository.specification.filter.AccountFilter;
 import com.justedlevhub.account.service.AccountService;
 import com.justedlevhub.api.model.request.AccountFilterRequest;
@@ -12,7 +13,6 @@ import com.justedlevhub.api.model.request.UpdateAccountModeRequest;
 import com.justedlevhub.api.model.request.UpdateAccountRequest;
 import com.justedlevhub.api.model.response.AccountResponse;
 import com.justedlevhub.api.model.response.PageResponse;
-import com.justedlevhub.api.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountComponent accountComponent;
     private final AccountModeComponent accountModeComponent;
     private final ModelMapper mapper;
+    private final JAccountProperties properties;
 
     @Override
     public PageResponse<AccountResponse> findPageByFilter(AccountFilterRequest request) {
@@ -52,12 +53,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ReportResponse confirm(String code) {
+    public String confirm(String code) {
         var account = accountComponent.confirm(code);
 
-        return ReportResponse.builder()
-                .message(String.format("User %s confirmed account", account.getNickname()))
-                .build();
+        return "redirect:/" + account.getNickname();
     }
 
     @Override

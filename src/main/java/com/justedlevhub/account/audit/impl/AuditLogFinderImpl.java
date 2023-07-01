@@ -9,10 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
-import java.util.function.BinaryOperator;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
+
+import static com.justedlevhub.account.util.CustomCollectors.toCaseInsensitiveMap;
+import static java.util.Collections.emptyList;
 
 @Component
 @RequiredArgsConstructor
@@ -24,7 +28,7 @@ public class AuditLogFinderImpl implements AuditLogFinder {
         return Optional.ofNullable(filter)
                 .map(AuditLogSpecification::from)
                 .map(auditLogRepository::findAll)
-                .orElse(Collections.emptyList());
+                .orElse(emptyList());
     }
 
     @Override
@@ -32,29 +36,16 @@ public class AuditLogFinderImpl implements AuditLogFinder {
         return Optional.ofNullable(entityIds)
                 .filter(CollectionUtils::isNotEmpty)
                 .map(auditLogRepository::findAllByEntityIdIn)
-                .orElse(Collections.emptyList());
+                .orElse(emptyList());
     }
 
     @Override
-    public Map<String, List<AuditLog>> findGroupByEntityIds(Collection<String> entityIds) {
+    public Map<String, AuditLog> findGroupByEntityIds(Collection<String> entityIds) {
         return findByEntityIds(entityIds)
                 .stream()
-                .collect(Collectors.groupingBy(
+                .collect(toCaseInsensitiveMap(
                         AuditLog::getEntityId,
-                        () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER),
-                        Collectors.toList()
-                ));
-    }
-
-    @Override
-    public Map<String, AuditLog> findLastGroupByEntityIds(Collection<String> entityIds) {
-        return findByEntityIds(entityIds)
-                .stream()
-                .collect(Collectors.toMap(
-                        AuditLog::getEntityId,
-                        Function.identity(),
-                        BinaryOperator.maxBy(Comparator.comparing(AuditLog::getCreatedAt)),
-                        () -> new TreeMap<>(String.CASE_INSENSITIVE_ORDER)
+                        Function.identity()
                 ));
     }
 }

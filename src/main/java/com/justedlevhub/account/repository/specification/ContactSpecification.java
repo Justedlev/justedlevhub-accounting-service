@@ -21,7 +21,7 @@ import java.util.List;
 public class ContactSpecification implements Specification<Contact> {
     private final ContactFilter filter;
 
-    public static ContactSpecification from(ContactFilter filter) {
+    public static ContactSpecification from(@NonNull ContactFilter filter) {
         return new ContactSpecification(filter);
     }
 

@@ -1,9 +1,12 @@
 package com.justedlevhub.account.common.mapper;
 
 import com.justedlevhub.account.repository.entity.Account;
+import com.justedlevhub.account.repository.entity.Contact;
 import com.justedlevhub.account.repository.specification.filter.AccountFilter;
 import com.justedlevhub.api.model.params.AccountFilterParams;
+import com.justedlevhub.api.model.request.RegistrationRequest;
 import com.justedlevhub.api.model.response.AccountResponse;
+import com.justedlevhub.api.type.ContactType;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -17,7 +20,7 @@ import java.util.Set;
 @Component
 public class CustomModelMapper extends ModelMapper {
     public CustomModelMapper(Set<Converter<?, ?>> converters) {
-        this.getConfiguration()
+        getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
                 .setSkipNullEnabled(true);
         addConverters(converters);
@@ -43,9 +46,12 @@ public class CustomModelMapper extends ModelMapper {
     }
 
     private void registerTypeMaps() {
-        this.createTypeMap(AccountFilterParams.class, AccountFilter.class)
+        createTypeMap(AccountFilterParams.class, AccountFilter.class)
                 .addMapping(AccountFilterParams::getQ, AccountFilter::setSearchText);
-        this.createTypeMap(Account.class, AccountResponse.class)
+        createTypeMap(Account.class, AccountResponse.class)
                 .addMapping(Account::getCreatedAt, AccountResponse::setRegisteredAt);
+        createTypeMap(RegistrationRequest.class, Contact.class)
+                .addMapping(RegistrationRequest::getEmail, Contact::setValue)
+                .addMapping(rr -> ContactType.EMAIL, Contact::setType);
     }
 }

@@ -4,23 +4,27 @@ import com.justedlevhub.account.audit.AuditColumn;
 import com.justedlevhub.account.audit.AuditLogFinder;
 import com.justedlevhub.account.audit.AuditLogger;
 import com.justedlevhub.account.audit.repository.AuditLogRepository;
-import com.justedlevhub.account.audit.repository.entity.AuditImprint;
 import com.justedlevhub.account.audit.repository.entity.AuditLog;
+import com.justedlevhub.account.audit.repository.entity.AuditSnapshot;
 import com.justedlevhub.account.audit.repository.entity.base.Auditable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.justedlevhub.account.util.CustomCollectors.toCaseInsensitiveSet;
+import static java.util.Comparator.comparing;
+import static java.util.function.BinaryOperator.maxBy;
 import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.getMethods;
 import static org.reflections.util.ReflectionUtilsPredicates.withAnnotation;
@@ -34,6 +38,7 @@ public class AuditLoggerImpl implements AuditLogger {
     private final AuditLogRepository auditLogRepository;
     private final AuditLogFinder auditLogFinder;
 
+    @Transactional
     @Override
     public Optional<AuditLog> audit(@NonNull Auditable auditable) {
         return auditAll(List.of(auditable))
@@ -41,50 +46,54 @@ public class AuditLoggerImpl implements AuditLogger {
                 .findFirst();
     }
 
+    @Transactional
     @Override
     public List<AuditLog> auditAll(Collection<Auditable> auditableCollection) {
         var ids = getEntityIds(auditableCollection);
-        var auditeMap = auditLogFinder.findLastGroupByEntityIds(ids);
+        var auditesMap = auditLogFinder.findGroupByEntityIds(ids);
         var auditLogs = auditableCollection.stream()
-                .map(auditable -> buildAuditLog(auditable, auditeMap))
-                .filter(Objects::nonNull)
+                .map(auditable -> buildAuditLog(auditable, auditesMap))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
 
-        return auditLogRepository.saveAll(auditLogs);
+        return auditLogRepository.saveAllAndFlush(auditLogs);
     }
 
-    private AuditLog buildAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap) {
-        return findEntityId(auditable)
-                .map(entityId -> toAuditLog(auditable, auditeMap, entityId))
-                .orElse(null);
+    private Optional<AuditLog> buildAuditLog(Auditable auditable, Map<String, AuditLog> auditesMap) {
+        return findEntityId(auditable).map(entityId -> toAuditLog(auditable, auditesMap, entityId));
     }
 
-    private AuditLog toAuditLog(Auditable auditable, Map<String, AuditLog> auditeMap, String entityId) {
-        var fields = findAnnotatedFields(auditable, AuditColumn.class);
-        var entityType = auditable.getClass().getSimpleName();
-        var lastImprints = Optional.ofNullable(entityId)
-                .map(auditeMap::get)
-                .map(AuditLog::getImprints)
-                .orElse(Collections.emptyList());
-        var oldValueMap = lastImprints.stream()
-                .filter(auditImprint -> Objects.nonNull(auditImprint.getNewValue()))
-                .collect(Collectors.toMap(AuditImprint::getFieldName, AuditImprint::getNewValue));
-        var imprints = getImprints(auditable, fields, oldValueMap);
+    @SuppressWarnings("unchecked")
+    private AuditLog toAuditLog(Auditable auditable, Map<String, AuditLog> auditesMap, String entityId) {
+        var fields = getFields(auditable.getClass(), withAnnotation(AuditColumn.class));
+        var auditLog = Optional.ofNullable(entityId)
+                .map(auditesMap::get)
+                .orElseGet(() -> AuditLog.builder()
+                        .entityId(entityId)
+                        .entityType(auditable.getClass().getName())
+                        .snapshots(Collections.emptyList())
+                        .build());
+        var oldValueMap = auditLog.getSnapshots()
+                .stream()
+                .collect(Collectors.toMap(
+                        AuditSnapshot::getFieldName,
+                        Function.identity(),
+                        maxBy(comparing(AuditSnapshot::getCreatedAt))
+                ));
+        var snapshots = getSnapshots(auditable, fields, oldValueMap);
+        auditLog.setSnapshots(snapshots);
+        snapshots.forEach(snapshot -> snapshot.setAuditLog(auditLog));
 
-        if (CollectionUtils.isEmpty(imprints)) return null;
-
-        return AuditLog.builder()
-                .entityId(entityId)
-                .entityType(entityType)
-                .imprints(imprints)
-                .build();
+        return auditLog;
     }
 
-    private Set<AuditImprint> getImprints(Auditable auditable, Set<Field> fields, Map<String, String> oldValueMap) {
+    private List<AuditSnapshot> getSnapshots(Auditable auditable, Set<Field> fields, Map<String, AuditSnapshot> oldValueMap) {
         return fields.stream()
-                .map(field -> getImprint(auditable, field, oldValueMap))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+                .map(field -> getNewSnapshot(auditable, field, oldValueMap))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
     }
 
     private Set<String> getEntityIds(Collection<Auditable> auditableCollection) {
@@ -92,36 +101,34 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(this::findEntityId)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .collect(Collectors.toCollection(() -> new TreeSet<>(String.CASE_INSENSITIVE_ORDER)));
+                .collect(toCaseInsensitiveSet());
     }
 
+    @SuppressWarnings("unchecked")
     private Optional<String> findEntityId(Auditable auditable) {
-        return findAnnotatedFields(auditable, Id.class)
+        return getFields(auditable.getClass(), withAnnotation(Id.class).or(withAnnotation(EmbeddedId.class)))
                 .stream()
                 .findFirst()
                 .map(field -> getFieldValue(auditable, field));
     }
 
-    private AuditImprint getImprint(Auditable auditable, Field field, Map<String, String> oldValueMap) {
+    private Optional<AuditSnapshot> getNewSnapshot(Auditable auditable, Field field, Map<String, AuditSnapshot> oldValueMap) {
         var newValue = getFieldValue(auditable, field);
-        var oldValue = oldValueMap.get(field.getName());
-
-        if (Objects.equals(newValue, oldValue)) return null;
-
+        var oldValue = Optional.of(field.getName())
+                .map(oldValueMap::get)
+                .map(AuditSnapshot::getNewValue)
+                .orElse(null);
+        if (Objects.equals(newValue, oldValue)) return Optional.empty();
         var auditColumn = field.getAnnotation(AuditColumn.class);
-
-        return AuditImprint.builder()
-                .fieldType(field.getType())
+        var res = AuditSnapshot.builder()
+                .fieldType(field.getType().getName())
                 .fieldName(field.getName())
                 .newValue(newValue)
-                .oldValue(oldValue)
+                .previousValue(oldValue)
                 .hide(auditColumn.hide())
                 .build();
-    }
 
-    @SuppressWarnings("unchecked")
-    public Set<Field> findAnnotatedFields(Auditable auditable, Class<? extends Annotation> annotation) {
-        return getFields(auditable.getClass(), withAnnotation(annotation));
+        return Optional.of(res);
     }
 
     @SuppressWarnings("unchecked")

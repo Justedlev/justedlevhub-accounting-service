@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationContext {
+public class NotificationCommand {
     private NotificationType type;
     private Account account;
     private Contact contact;

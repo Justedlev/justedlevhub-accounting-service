@@ -8,7 +8,6 @@ import com.justedlevhub.api.model.request.UpdateAccountModeRequest;
 import com.justedlevhub.api.model.request.UpdateAccountRequest;
 import com.justedlevhub.api.model.response.AccountResponse;
 import com.justedlevhub.api.model.response.PageResponse;
-import com.justedlevhub.api.model.response.ReportResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -65,11 +64,14 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
+    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping(value = AccountV1Endpoints.CONFIRM_CODE)
-    public ResponseEntity<ReportResponse> confirm(@PathVariable
-                                                  @NotEmpty(message = "Confirm code cannot be empty.")
-                                                  String code) {
-        return ResponseEntity.ok(accountService.confirm(code));
+    public String confirm(
+            @PathVariable
+            @NotEmpty(message = "Confirm code cannot be empty.")
+            String code
+    ) {
+        return accountService.confirm(code);
     }
 
     @PostMapping(value = AccountV1Endpoints.UPDATE_MODE)

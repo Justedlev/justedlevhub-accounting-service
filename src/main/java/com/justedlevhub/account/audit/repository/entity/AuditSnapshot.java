@@ -10,7 +10,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 @SuperBuilder
@@ -21,25 +20,31 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
-@Table(name = "audit_log")
-public class AuditLog extends Auditable implements Serializable {
+@Table(name = "audit_snapshot")
+public class AuditSnapshot extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
     private UUID id;
-    @Column(name = "entity_id", unique = true)
-    private String entityId;
-    @Column(name = "entity_type", unique = true)
-    private String entityType;
-    @Singular
+    @Column(name = "hide")
+    private boolean hide;
+    @Column(name = "field_name")
+    private String fieldName;
+    @Column(name = "field_type")
+    private String fieldType;
+    @Column(name = "previous_value")
+    private String previousValue;
+    @Column(name = "new_value")
+    private String newValue;
     @ToString.Exclude
-    @OneToMany(mappedBy = "auditLog")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "audit_log_id")
     @Cascade({
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
             CascadeType.REFRESH
     })
-    private List<AuditSnapshot> snapshots;
+    private AuditLog auditLog;
 }

@@ -11,15 +11,16 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @SuperBuilder
@@ -85,6 +86,21 @@ public class Account extends Auditable implements Serializable {
     @Version
     @Column(name = "version")
     private Long version;
+    @Singular
+    @ToString.Exclude
+    @OneToMany
+    @JoinTable(
+            name = "account_contact",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id")
+    )
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    private Set<Contact> contacts;
 
     public void setMode(ModeType mode) {
         this.mode = mode;

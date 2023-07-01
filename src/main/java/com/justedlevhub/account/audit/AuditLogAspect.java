@@ -3,6 +3,7 @@ package com.justedlevhub.account.audit;
 import com.justedlevhub.account.audit.repository.entity.AuditLog;
 import com.justedlevhub.account.audit.repository.entity.base.Auditable;
 import com.justedlevhub.account.util.AspectUtils;
+import com.justedlevhub.account.util.CustomCollectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -21,7 +22,7 @@ import java.util.List;
 public class AuditLogAspect {
     private final AuditLogger auditLogger;
 
-    @Pointcut("execution(* com.justedlevhub.account.repository.*.save*(..))")
+    @Pointcut("execution(* com.justedlevhub.account.repository.*+.save*(..))")
     public void savePointcut() {
     }
 
@@ -50,10 +51,9 @@ public class AuditLogAspect {
     }
 
     private void logAuditsCreated(List<AuditLog> audits) {
-        var entityType = audits.stream()
+        var entityTypes = audits.stream()
                 .map(AuditLog::getEntityType)
-                .findFirst()
-                .orElse("Undefined entity type");
-        log.info("{} audit logs was created for entity: {}", audits.size(), entityType);
+                .collect(CustomCollectors.toCaseInsensitiveSet());
+        log.info("{} audit logs was created for entity: {}", audits.size(), entityTypes);
     }
 }

@@ -1,7 +1,7 @@
 package com.justedlevhub.account.component.notification.impl;
 
 import com.justedlevhub.account.api.queue.JNotificationQueue;
-import com.justedlevhub.account.component.notification.NotificationContext;
+import com.justedlevhub.account.component.notification.NotificationCommand;
 import com.justedlevhub.account.component.notification.NotificationType;
 import com.justedlevhub.account.component.notification.TypedNotifier;
 import com.justedlevhub.account.constant.AccountV1Endpoints;
@@ -23,7 +23,7 @@ public class EmailNotifier implements TypedNotifier {
     private final JAccountProperties properties;
 
     @Override
-    public void notice(NotificationContext context) {
+    public void notice(NotificationCommand context) {
         var content = buildContent(context.getAccount());
         var recipient = context.getContact().getValue();
         var subject = String.format(MailSubjectConstant.CONFIRMATION, properties.getService().getName());
