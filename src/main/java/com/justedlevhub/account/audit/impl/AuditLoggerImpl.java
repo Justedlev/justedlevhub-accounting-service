@@ -10,6 +10,7 @@ import com.justedlevhub.account.audit.repository.entity.base.Auditable;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,6 +56,7 @@ public class AuditLoggerImpl implements AuditLogger {
                 .map(auditable -> buildAuditLog(auditable, auditesMap))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
+                .filter(auditLog -> CollectionUtils.isNotEmpty(auditLog.getSnapshots()))
                 .toList();
 
         return auditLogRepository.saveAllAndFlush(auditLogs);
@@ -106,7 +108,9 @@ public class AuditLoggerImpl implements AuditLogger {
 
     @SuppressWarnings("unchecked")
     private Optional<String> findEntityId(Auditable auditable) {
-        return getFields(auditable.getClass(), withAnnotation(Id.class).or(withAnnotation(EmbeddedId.class)))
+        var type = auditable.getClass();
+
+        return getFields(type, withAnnotation(Id.class).or(withAnnotation(EmbeddedId.class)))
                 .stream()
                 .findFirst()
                 .map(field -> getFieldValue(auditable, field));
