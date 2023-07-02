@@ -1,18 +1,19 @@
 package com.justedlevhub.account.component;
 
+import com.justedlevhub.account.util.Constants;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class AuditorAwareImpl implements AuditorAware<String> {
-    private static final UUID BOT = UUID.nameUUIDFromBytes("Justedlev BOT".getBytes(StandardCharsets.UTF_8));
-
+    @NonNull
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(BOT.toString());
+        return Optional.of(Constants.BOT_ID.toString());
     }
 }

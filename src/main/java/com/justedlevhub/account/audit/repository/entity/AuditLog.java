@@ -32,7 +32,6 @@ public class AuditLog extends Auditable implements Serializable {
     private String entityId;
     @Column(name = "entity_type", unique = true)
     private String entityType;
-    @Singular
     @ToString.Exclude
     @OneToMany(mappedBy = "auditLog")
     @Cascade({

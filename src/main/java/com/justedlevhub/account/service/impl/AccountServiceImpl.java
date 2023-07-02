@@ -16,13 +16,11 @@ import com.justedlevhub.api.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-@Transactional(timeout = 120)
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {

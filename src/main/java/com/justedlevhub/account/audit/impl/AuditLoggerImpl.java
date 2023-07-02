@@ -59,7 +59,7 @@ public class AuditLoggerImpl implements AuditLogger {
                 .filter(auditLog -> CollectionUtils.isNotEmpty(auditLog.getSnapshots()))
                 .toList();
 
-        return auditLogRepository.saveAllAndFlush(auditLogs);
+        return auditLogRepository.saveAll(auditLogs);
     }
 
     private Optional<AuditLog> buildAuditLog(Auditable auditable, Map<String, AuditLog> auditesMap) {
