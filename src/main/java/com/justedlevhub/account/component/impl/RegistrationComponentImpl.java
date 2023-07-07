@@ -34,7 +34,6 @@ public class RegistrationComponentImpl implements RegistrationComponent {
         var account = mapper.map(request, Account.class);
         var contact = mapper.map(request, Contact.class);
         contact.setAccount(account);
-        accountRepository.save(account);
         contactRepository.save(contact);
         sendConfirmation(account, contact);
     }
