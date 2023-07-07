@@ -4,12 +4,15 @@ import com.justedlevhub.account.audit.repository.entity.base.Auditable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,43 +20,31 @@ import java.util.stream.StreamSupport;
 
 import static org.reflections.ReflectionUtils.*;
 
+@ToString
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ActivityNode {
+public class AuditableNode {
     private Object parent;
     private Object obj;
     private Class<?> type;
-    private List<ActivityNode> nodes;
-    @Setter
-    private Predicate<Field> fieldPredicate;
+    private List<AuditableNode> nodes;
 
     private static final String METHOD_PREFIX = "get";
 
-    public ActivityNode(Object obj) {
+    public AuditableNode(Object obj) {
         this(null, obj);
-    }
-
-    public ActivityNode(Object obj, Predicate<Field> fieldPredicate) {
-        this(null, obj, null);
-        this.fieldPredicate = fieldPredicate;
         this.nodes = getNodes();
     }
 
-    private ActivityNode(Object parent, Object obj) {
-        this(parent, obj, null);
-        this.nodes = getNodes();
+    private AuditableNode(Object parent, Object obj) {
+        this.parent = parent;
+        this.obj = obj;
+        this.type = obj.getClass();
     }
 
-    private ActivityNode(Object parent, Object obj, List<ActivityNode> nodes) {
-        this(parent, obj, obj.getClass(), nodes);
-    }
-
-    private ActivityNode(Object parent, Object obj, Class<?> type, List<ActivityNode> nodes) {
-        this(parent, obj, type, nodes, withTypeAssignableTo(Objects.class));
-    }
-
-    private List<ActivityNode> getNodes() {
-        var fields = getNecessaryFields();
+    @SuppressWarnings("unchecked")
+    private List<AuditableNode> getNodes() {
+        var fields = getFields(type);
 
         return fields.stream()
                 .map(this::getNecessaryMethod)
@@ -64,7 +55,8 @@ public class ActivityNode {
                 .filter(o -> !Objects.equals(o, parent))
                 .filter(o -> !Objects.equals(obj, parent))
                 .flatMap(this::getStream)
-                .map(o -> new ActivityNode(obj, o))
+                .filter(Auditable.class::isInstance)
+                .map(o -> new AuditableNode(obj, o))
                 .toList();
     }
 
@@ -72,6 +64,7 @@ public class ActivityNode {
         if (Objects.isNull(o)) return Stream.empty();
 
         return switch (o) {
+            case Collection<?> s -> s.stream();
             case Iterable<?> i -> StreamSupport.stream(i.spliterator(), false);
             case Auditable a -> Stream.of(a);
             default -> Stream.empty();
@@ -91,13 +84,13 @@ public class ActivityNode {
     }
 
     @SuppressWarnings("unchecked")
-    private Set<Field> getNecessaryFields() {
-        return getFields(type, fieldPredicate);
-    }
+//    private Set<Field> getNecessaryFields() {
+//        return getFields(type, fieldPredicate);
+//    }
 
     public List<Object> getObjects() {
         var all = nodes.stream()
-                .map(ActivityNode::getObjects)
+                .map(AuditableNode::getObjects)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
         all.add(this.getObj());

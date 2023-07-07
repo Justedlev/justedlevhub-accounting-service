@@ -1,9 +1,9 @@
 package com.justedlevhub.account.audit.impl;
 
-import com.justedlevhub.account.audit.ActivityNode;
 import com.justedlevhub.account.audit.AuditColumn;
 import com.justedlevhub.account.audit.AuditLogFinder;
 import com.justedlevhub.account.audit.AuditLogger;
+import com.justedlevhub.account.audit.AuditableNode;
 import com.justedlevhub.account.audit.repository.AuditLogRepository;
 import com.justedlevhub.account.audit.repository.entity.AuditLog;
 import com.justedlevhub.account.audit.repository.entity.AuditSnapshot;
@@ -30,7 +30,8 @@ import static java.util.Comparator.comparing;
 import static java.util.function.BinaryOperator.maxBy;
 import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.getMethods;
-import static org.reflections.util.ReflectionUtilsPredicates.*;
+import static org.reflections.util.ReflectionUtilsPredicates.withAnnotation;
+import static org.reflections.util.ReflectionUtilsPredicates.withName;
 import static org.springframework.util.ReflectionUtils.invokeMethod;
 
 @Slf4j
@@ -51,16 +52,11 @@ public class AuditLoggerImpl implements AuditLogger {
     @Transactional
     @Override
     public List<AuditLog> auditAll(Collection<Auditable> auditableCollection) {
-        var pred = withTypeAssignableTo(Set.class)
-                .or(withTypeAssignableTo(Collection.class))
-                .or(withTypeAssignableTo(List.class))
-                .or(withTypeAssignableTo(Auditable.class))
-                .or(withTypeAssignableTo(Avatar.class));
         var nodes = auditableCollection.stream()
-                .map(a -> new ActivityNode(a, pred))
+                .map(AuditableNode::new)
                 .toList();
         var objs = nodes.stream()
-                .map(ActivityNode::getObjects)
+                .map(AuditableNode::getObjects)
                 .flatMap(Collection::stream)
                 .toList();
         var all = objs.stream()
