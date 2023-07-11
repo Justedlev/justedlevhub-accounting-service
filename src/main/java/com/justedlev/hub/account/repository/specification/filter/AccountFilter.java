@@ -1,0 +1,32 @@
+package com.justedlev.hub.account.repository.specification.filter;
+
+import com.justedlev.hub.api.type.AccountStatus;
+import com.justedlev.hub.api.type.ModeType;
+import lombok.*;
+
+import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.UUID;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class AccountFilter implements Serializable {
+    @Singular
+    private Collection<UUID> ids;
+    @Singular
+    private Collection<String> nicknames;
+    @Singular
+    private Collection<AccountStatus> statuses;
+    @Singular
+    private Collection<AccountStatus> excludeStatuses;
+    @Singular
+    private Collection<ModeType> modes;
+    @Singular
+    private Collection<String> activationCodes;
+    private Timestamp modeAtFrom;
+    private Timestamp modeAtTo;
+    private String searchText;
+}
