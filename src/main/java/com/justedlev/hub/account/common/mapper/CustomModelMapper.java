@@ -1,5 +1,6 @@
 package com.justedlev.hub.account.common.mapper;
 
+import com.github.justedlev.modelmapper.BaseModelMapper;
 import com.github.justedlev.modelmapper.converter.date.LocalDate2Timestamp;
 import com.github.justedlev.modelmapper.converter.date.LocalDateTime2Timestamp;
 import com.github.justedlev.modelmapper.converter.date.Timestamp2LocalDate;
