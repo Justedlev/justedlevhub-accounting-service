@@ -9,6 +9,7 @@ import com.justedlev.hub.api.model.request.UpdateAccountRequest;
 import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.api.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping(value = AccountV1Endpoints.PAGE)
-    public ResponseEntity<PageResponse<AccountResponse>> findPage(@Valid @RequestBody AccountFilterRequest request) {
+    public ResponseEntity<PageResponse<AccountResponse>> findPage(PageRequest pageRequest, @Valid @RequestBody AccountFilterRequest request) {
         return ResponseEntity.ok(accountService.findPageByFilter(request));
     }
 

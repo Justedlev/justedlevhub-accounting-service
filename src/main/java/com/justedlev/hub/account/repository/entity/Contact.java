@@ -1,6 +1,5 @@
 package com.justedlev.hub.account.repository.entity;
 
-import com.justedlev.hub.account.audit.repository.entity.base.Auditable;
 import com.justedlev.hub.api.type.ContactType;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -9,6 +8,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +24,7 @@ import java.util.UUID;
 @Entity
 @DynamicUpdate
 @Table(name = "contact")
+@Audited
 public class Contact extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")

@@ -6,11 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 @RequiredArgsConstructor
 public class String2PhoneNumberResponse implements Converter<String, PhoneNumberResponse> {
     private final PhoneNumberUtil phoneNumberUtil;
@@ -36,5 +34,13 @@ public class String2PhoneNumberResponse implements Converter<String, PhoneNumber
                 .national(national)
                 .international(international)
                 .build();
+    }
+
+    public static String2PhoneNumberResponse getInstance() {
+        return getInstance(PhoneNumberUtil.getInstance());
+    }
+
+    public static String2PhoneNumberResponse getInstance(PhoneNumberUtil phoneNumberUtil) {
+        return new String2PhoneNumberResponse(phoneNumberUtil);
     }
 }

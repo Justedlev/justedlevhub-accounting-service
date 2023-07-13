@@ -1,7 +1,11 @@
 package com.justedlev.hub.account.common.mapper;
 
+import com.github.justedlev.modelmapper.converter.date.LocalDate2Timestamp;
 import com.github.justedlev.modelmapper.converter.date.LocalDateTime2Timestamp;
+import com.github.justedlev.modelmapper.converter.date.Timestamp2LocalDate;
 import com.github.justedlev.modelmapper.converter.date.Timestamp2LocalDateTime;
+import com.justedlev.hub.account.common.mapper.converter.Avatar2UrlString;
+import com.justedlev.hub.account.common.mapper.converter.String2PhoneNumberResponse;
 import com.justedlev.hub.account.repository.entity.Account;
 import com.justedlev.hub.account.repository.entity.Contact;
 import com.justedlev.hub.account.repository.specification.filter.AccountFilter;
@@ -9,35 +13,28 @@ import com.justedlev.hub.api.model.params.AccountFilterParams;
 import com.justedlev.hub.api.model.request.RegistrationRequest;
 import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.api.type.ContactType;
-import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Converter;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
+import java.io.Serializable;
 import java.util.Set;
 
-@Slf4j
 @Component
-public class CustomModelMapper extends ModelMapper {
-    public CustomModelMapper(Set<Converter<?, ?>> converters) {
-        getConfiguration()
-                .setMatchingStrategy(MatchingStrategies.STRICT)
-                .setSkipNullEnabled(true);
-        addConverters(converters);
+public class CustomModelMapper extends BaseModelMapper {
+    public CustomModelMapper() {
         registerTypeMaps();
+        addConverters(getConverters());
     }
 
-    @Override
-    public <D> D map(Object source, Class<D> destination) {
-        return Objects.isNull(source) ? null : super.map(source, destination);
-    }
-
-    private void addConverters(Set<Converter<?, ?>> converters) {
-        converters.forEach(super::addConverter);
-        super.addConverter(LocalDateTime2Timestamp.getInstance());
-        super.addConverter(Timestamp2LocalDateTime.getInstance());
+    private Set<Converter<? extends Serializable, ?>> getConverters() {
+        return Set.of(
+                LocalDateTime2Timestamp.getInstance(),
+                Timestamp2LocalDateTime.getInstance(),
+                LocalDate2Timestamp.getInstance(),
+                Timestamp2LocalDate.getInstance(),
+                Avatar2UrlString.getInstance(),
+                String2PhoneNumberResponse.getInstance()
+        );
     }
 
     private void registerTypeMaps() {

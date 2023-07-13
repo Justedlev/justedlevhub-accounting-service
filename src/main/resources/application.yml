@@ -19,6 +19,10 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     properties:
+      org:
+        hibernate:
+          envers:
+            audit_table_suffix: _history
       hibernate:
         enable_lazy_load_no_trans: true
     database: postgresql

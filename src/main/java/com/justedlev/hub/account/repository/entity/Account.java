@@ -1,7 +1,5 @@
 package com.justedlev.hub.account.repository.entity;
 
-import com.justedlev.hub.account.audit.annotation.AuditValue;
-import com.justedlev.hub.account.audit.repository.entity.base.Auditable;
 import com.justedlev.hub.account.util.DateTimeUtils;
 import com.justedlev.hub.account.util.Generator;
 import com.justedlev.hub.api.type.AccountStatus;
@@ -13,6 +11,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -33,32 +32,27 @@ import java.util.UUID;
 @DynamicUpdate
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "account")
+@Audited
 public class Account extends Auditable implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "account_id", updatable = false)
     private UUID id;
-    @AuditValue
     @Column(name = "nick_name", nullable = false)
     private String nickname;
-    @AuditValue
     @Column(name = "first_name")
     private String firstName;
-    @AuditValue
     @Column(name = "last_name")
     private String lastName;
-    @AuditValue
     @Column(name = "birth_date")
     private Timestamp birthDate;
-    @AuditValue
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
     @Type(type = "jsonb")
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;
-    @AuditValue(hide = true)
     @Builder.Default
     @Column(
             name = "activation_code",
@@ -68,7 +62,6 @@ public class Account extends Auditable implements Serializable {
             updatable = false
     )
     private String activationCode = Generator.generateActivationCode();
-    @AuditValue
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 30, nullable = false)
