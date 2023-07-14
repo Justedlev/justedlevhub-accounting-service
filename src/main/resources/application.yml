@@ -7,6 +7,9 @@ logging:
     name: ${logging.file.path}/latest.log
     path: ./logs
 spring:
+  devtools:
+    restart:
+      enabled: true
   application:
     name: jaccount-service
   jackson:
