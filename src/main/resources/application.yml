@@ -64,3 +64,11 @@ jaccount:
     name: ${SERVICE_NAME:JustedlevHub}
     label: "{•...•}"
     host: ${SERVICE_HOST}
+management:
+  endpoint:
+    health:
+      enabled: true
+    restart:
+      enabled: true
+    refresh:
+      enabled: true
