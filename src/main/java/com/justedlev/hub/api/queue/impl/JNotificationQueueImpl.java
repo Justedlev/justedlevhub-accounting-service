@@ -1,8 +1,8 @@
 package com.justedlev.hub.api.queue.impl;
 
+import com.justedlev.hub.properties.CloudAmqpProperties;
 import com.justedlev.hub.api.model.request.SendTemplateMailRequest;
 import com.justedlev.hub.api.queue.JNotificationQueue;
-import com.justedlev.hub.properties.CloudAmqpProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;

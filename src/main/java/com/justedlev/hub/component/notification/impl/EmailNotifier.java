@@ -1,15 +1,15 @@
 package com.justedlev.hub.component.notification.impl;
 
+import com.justedlev.hub.component.notification.NotificationCommand;
+import com.justedlev.hub.component.notification.TypedNotifier;
+import com.justedlev.hub.properties.JAccountProperties;
+import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.api.model.request.SendTemplateMailRequest;
 import com.justedlev.hub.api.queue.JNotificationQueue;
-import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
-import com.justedlev.hub.component.notification.TypedNotifier;
 import com.justedlev.hub.constant.AccountV1Endpoints;
 import com.justedlev.hub.constant.MailSubjectConstant;
 import com.justedlev.hub.constant.MailTemplateConstant;
-import com.justedlev.hub.properties.JAccountProperties;
-import com.justedlev.hub.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

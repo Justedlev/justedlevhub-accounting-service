@@ -1,10 +1,10 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.component.account.AccountFinder;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.component.account.AccountFinder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,14 +1,14 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
-import com.justedlev.hub.api.model.response.AccountResponse;
-import com.justedlev.hub.api.type.ModeType;
-import com.justedlev.hub.component.account.AccountModeComponent;
 import com.justedlev.hub.properties.JAccountProperties;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
+import com.justedlev.hub.api.model.response.AccountResponse;
+import com.justedlev.hub.api.type.ModeType;
+import com.justedlev.hub.component.account.AccountModeComponent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

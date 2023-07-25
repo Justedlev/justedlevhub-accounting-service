@@ -1,8 +1,8 @@
 package com.justedlev.hub.repository.specification;
 
 import com.justedlev.hub.repository.entity.Account;
-import com.justedlev.hub.repository.entity.Account_;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.repository.entity.Account_;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

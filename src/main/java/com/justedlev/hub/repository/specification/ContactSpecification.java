@@ -1,8 +1,8 @@
 package com.justedlev.hub.repository.specification;
 
+import com.justedlev.hub.repository.specification.filter.ContactFilter;
 import com.justedlev.hub.repository.entity.Contact;
 import com.justedlev.hub.repository.entity.Contact_;
-import com.justedlev.hub.repository.specification.filter.ContactFilter;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

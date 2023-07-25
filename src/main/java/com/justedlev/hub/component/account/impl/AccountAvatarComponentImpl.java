@@ -1,13 +1,13 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.api.JStorageFeignClient;
-import com.justedlev.hub.api.type.AccountStatus;
-import com.justedlev.hub.component.account.AccountAvatarComponent;
-import com.justedlev.hub.component.account.AccountFinder;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Avatar;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.api.JStorageFeignClient;
+import com.justedlev.hub.api.type.AccountStatus;
+import com.justedlev.hub.component.account.AccountAvatarComponent;
+import com.justedlev.hub.component.account.AccountFinder;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
