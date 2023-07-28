@@ -1,4 +1,4 @@
-package com.justedlev.hub.properties;
+package com.justedlev.hub.configuration.properties;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +10,8 @@ import java.time.Duration;
 @Getter
 @Setter
 @ConfigurationPropertiesScan
-@ConfigurationProperties(prefix = "jaccount")
-public class JAccountProperties {
+@ConfigurationProperties(prefix = "accounting")
+public class AccountingProperties {
     private Duration activityTime;
     private Duration offlineAfterTime;
     private Service service;
@@ -19,7 +19,7 @@ public class JAccountProperties {
     @Getter
     @Setter
     @ConfigurationPropertiesScan
-    @ConfigurationProperties(prefix = "jaccount.service")
+    @ConfigurationProperties(prefix = "accounting.service")
     public static class Service {
         private String name;
         private String email;

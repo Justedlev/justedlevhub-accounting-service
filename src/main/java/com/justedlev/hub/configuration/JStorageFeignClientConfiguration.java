@@ -1,6 +1,6 @@
 package com.justedlev.hub.configuration;
 
-import com.justedlev.hub.properties.JStorageFeignClientProperties;
+import com.justedlev.hub.configuration.properties.JStorageFeignClientProperties;
 import feign.Request;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

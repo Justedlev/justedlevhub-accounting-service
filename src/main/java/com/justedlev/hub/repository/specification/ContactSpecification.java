@@ -1,8 +1,12 @@
 package com.justedlev.hub.repository.specification;
 
-import com.justedlev.hub.repository.specification.filter.ContactFilter;
 import com.justedlev.hub.repository.entity.Contact;
 import com.justedlev.hub.repository.entity.Contact_;
+import com.justedlev.hub.repository.specification.filter.ContactFilter;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +14,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
 

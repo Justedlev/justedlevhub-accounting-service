@@ -7,6 +7,9 @@ import com.justedlev.hub.api.model.request.UpdateAccountRequest;
 import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.constant.AccountV1Endpoints;
 import com.justedlev.hub.service.AccountService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -52,7 +52,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.update(request));
     }
 
-    @PostMapping(
+    @PatchMapping(
             value = AccountV1Endpoints.NICKNAME_UPDATE_AVATAR,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
@@ -60,8 +60,7 @@ public class AccountController {
             @PathVariable
             @NotBlank(message = "Nickname cannot be empty.")
             String nickname,
-            @RequestPart MultipartFile file
-    ) {
+            @RequestPart MultipartFile file) {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
@@ -70,12 +69,11 @@ public class AccountController {
     public String confirm(
             @PathVariable
             @NotEmpty(message = "Confirm code cannot be empty.")
-            String code
-    ) {
+            String code) {
         return accountService.confirm(code);
     }
 
-    @PostMapping(value = AccountV1Endpoints.UPDATE_MODE)
+    @PutMapping(value = AccountV1Endpoints.UPDATE_MODE)
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }
