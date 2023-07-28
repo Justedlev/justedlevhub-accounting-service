@@ -11,7 +11,7 @@ spring:
     restart:
       enabled: true
   application:
-    name: jaccount-service
+    name: accounting-service
   jackson:
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
@@ -58,7 +58,7 @@ cloudamqp:
   virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
   queue:
     send-template-mail: send-template-mail-queue
-jaccount:
+accounting:
   service:
     email: ${SERVICE_MAIL_USERNAME}
     name: ${SERVICE_NAME:JustedlevHub}

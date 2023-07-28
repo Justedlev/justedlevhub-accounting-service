@@ -1,4 +1,4 @@
-package com.justedlev.hub.properties;
+package com.justedlev.hub.configuration.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,15 +1,17 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.repository.AccountRepository;
-import com.justedlev.hub.repository.entity.Account;
-import com.justedlev.hub.repository.specification.AccountSpecification;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import com.justedlev.hub.api.model.request.CreateAccountRequest;
 import com.justedlev.hub.api.model.request.UpdateAccountRequest;
 import com.justedlev.hub.api.type.AccountStatus;
 import com.justedlev.hub.api.type.ModeType;
 import com.justedlev.hub.component.account.AccountComponent;
 import com.justedlev.hub.constant.ExceptionConstant;
+import com.justedlev.hub.repository.AccountRepository;
+import com.justedlev.hub.repository.entity.Account;
+import com.justedlev.hub.repository.specification.AccountSpecification;
+import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,8 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 
 @Component

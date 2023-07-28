@@ -1,5 +1,8 @@
 package com.justedlev.hub.component.impl;
 
+import com.justedlev.hub.api.model.request.RegistrationRequest;
+import com.justedlev.hub.api.type.AccountStatus;
+import com.justedlev.hub.component.RegistrationComponent;
 import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.manager.NotificationManager;
@@ -9,15 +12,11 @@ import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Contact;
 import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
-import com.justedlev.hub.api.model.request.RegistrationRequest;
-import com.justedlev.hub.api.type.AccountStatus;
-import com.justedlev.hub.component.RegistrationComponent;
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityExistsException;
 
 @Component
 @RequiredArgsConstructor

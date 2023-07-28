@@ -1,17 +1,18 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.component.account.AccountAvatarComponent;
-import com.justedlev.hub.component.account.AccountComponent;
-import com.justedlev.hub.component.account.AccountModeComponent;
-import com.justedlev.hub.constant.ExceptionConstant;
-import com.justedlev.hub.properties.JAccountProperties;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import com.justedlev.hub.api.model.params.AccountFilterParams;
 import com.justedlev.hub.api.model.request.CreateAccountRequest;
 import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
 import com.justedlev.hub.api.model.request.UpdateAccountRequest;
 import com.justedlev.hub.api.model.response.AccountResponse;
+import com.justedlev.hub.component.account.AccountAvatarComponent;
+import com.justedlev.hub.component.account.AccountComponent;
+import com.justedlev.hub.component.account.AccountModeComponent;
+import com.justedlev.hub.configuration.properties.AccountingProperties;
+import com.justedlev.hub.constant.ExceptionConstant;
+import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import com.justedlev.hub.service.AccountService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
     private final AccountComponent accountComponent;
     private final AccountModeComponent accountModeComponent;
     private final ModelMapper mapper;
-    private final JAccountProperties properties;
+    private final AccountingProperties properties;
 
     @Override
     public Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable) {

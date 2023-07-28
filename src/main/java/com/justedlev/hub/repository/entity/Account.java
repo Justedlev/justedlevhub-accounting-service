@@ -6,6 +6,8 @@ import com.justedlev.hub.api.type.ModeType;
 import com.justedlev.hub.util.DateTimeUtils;
 import com.justedlev.hub.util.Generator;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
@@ -13,9 +15,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -30,13 +29,11 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
-@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 @Table(name = "account")
 @Audited
 public class Account extends Auditable implements Serializable {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @UuidGenerator
     @Column(name = "account_id", updatable = false)
     private UUID id;
     @Column(name = "nick_name", nullable = false)
@@ -50,7 +47,7 @@ public class Account extends Auditable implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
-    @Type(type = "jsonb")
+    @Type(JsonBinaryType.class)
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;
     @Builder.Default
