@@ -1,9 +1,9 @@
 package com.justedlev.hub.component.contact.impl;
 
-import com.justedlev.hub.api.model.request.CreateContactRequest;
-import com.justedlev.hub.component.contact.ContactComponent;
 import com.justedlev.hub.repository.ContactRepository;
 import com.justedlev.hub.repository.entity.Contact;
+import com.justedlev.hub.api.model.request.CreateContactRequest;
+import com.justedlev.hub.component.contact.ContactComponent;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
