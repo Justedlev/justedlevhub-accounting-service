@@ -10,11 +10,11 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.github.justedlev.hub.microservices</groupId>
-    <artifactId>accounting-service</artifactId>
+    <groupId>com.github.justedlev.hub</groupId>
+    <artifactId>justedlevhub-account-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Justedlev Hub Account Micro Service</description>
+    <description>Justedlev Hub Account Service</description>
 
     <properties>
         <java.version>17</java.version>
@@ -22,7 +22,6 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-cloud.version>2021.0.7</spring-cloud.version>
-        <jar.manifest.packageName>com.justedlev.hub</jar.manifest.packageName>
     </properties>
 
     <dependencies>
@@ -148,7 +147,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -160,7 +158,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -191,7 +188,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <packageName>${jar.manifest.packageName}</packageName>
+                            <packageName>com.justedlevhub.account</packageName>
                         </manifest>
                         <manifestEntries>
                             <Created-By>Justedlev {-...-}</Created-By>

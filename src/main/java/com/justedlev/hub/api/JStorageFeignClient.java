@@ -1,7 +1,7 @@
 package com.justedlev.hub.api;
 
-import com.justedlev.hub.configuration.JStorageFeignClientConfiguration;
 import com.justedlev.hub.api.model.response.AttachmentInfoResponse;
+import com.justedlev.hub.configuration.JStorageFeignClientConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;

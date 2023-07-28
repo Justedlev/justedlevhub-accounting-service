@@ -1,14 +1,14 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.component.ContactFinder;
-import com.justedlev.hub.repository.specification.filter.ContactFilter;
-import com.justedlev.hub.service.ContactService;
 import com.justedlev.hub.api.model.params.ContactFilterParams;
 import com.justedlev.hub.api.model.request.CreateContactRequest;
 import com.justedlev.hub.api.model.request.PaginationRequest;
 import com.justedlev.hub.api.model.request.UpdateContactRequest;
 import com.justedlev.hub.api.model.response.ContactResponse;
 import com.justedlev.hub.api.model.response.PageResponse;
+import com.justedlev.hub.component.ContactFinder;
+import com.justedlev.hub.repository.specification.filter.ContactFilter;
+import com.justedlev.hub.service.ContactService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
