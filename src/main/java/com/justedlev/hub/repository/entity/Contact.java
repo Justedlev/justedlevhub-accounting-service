@@ -1,16 +1,16 @@
 package com.justedlev.hub.repository.entity;
 
 import com.justedlev.hub.api.type.ContactType;
-import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.Audited;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
@@ -27,7 +27,8 @@ import java.util.UUID;
 @Audited
 public class Contact extends Auditable implements Serializable {
     @Id
-    @UuidGenerator
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "contact_id")
     private UUID id;
     @Column(name = "type", nullable = false, updatable = false)

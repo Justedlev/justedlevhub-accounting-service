@@ -1,4 +1,4 @@
-package com.justedlev.hub.configuration.properties;
+package com.justedlev.hub.properties;
 
 import lombok.Getter;
 import lombok.Setter;
