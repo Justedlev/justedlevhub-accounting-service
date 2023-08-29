@@ -5,8 +5,8 @@ import com.justedlev.hub.api.queue.JNotificationQueue;
 import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
-import com.justedlev.hub.configuration.properties.AccountingProperties;
-import com.justedlev.hub.constant.AccountV1Endpoints;
+import com.justedlev.hub.configuration.properties.Properties;
+import com.justedlev.hub.constant.ControllerResources;
 import com.justedlev.hub.constant.MailSubjectConstant;
 import com.justedlev.hub.constant.MailTemplateConstant;
 import com.justedlev.hub.repository.entity.Account;
@@ -20,13 +20,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmailNotifier implements TypedNotifier {
     private final JNotificationQueue notificationQueue;
-    private final AccountingProperties properties;
+    private final Properties.Service properties;
 
     @Override
-    public void notice(NotificationCommand context) {
+    public void send(NotificationCommand context) {
         var content = buildContent(context.getAccount());
         var recipient = context.getContact().getValue();
-        var subject = String.format(MailSubjectConstant.CONFIRMATION, properties.getService().getName());
+        var subject = String.format(MailSubjectConstant.CONFIRMATION, properties.getName());
         var mail = SendTemplateMailRequest.builder()
                 .templateName(MailTemplateConstant.ACCOUNT_CONFIRMATION)
                 .recipient(recipient)
@@ -42,15 +42,16 @@ public class EmailNotifier implements TypedNotifier {
     }
 
     private Map<String, String> buildContent(Account account) {
-        var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getService().getHost())
-                .path(AccountV1Endpoints.V1_ACCOUNT_CONFIRM)
+        var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
+                .path(ControllerResources.ACCOUNTS)
+                .path(ControllerResources.CONFIRM)
                 .path("/" + account.getActivationCode())
                 .build().toUriString();
 
         return Map.of(
                 "{FULL_NAME}", account.getNickname(),
                 "{CONFIRMATION_LINK}", confirmationLink,
-                "{BEST_REGARDS_FROM}", properties.getService().getName()
+                "{BEST_REGARDS_FROM}", properties.getName()
         );
     }
 }

@@ -10,6 +10,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -38,6 +39,7 @@ public class Contact extends Auditable implements Serializable {
     @Column(name = "version")
     private Long version;
     @ToString.Exclude
+    @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "account_contact",

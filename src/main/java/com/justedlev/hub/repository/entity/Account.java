@@ -14,6 +14,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -77,6 +78,7 @@ public class Account extends Auditable implements Serializable {
     private Long version;
     @Singular
     @ToString.Exclude
+    @NotAudited
     @OneToMany
     @JoinTable(
             name = "account_contact",

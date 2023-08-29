@@ -125,11 +125,18 @@ public class AccountComponentImpl implements AccountComponent {
                 .max(Comparator.comparing(Account::getCreatedAt));
     }
 
-    public Account update(UpdateAccountRequest request) {
+    public Account updateByNickname(String nickname, UpdateAccountRequest request) {
         var filter = AccountFilter.builder()
-                .nickname(request.getNickname())
+                .nickname(nickname)
                 .excludeStatus(AccountStatus.DELETED)
                 .build();
+
+        if (StringUtils.isNotBlank(request.getNickname()) &&
+                accountRepository.exists(
+                        AccountSpecification.from(
+                                AccountFilter.builder().nickname(request.getNickname()).excludeStatus(AccountStatus.DELETED).build())))
+            throw new EntityExistsException("Nickname already taken");
+
         var account = accountRepository.findAll(AccountSpecification.from(filter))
                 .stream()
                 .findFirst()

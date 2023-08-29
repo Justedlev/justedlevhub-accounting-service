@@ -20,7 +20,7 @@ public class NoticeManagerImpl implements NotificationManager {
     }
 
     @Override
-    public void notice(NotificationCommand context) {
-        typedNotifiers.get(context.getType()).notice(context);
+    public void send(NotificationCommand context) {
+        typedNotifiers.get(context.getType()).send(context);
     }
 }

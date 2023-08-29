@@ -1,6 +1,6 @@
 spring:
   jpa:
-    show-sql: false
+    #    show-sql: true
     hibernate:
       ddl-auto: update
 #    properties:
@@ -16,12 +16,16 @@ jstorage:
 logging:
   level:
     web: debug
+    sql: debug
     com.justedlev.hub: debug
-    org.hibernate.:
-      type.descriptor.sql: trace
-      sql: debug
-accounting:
+    org:
+      hibernate:
+        sql: debug
+        type:
+          descriptor:
+            sql: trace
+app-config:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}
   service:
-    host: ${GATEWAY_HOST}/${server.servlet.context-path}
+    url: ${GATEWAY_HOST}/${server.servlet.context-path}

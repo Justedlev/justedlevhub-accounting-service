@@ -8,8 +8,8 @@ import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.component.account.AccountAvatarComponent;
 import com.justedlev.hub.component.account.AccountComponent;
 import com.justedlev.hub.component.account.AccountModeComponent;
-import com.justedlev.hub.configuration.properties.AccountingProperties;
 import com.justedlev.hub.constant.ExceptionConstant;
+import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import com.justedlev.hub.service.AccountService;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,15 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
+    private final AccountRepository accountRepository;
     private final AccountAvatarComponent accountAvatarComponent;
     private final AccountComponent accountComponent;
     private final AccountModeComponent accountModeComponent;
     private final ModelMapper mapper;
-    private final AccountingProperties properties;
 
     @Override
     public Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable) {
@@ -51,15 +52,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String confirm(String code) {
-        var account = accountComponent.confirm(code);
+    public AccountResponse findById(UUID id) {
+        var account = accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ExceptionConstant.USER_NOT_EXISTS, id)));
 
-        return "redirect:/" + account.getNickname();
+        return mapper.map(account, AccountResponse.class);
     }
 
     @Override
-    public AccountResponse update(UpdateAccountRequest request) {
-        var account = accountComponent.update(request);
+    public void confirm(String code) {
+        var account = accountComponent.confirm(code);
+    }
+
+    @Override
+    public AccountResponse updateByNickname(String nickname, UpdateAccountRequest request) {
+        var account = accountComponent.updateByNickname(nickname, request);
 
         return mapper.map(account, AccountResponse.class);
     }

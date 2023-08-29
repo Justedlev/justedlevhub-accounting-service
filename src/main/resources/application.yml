@@ -1,7 +1,7 @@
 server:
   port: ${SERVER_PORT:0}
   servlet:
-    context-path: /api
+    context-path: /api/v1
 logging:
   file:
     name: ${logging.file.path}/latest.log
@@ -49,7 +49,7 @@ eureka:
     instance-id: ${spring.application.name}:${random.uuid}
   client:
     service-url:
-      default-zone: ${DISCOVERY_HOST}
+      default-zone: ${app-config.service-registry.url}
 cloudamqp:
   host: ${CLOUDAMQP_HOST}
   port: ${CLOUDAMQP_PORT}
@@ -58,12 +58,6 @@ cloudamqp:
   virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
   queue:
     send-template-mail: send-template-mail-queue
-accounting:
-  service:
-    email: ${SERVICE_MAIL_USERNAME}
-    name: ${SERVICE_NAME:JustedlevHub}
-    label: "{•...•}"
-    host: ${SERVICE_HOST}
 management:
   endpoint:
     health:
@@ -72,3 +66,12 @@ management:
       enabled: true
     refresh:
       enabled: true
+# Custom properties
+app-config:
+  service:
+    email: ${SERVICE_MAIL_USERNAME}
+    name: ${SERVICE_NAME:JustedlevHub}
+    label: "{•...•}"
+    url: ${SERVICE_URL}
+  service-registry:
+    url: ${SERVICE_REGISTRY_URL}

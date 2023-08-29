@@ -10,8 +10,8 @@ import java.time.Duration;
 @Getter
 @Setter
 @ConfigurationPropertiesScan
-@ConfigurationProperties(prefix = "accounting")
-public class AccountingProperties {
+@ConfigurationProperties(prefix = "app-config")
+public class Properties {
     private Duration activityTime;
     private Duration offlineAfterTime;
     private Service service;
@@ -19,11 +19,11 @@ public class AccountingProperties {
     @Getter
     @Setter
     @ConfigurationPropertiesScan
-    @ConfigurationProperties(prefix = "accounting.service")
+    @ConfigurationProperties(prefix = "app-config.service")
     public static class Service {
         private String name;
         private String email;
         private String label;
-        private String host;
+        private String url;
     }
 }

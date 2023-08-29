@@ -1,7 +1,7 @@
 package com.justedlev.hub.component.notification;
 
 public interface TypedNotifier {
-    void notice(NotificationCommand context);
+    void send(NotificationCommand context);
 
     NotificationType getType();
 }

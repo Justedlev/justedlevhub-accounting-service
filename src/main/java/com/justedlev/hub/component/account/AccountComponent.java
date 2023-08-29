@@ -27,5 +27,5 @@ public interface AccountComponent extends CreateEntity<CreateAccountRequest, Acc
 
     Optional<Account> findByNickname(String nickname);
 
-    Account update(UpdateAccountRequest request);
+    Account updateByNickname(String nickname, UpdateAccountRequest request);
 }

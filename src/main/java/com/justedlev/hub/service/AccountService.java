@@ -10,15 +10,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AccountService {
     Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable);
 
     AccountResponse findByNickname(String nickname);
 
-    String confirm(String code);
+    AccountResponse findById(UUID id);
 
-    AccountResponse update(UpdateAccountRequest request);
+    void confirm(String code);
+
+    AccountResponse updateByNickname(String nickname, UpdateAccountRequest request);
 
     AccountResponse updateAvatar(String nickname, MultipartFile photo);
 

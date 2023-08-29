@@ -3,6 +3,7 @@ package com.justedlev.hub.repository.specification.filter;
 import com.justedlev.hub.api.type.AccountStatus;
 import com.justedlev.hub.api.type.ModeType;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Accessors(chain = true)
 public class AccountFilter implements Serializable {
     @Singular
     private Collection<UUID> ids;
