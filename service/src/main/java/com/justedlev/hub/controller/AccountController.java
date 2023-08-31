@@ -46,11 +46,6 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findByNickname(nickname));
     }
 
-//    @GetMapping(value = ControllerResources.ID)
-//    public ResponseEntity<AccountResponse> findById(@PathVariable @NotNull UUID id) {
-//        return ResponseEntity.ok(accountService.findById(id));
-//    }
-
     @PostMapping(value = ControllerResources.CREATE)
     public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
         var account = accountService.create(request);
