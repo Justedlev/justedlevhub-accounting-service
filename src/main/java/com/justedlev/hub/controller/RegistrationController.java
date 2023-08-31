@@ -1,8 +1,8 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.api.model.request.RegistrationRequest;
 import com.justedlev.hub.configuration.properties.Properties;
 import com.justedlev.hub.constant.ControllerResources;
+import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +30,10 @@ public class RegistrationController {
                 .path(ControllerResources.ACCOUNTS)
                 .path("/" + request.getNickname())
                 .build()
-                .toUri();
+                .toUriString();
 
         return ResponseEntity.noContent()
-                .header(HttpHeaders.LOCATION, createdUri.toString())
+                .header(HttpHeaders.LOCATION, createdUri)
                 .build();
     }
 }

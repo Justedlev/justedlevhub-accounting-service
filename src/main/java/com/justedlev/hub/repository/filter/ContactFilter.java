@@ -1,6 +1,6 @@
-package com.justedlev.hub.repository.specification.filter;
+package com.justedlev.hub.repository.filter;
 
-import com.justedlev.hub.api.type.ContactType;
+import com.justedlev.hub.type.ContactType;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,7 +11,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Builder
 public class ContactFilter implements Serializable {
-    private String freeSearch;
+    private String freeTest;
     @Singular
     private Collection<String> values;
     @Singular

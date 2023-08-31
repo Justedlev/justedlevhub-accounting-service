@@ -1,7 +1,6 @@
 package com.justedlev.hub.component.notification.impl;
 
-import com.justedlev.hub.api.model.request.SendTemplateMailRequest;
-import com.justedlev.hub.api.queue.JNotificationQueue;
+import com.justedlev.hub.api.notification.model.request.SendNotificationRequest;
 import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
@@ -9,6 +8,7 @@ import com.justedlev.hub.configuration.properties.Properties;
 import com.justedlev.hub.constant.ControllerResources;
 import com.justedlev.hub.constant.MailSubjectConstant;
 import com.justedlev.hub.constant.MailTemplateConstant;
+import com.justedlev.hub.queue.NotificationQueue;
 import com.justedlev.hub.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class EmailNotifier implements TypedNotifier {
-    private final JNotificationQueue notificationQueue;
+    private final NotificationQueue notificationQueue;
     private final Properties.Service properties;
 
     @Override
@@ -27,11 +27,12 @@ public class EmailNotifier implements TypedNotifier {
         var content = buildContent(context.getAccount());
         var recipient = context.getContact().getValue();
         var subject = String.format(MailSubjectConstant.CONFIRMATION, properties.getName());
-        var mail = SendTemplateMailRequest.builder()
+        var mail = SendNotificationRequest.builder()
                 .templateName(MailTemplateConstant.ACCOUNT_CONFIRMATION)
                 .recipient(recipient)
                 .subject(subject)
                 .content(content)
+                .type("email")
                 .build();
         notificationQueue.sendEmail(mail);
     }

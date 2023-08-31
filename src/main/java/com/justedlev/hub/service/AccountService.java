@@ -1,10 +1,10 @@
 package com.justedlev.hub.service;
 
-import com.justedlev.hub.api.model.params.AccountFilterParams;
-import com.justedlev.hub.api.model.request.CreateAccountRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountRequest;
-import com.justedlev.hub.api.model.response.AccountResponse;
+import com.justedlev.hub.model.params.AccountFilterParams;
+import com.justedlev.hub.model.request.CreateAccountRequest;
+import com.justedlev.hub.model.request.UpdateAccountModeRequest;
+import com.justedlev.hub.model.request.UpdateAccountRequest;
+import com.justedlev.hub.model.response.AccountResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +19,7 @@ public interface AccountService {
 
     AccountResponse findById(UUID id);
 
-    void confirm(String code);
+    String confirm(String code);
 
     AccountResponse updateByNickname(String nickname, UpdateAccountRequest request);
 

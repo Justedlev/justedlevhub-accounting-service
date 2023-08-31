@@ -14,7 +14,6 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Getter
@@ -24,16 +23,19 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable implements Serializable {
+public abstract class Auditable {
     @CreatedBy
     @Column(name = "created_by")
     private String createdBy;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false)
     private Timestamp createdAt;
+
     @LastModifiedBy
     @Column(name = "modified_by")
     private String modifiedBy;
+
     @LastModifiedDate
     @Column(name = "modified_at", nullable = false)
     private Timestamp modifiedAt;

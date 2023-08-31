@@ -1,8 +1,8 @@
 spring:
   jpa:
-    #    show-sql: true
-    hibernate:
-      ddl-auto: update
+  #    show-sql: true
+#    hibernate:
+#      ddl-auto: update
 #    properties:
 #      hibernate:
 #        format_sql: true
@@ -18,12 +18,7 @@ logging:
     web: debug
     sql: debug
     com.justedlev.hub: debug
-    org:
-      hibernate:
-        sql: debug
-        type:
-          descriptor:
-            sql: trace
+    org.hibernate.orm.jdbc.bind: trace
 app-config:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}

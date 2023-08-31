@@ -14,14 +14,14 @@
     <artifactId>accounting-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>${project.artifactId}</name>
-    <description>Justedlev Hub Account Micro Service</description>
+    <description>Justedlev Hub Account Microservice</description>
 
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2022.0.3</spring-cloud.version>
+        <spring-cloud.version>2022.0.4</spring-cloud.version>
         <jar.manifest.packageName>com.justedlev.hub</jar.manifest.packageName>
     </properties>
 
@@ -39,18 +39,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-properties-migrator</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.justedlev</groupId>
             <artifactId>org-modelmapper-jtc</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.github.justedlev.hub.api</groupId>
-            <artifactId>justedlevhub-api-model</artifactId>
+            <artifactId>notification-api-model</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
@@ -98,6 +93,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
         <dependency>
             <groupId>commons-validator</groupId>

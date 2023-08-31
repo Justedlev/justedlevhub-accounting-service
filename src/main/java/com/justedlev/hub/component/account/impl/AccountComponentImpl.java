@@ -1,15 +1,13 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.api.model.request.CreateAccountRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountRequest;
-import com.justedlev.hub.api.type.AccountStatus;
-import com.justedlev.hub.api.type.ModeType;
 import com.justedlev.hub.component.account.AccountComponent;
-import com.justedlev.hub.constant.ExceptionConstant;
+import com.justedlev.hub.model.request.CreateAccountRequest;
+import com.justedlev.hub.model.request.UpdateAccountRequest;
 import com.justedlev.hub.repository.AccountRepository;
+import com.justedlev.hub.repository.StatusRepository;
 import com.justedlev.hub.repository.entity.Account;
+import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
+    private final StatusRepository statusRepository;
     private final ModelMapper mapper;
 
     @Override
@@ -45,13 +44,13 @@ public class AccountComponentImpl implements AccountComponent {
     public Account confirm(String activationCode) {
         var filter = AccountFilter.builder()
                 .activationCodes(Set.of(activationCode))
-                .status(AccountStatus.UNCONFIRMED)
+                .statusId(1L)
                 .build();
         var account = accountRepository.findAll(AccountSpecification.from(filter))
                 .stream()
                 .max(Comparator.comparing(Account::getCreatedAt))
                 .orElseThrow(() -> new EntityNotFoundException("Already activated"));
-        account.setStatus(AccountStatus.ACTUAL);
+        account.setStatus(statusRepository.getById(2L));
 
         return save(account);
     }
@@ -70,7 +69,6 @@ public class AccountComponentImpl implements AccountComponent {
     public Account create(CreateAccountRequest request) {
         var filter = AccountFilter.builder()
                 .nickname(request.getNickname())
-                .excludeStatus(AccountStatus.DELETED)
                 .build();
 
         if (accountRepository.exists(AccountSpecification.from(filter))) {
@@ -99,16 +97,8 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Account delete(Account entity) {
-        if (entity.getStatus().equals(AccountStatus.DELETED)) {
-            throw new IllegalArgumentException(
-                    String.format(ExceptionConstant.ACCOUNT_ALREADY_DELETED, entity.getNickname()));
-        }
-
-        entity.setStatus(AccountStatus.DELETED);
-        entity.setMode(ModeType.OFFLINE);
-
-        return save(entity);
+    public void delete(Account entity) {
+        accountRepository.delete(entity);
     }
 
     @Override
@@ -128,13 +118,12 @@ public class AccountComponentImpl implements AccountComponent {
     public Account updateByNickname(String nickname, UpdateAccountRequest request) {
         var filter = AccountFilter.builder()
                 .nickname(nickname)
-                .excludeStatus(AccountStatus.DELETED)
                 .build();
 
         if (StringUtils.isNotBlank(request.getNickname()) &&
                 accountRepository.exists(
                         AccountSpecification.from(
-                                AccountFilter.builder().nickname(request.getNickname()).excludeStatus(AccountStatus.DELETED).build())))
+                                AccountFilter.builder().nickname(request.getNickname()).build())))
             throw new EntityExistsException("Nickname already taken");
 
         var account = accountRepository.findAll(AccountSpecification.from(filter))

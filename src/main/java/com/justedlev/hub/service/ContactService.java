@@ -1,14 +1,14 @@
 package com.justedlev.hub.service;
 
-import com.justedlev.hub.api.model.params.ContactFilterParams;
-import com.justedlev.hub.api.model.request.CreateContactRequest;
-import com.justedlev.hub.api.model.request.PaginationRequest;
-import com.justedlev.hub.api.model.request.UpdateContactRequest;
-import com.justedlev.hub.api.model.response.ContactResponse;
-import com.justedlev.hub.api.model.response.PageResponse;
+import com.justedlev.hub.model.params.ContactFilterParams;
+import com.justedlev.hub.model.request.CreateContactRequest;
+import com.justedlev.hub.model.request.UpdateContactRequest;
+import com.justedlev.hub.model.response.ContactResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ContactService {
-    PageResponse<ContactResponse> findByFilter(ContactFilterParams params, PaginationRequest request);
+    Page<ContactResponse> findByFilter(ContactFilterParams params, Pageable pageable);
 
     ContactResponse create(CreateContactRequest request);
 

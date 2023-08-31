@@ -1,16 +1,16 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.api.model.params.AccountFilterParams;
-import com.justedlev.hub.api.model.request.CreateAccountRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountRequest;
-import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.component.account.AccountAvatarComponent;
 import com.justedlev.hub.component.account.AccountComponent;
 import com.justedlev.hub.component.account.AccountModeComponent;
 import com.justedlev.hub.constant.ExceptionConstant;
+import com.justedlev.hub.model.params.AccountFilterParams;
+import com.justedlev.hub.model.request.CreateAccountRequest;
+import com.justedlev.hub.model.request.UpdateAccountModeRequest;
+import com.justedlev.hub.model.request.UpdateAccountRequest;
+import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.repository.AccountRepository;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.service.AccountService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -61,8 +61,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void confirm(String code) {
+    public String confirm(String code) {
         var account = accountComponent.confirm(code);
+
+        return account.getNickname();
     }
 
     @Override

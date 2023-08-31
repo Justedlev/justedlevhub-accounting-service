@@ -1,7 +1,7 @@
 package com.justedlev.hub.common.mapper.converter;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.justedlev.hub.api.model.response.PhoneNumberResponse;
+import com.justedlev.hub.model.response.PhoneNumberResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.modelmapper.Converter;

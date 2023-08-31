@@ -1,8 +1,8 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.api.model.response.ErrorDetailsResponse;
-import com.justedlev.hub.api.model.response.ValidationErrorResponse;
-import com.justedlev.hub.api.model.response.ViolationResponse;
+import com.justedlev.hub.model.response.ErrorDetailsResponse;
+import com.justedlev.hub.model.response.ValidationErrorResponse;
+import com.justedlev.hub.model.response.ViolationResponse;
 import feign.FeignException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;

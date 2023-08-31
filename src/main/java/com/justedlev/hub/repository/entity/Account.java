@@ -1,9 +1,6 @@
 package com.justedlev.hub.repository.entity;
 
-import com.justedlev.hub.api.type.AccountStatus;
-import com.justedlev.hub.api.type.Gender;
-import com.justedlev.hub.api.type.ModeType;
-import com.justedlev.hub.util.DateTimeUtils;
+import com.justedlev.hub.type.Gender;
 import com.justedlev.hub.util.Generator;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Table;
@@ -16,12 +13,14 @@ import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@Audited
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,27 +29,43 @@ import java.util.UUID;
 @Setter
 @Entity
 @DynamicUpdate
-@Table(name = "account")
-@Audited
-public class Account extends Auditable implements Serializable {
+@Table(name = "accounts")
+@NamedEntityGraph(
+        name = "eg-account",
+        attributeNodes = {
+                @NamedAttributeNode("contacts"),
+                @NamedAttributeNode("mode"),
+        }
+)
+public class Account extends Versionable implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 31196L;
+
     @Id
     @UuidGenerator
-    @Column(name = "account_id", updatable = false)
+    @Column(name = "id", updatable = false)
     private UUID id;
-    @Column(name = "nick_name", nullable = false)
+
+    @Column(name = "nickname", nullable = false)
     private String nickname;
+
     @Column(name = "first_name")
     private String firstName;
+
     @Column(name = "last_name")
     private String lastName;
+
     @Column(name = "birth_date")
     private Timestamp birthDate;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private Gender gender;
+
     @Type(JsonBinaryType.class)
     @Column(name = "avatar", columnDefinition = "jsonb")
     private Avatar avatar;
+
     @Builder.Default
     @Column(
             name = "activation_code",
@@ -60,31 +75,33 @@ public class Account extends Auditable implements Serializable {
             updatable = false
     )
     private String activationCode = Generator.generateActivationCode();
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 30, nullable = false)
-    private AccountStatus status = AccountStatus.UNCONFIRMED;
-    @Getter
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    @Column(name = "mode", nullable = false)
-    private ModeType mode = ModeType.OFFLINE;
-    @Getter
-    @Builder.Default
-    @Column(name = "mode_at", nullable = false)
-    private Timestamp modeAt = DateTimeUtils.nowTimestamp();
-    @Version
-    @Column(name = "version")
-    private Long version;
+
+    @NotAudited
+    @ManyToOne
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    private Status status;
+
+    @NotAudited
+    @ManyToOne
+    @JoinColumn(name = "mode_id", referencedColumnName = "id")
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+    })
+    private Mode mode;
+
     @Singular
     @ToString.Exclude
     @NotAudited
-    @OneToMany
-    @JoinTable(
-            name = "account_contact",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "contact_id")
-    )
+    @OneToMany(mappedBy = "account")
     @Cascade({
             CascadeType.DETACH,
             CascadeType.MERGE,
@@ -92,11 +109,6 @@ public class Account extends Auditable implements Serializable {
             CascadeType.REFRESH
     })
     private Set<Contact> contacts;
-
-    public void setMode(ModeType mode) {
-        this.mode = mode;
-        this.setModeAt(DateTimeUtils.nowTimestamp());
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -108,6 +120,6 @@ public class Account extends Auditable implements Serializable {
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hashCode(id);
     }
 }

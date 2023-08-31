@@ -2,8 +2,8 @@ package com.justedlev.hub.component.account.impl;
 
 import com.justedlev.hub.component.account.AccountValidator;
 import com.justedlev.hub.repository.AccountRepository;
+import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
 import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

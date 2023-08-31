@@ -1,16 +1,16 @@
 package com.justedlev.hub.service.impl;
 
 import com.justedlev.hub.component.ContactFinder;
-import com.justedlev.hub.repository.specification.filter.ContactFilter;
+import com.justedlev.hub.model.params.ContactFilterParams;
+import com.justedlev.hub.model.request.CreateContactRequest;
+import com.justedlev.hub.model.request.UpdateContactRequest;
+import com.justedlev.hub.model.response.ContactResponse;
+import com.justedlev.hub.repository.filter.ContactFilter;
 import com.justedlev.hub.service.ContactService;
-import com.justedlev.hub.api.model.params.ContactFilterParams;
-import com.justedlev.hub.api.model.request.CreateContactRequest;
-import com.justedlev.hub.api.model.request.PaginationRequest;
-import com.justedlev.hub.api.model.request.UpdateContactRequest;
-import com.justedlev.hub.api.model.response.ContactResponse;
-import com.justedlev.hub.api.model.response.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,11 +20,11 @@ public class ContactServiceImpl implements ContactService {
     private final ModelMapper mapper;
 
     @Override
-    public PageResponse<ContactResponse> findByFilter(ContactFilterParams params, PaginationRequest request) {
+    public Page<ContactResponse> findByFilter(ContactFilterParams params, Pageable pageable) {
         var filter = mapper.map(params, ContactFilter.class);
-        var page = contactFinder.findPageByFilter(filter, request.toPageable());
+        var page = contactFinder.findPageByFilter(filter, pageable);
 
-        return PageResponse.from(page, contact -> mapper.map(contact, ContactResponse.class));
+        return page.map(contact -> mapper.map(contact, ContactResponse.class));
     }
 
     @Override

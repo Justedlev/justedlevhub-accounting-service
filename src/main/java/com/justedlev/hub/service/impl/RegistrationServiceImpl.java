@@ -1,8 +1,8 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.api.model.request.RegistrationRequest;
 import com.justedlev.hub.component.EmailNotificationComponent;
 import com.justedlev.hub.component.account.AccountValidator;
+import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.repository.ContactRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Contact;

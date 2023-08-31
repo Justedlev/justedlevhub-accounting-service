@@ -1,12 +1,12 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.api.model.params.AccountFilterParams;
-import com.justedlev.hub.api.model.request.CreateAccountRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
-import com.justedlev.hub.api.model.request.UpdateAccountRequest;
-import com.justedlev.hub.api.model.response.AccountResponse;
 import com.justedlev.hub.configuration.properties.Properties;
 import com.justedlev.hub.constant.ControllerResources;
+import com.justedlev.hub.model.params.AccountFilterParams;
+import com.justedlev.hub.model.request.CreateAccountRequest;
+import com.justedlev.hub.model.request.UpdateAccountModeRequest;
+import com.justedlev.hub.model.request.UpdateAccountRequest;
+import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.service.AccountService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -25,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(ControllerResources.ACCOUNTS)
@@ -47,10 +46,10 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findByNickname(nickname));
     }
 
-    @GetMapping(value = ControllerResources.ID)
-    public ResponseEntity<AccountResponse> findById(@PathVariable @NotNull UUID id) {
-        return ResponseEntity.ok(accountService.findById(id));
-    }
+//    @GetMapping(value = ControllerResources.ID)
+//    public ResponseEntity<AccountResponse> findById(@PathVariable @NotNull UUID id) {
+//        return ResponseEntity.ok(accountService.findById(id));
+//    }
 
     @PostMapping(value = ControllerResources.CREATE)
     public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
@@ -84,10 +83,10 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
-    @ResponseStatus(HttpStatus.FOUND)
     @GetMapping(value = ControllerResources.CONFIRM_CODE)
-    public void confirm(@PathVariable @NotEmpty String code) {
-        accountService.confirm(code);
+    public ResponseEntity<String> confirm(@PathVariable @NotEmpty String code) {
+        var nickname = accountService.confirm(code);
+        return new ResponseEntity<>("redirect:" + serviceProperties.getUrl() + "/" + nickname, HttpStatus.FOUND);
     }
 
     @PutMapping(value = ControllerResources.UPDATE_MODE)

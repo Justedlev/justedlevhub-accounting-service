@@ -2,7 +2,7 @@ package com.justedlev.hub.repository.specification;
 
 import com.justedlev.hub.repository.entity.Contact;
 import com.justedlev.hub.repository.entity.Contact_;
-import com.justedlev.hub.repository.specification.filter.ContactFilter;
+import com.justedlev.hub.repository.filter.ContactFilter;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -39,8 +39,8 @@ public class ContactSpecification implements Specification<Contact> {
             predicates.add(root.get(Contact_.type).in(filter.getTypes()));
         }
 
-        if (StringUtils.isNotBlank(filter.getFreeSearch())) {
-            var q = "%" + filter.getFreeSearch().toLowerCase() + "%";
+        if (StringUtils.isNotBlank(filter.getFreeTest())) {
+            var q = "%" + filter.getFreeTest().toLowerCase() + "%";
 
             predicates.add(cb.and(
                     cb.like(cb.lower(root.get(Contact_.value)), q)

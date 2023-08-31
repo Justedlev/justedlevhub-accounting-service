@@ -1,14 +1,14 @@
 package com.justedlev.hub.component.account.impl;
 
-import com.justedlev.hub.api.model.request.UpdateAccountModeRequest;
-import com.justedlev.hub.api.model.response.AccountResponse;
-import com.justedlev.hub.api.type.ModeType;
 import com.justedlev.hub.component.account.AccountModeComponent;
 import com.justedlev.hub.configuration.properties.Properties;
+import com.justedlev.hub.model.request.UpdateAccountModeRequest;
+import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
+import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
-import com.justedlev.hub.repository.specification.filter.AccountFilter;
+import com.justedlev.hub.type.ModeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,9 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Component
@@ -30,19 +28,20 @@ public class AccountModeComponentImpl implements AccountModeComponent {
 
     @Override
     public List<AccountResponse> updateMode(UpdateAccountModeRequest request) {
-        var activeAccounts = getActiveAccount(request);
-        activeAccounts.forEach(current -> current.setMode(request.getToMode()));
-        var res = accountRepository.saveAll(activeAccounts);
-        log.info("Changed {} inactive accounts to mode : {}", activeAccounts.size(), request.getToMode());
-
-        return res.parallelStream()
-                .map(account -> mapper.map(account, AccountResponse.class))
-                .toList();
+//        var activeAccounts = getActiveAccount(request);
+//        activeAccounts.forEach(current -> current.setMode(request.getToMode()));
+//        var res = accountRepository.saveAll(activeAccounts);
+//        log.info("Changed {} inactive accounts to mode : {}", activeAccounts.size(), request.getToMode());
+//
+//        return res.parallelStream()
+//                .map(account -> mapper.map(account, AccountResponse.class))
+//                .toList();
+        return List.of();
     }
 
     private List<Account> getActiveAccount(UpdateAccountModeRequest request) {
         var filter = AccountFilter.builder()
-                .modes(request.getFromModes())
+//                .modeIds(request.getFromModes())
                 .build();
         var now = System.currentTimeMillis();
         var duration = getDuration(request.getToMode());
@@ -62,10 +61,11 @@ public class AccountModeComponentImpl implements AccountModeComponent {
     }
 
     private boolean filterOutByModeAt(Account account, long now, Duration duration) {
-        return Optional.ofNullable(account.getModeAt())
-                .map(Date::getTime)
-                .map(current -> now - current)
-                .map(current -> current >= duration.toMillis())
-                .orElse(Boolean.FALSE);
+//        return Optional.ofNullable(account.getModeAt())
+//                .map(Date::getTime)
+//                .map(current -> now - current)
+//                .map(current -> current >= duration.toMillis())
+//                .orElse(Boolean.FALSE);
+        return false;
     }
 }
