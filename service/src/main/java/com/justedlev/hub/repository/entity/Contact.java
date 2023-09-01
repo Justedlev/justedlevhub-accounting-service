@@ -35,7 +35,7 @@ import java.util.UUID;
 )
 public class Contact extends Versionable implements Serializable {
     @Serial
-    private static final long serialVersionUID = 31196L;
+    private static final long serialVersionUID = 167908448L;
 
     @Id
     @UuidGenerator

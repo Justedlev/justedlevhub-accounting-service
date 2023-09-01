@@ -5,6 +5,8 @@ import com.justedlev.hub.util.Generator;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import jakarta.persistence.Table;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
@@ -20,6 +22,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import static com.justedlev.hub.type.AccountMode.OFFLINE;
+import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
+
 @Audited
 @SuperBuilder
 @AllArgsConstructor
@@ -34,19 +39,20 @@ import java.util.UUID;
         name = "eg-account",
         attributeNodes = {
                 @NamedAttributeNode("contacts"),
-                @NamedAttributeNode("mode"),
         }
 )
 public class Account extends Versionable implements Serializable {
     @Serial
-    private static final long serialVersionUID = 31196L;
+    private static final long serialVersionUID = 133152114202215145L;
 
     @Id
     @UuidGenerator
     @Column(name = "id", updatable = false)
     private UUID id;
 
-    @Column(name = "nickname", nullable = false)
+    @NotBlank
+    @NotEmpty
+    @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
     @Column(name = "first_name")
@@ -68,35 +74,25 @@ public class Account extends Versionable implements Serializable {
 
     @Builder.Default
     @Column(
-            name = "activation_code",
+            name = "confirm_code",
             length = 32,
             nullable = false,
             unique = true,
             updatable = false
     )
-    private String activationCode = Generator.generateActivationCode();
+    private String confirmCode = Generator.generateConfirmCode();
 
-    @NotAudited
-    @ManyToOne
-    @JoinColumn(name = "status_id", referencedColumnName = "id")
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH
-    })
-    private Status status;
+    @NotEmpty
+    @NotBlank
+    @Builder.Default
+    @Column(name = "status", nullable = false)
+    private String status = UNCONFIRMED.getLabel();
 
-    @NotAudited
-    @ManyToOne
-    @JoinColumn(name = "mode_id", referencedColumnName = "id")
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH
-    })
-    private Mode mode;
+    @NotEmpty
+    @NotBlank
+    @Builder.Default
+    @Column(name = "mode", nullable = false)
+    private String mode = OFFLINE.getLabel();
 
     @Singular
     @ToString.Exclude

@@ -5,11 +5,13 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.justedlev.hub</groupId>
-        <artifactId>users</artifactId>
+        <artifactId>jhusers</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>users-service-api-model</artifactId>
+    <groupId>com.github.justedlev.hub.api</groupId>
+    <artifactId>jhusers-api-model</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

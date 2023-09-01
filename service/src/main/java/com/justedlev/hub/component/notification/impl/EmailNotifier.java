@@ -46,7 +46,7 @@ public class EmailNotifier implements TypedNotifier {
         var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
                 .path(ControllerResources.ACCOUNTS)
                 .path(ControllerResources.CONFIRM)
-                .path("/" + account.getActivationCode())
+                .path("/" + account.getConfirmCode())
                 .build().toUriString();
 
         return Map.of(

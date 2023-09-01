@@ -18,12 +18,12 @@ public class AccountFilter implements Serializable {
     @Singular
     private Collection<String> nicknames;
     @Singular
-    private Collection<Long> statusIds;
+    private Collection<String> statuses;
     @Singular
-    private Collection<Long> excludeStatusIds;
+    private Collection<String> excludeStatuses;
     @Singular
-    private Collection<Long> modeIds;
+    private Collection<String> modes;
     @Singular
-    private Collection<String> activationCodes;
+    private Collection<String> confirmCodes;
     private String freeText;
 }

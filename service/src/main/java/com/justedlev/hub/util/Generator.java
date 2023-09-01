@@ -24,11 +24,11 @@ public final class Generator {
     }
 
     public static String generateSecretCode() {
-        return generateActivationCode();
+        return generateConfirmCode();
     }
 
-    public static String generateActivationCode() {
-        return RandomStringUtils.randomAlphanumeric(32);
+    public static String generateConfirmCode() {
+        return RandomStringUtils.randomAlphanumeric(16, 32);
     }
 
     public static String generatePassword() {

@@ -21,11 +21,9 @@ public class AccountResponse {
     private LocalDateTime birthDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
+    private String status;
+    private String mode;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private StatusResponse status;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private ModeResponse mode;
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private LocalDateTime registeredAt;
+    private LocalDateTime createdAt;
     private String avatarUrl;
 }

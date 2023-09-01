@@ -8,7 +8,7 @@ import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
-import com.justedlev.hub.type.ModeType;
+import com.justedlev.hub.type.AccountMode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -44,7 +44,7 @@ public class AccountModeComponentImpl implements AccountModeComponent {
 //                .modeIds(request.getFromModes())
                 .build();
         var now = System.currentTimeMillis();
-        var duration = getDuration(request.getToMode());
+        var duration = getDuration(request.getToAccountMode());
 
         return accountRepository.findAll(AccountSpecification.from(filter))
                 .parallelStream()
@@ -52,8 +52,8 @@ public class AccountModeComponentImpl implements AccountModeComponent {
                 .toList();
     }
 
-    private Duration getDuration(ModeType modeType) {
-        return switch (modeType) {
+    private Duration getDuration(AccountMode accountMode) {
+        return switch (accountMode) {
             case SLEEP -> properties.getActivityTime();
             case OFFLINE -> properties.getOfflineAfterTime();
             default -> Duration.of(1, ChronoUnit.MINUTES);

@@ -5,7 +5,7 @@ server:
 logging:
   file:
     name: ${logging.file.path}/latest.log
-    path: ./logs
+    path: ./.logs
 spring:
   devtools:
     restart:

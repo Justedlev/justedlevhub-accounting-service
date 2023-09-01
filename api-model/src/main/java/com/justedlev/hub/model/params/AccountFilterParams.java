@@ -12,7 +12,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountFilterParams {
-    private Collection<Long> statusIds;
-    private Collection<Long> modeIds;
+    private Collection<String> statuses;
+    private Collection<String> modes;
     private String freeText;
 }

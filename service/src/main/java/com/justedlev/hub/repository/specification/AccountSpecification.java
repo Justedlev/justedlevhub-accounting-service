@@ -38,20 +38,20 @@ public class AccountSpecification implements Specification<Account> {
             predicates.add(root.get(Account_.nickname).in(filter.getNicknames()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getModeIds())) {
-            predicates.add(root.get(Account_.mode).in(filter.getModeIds()));
+        if (CollectionUtils.isNotEmpty(filter.getModes())) {
+            predicates.add(root.get(Account_.mode).in(filter.getModes()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getStatusIds())) {
-            predicates.add(root.get(Account_.status).in(filter.getStatusIds()));
+        if (CollectionUtils.isNotEmpty(filter.getStatuses())) {
+            predicates.add(root.get(Account_.status).in(filter.getStatuses()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getExcludeStatusIds())) {
-            predicates.add(cb.not(root.get(Account_.status).in(filter.getExcludeStatusIds())));
+        if (CollectionUtils.isNotEmpty(filter.getExcludeStatuses())) {
+            predicates.add(cb.not(root.get(Account_.status).in(filter.getExcludeStatuses())));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getActivationCodes())) {
-            predicates.add(root.get(Account_.activationCode).in(filter.getActivationCodes()));
+        if (CollectionUtils.isNotEmpty(filter.getConfirmCodes())) {
+            predicates.add(root.get(Account_.confirmCode).in(filter.getConfirmCodes()));
         }
 
         return cb.and(predicates.toArray(Predicate[]::new));

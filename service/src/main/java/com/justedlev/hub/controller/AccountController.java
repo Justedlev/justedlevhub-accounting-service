@@ -60,7 +60,7 @@ public class AccountController {
                 .body(account);
     }
 
-    @PutMapping(value = ControllerResources.NICKNAME_UPDATE)
+    @PutMapping(value = ControllerResources.NICKNAME)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotBlank @NotNull @NotEmpty String nickname,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateByNickname(nickname, request));

@@ -4,7 +4,6 @@ import com.justedlev.hub.component.account.AccountComponent;
 import com.justedlev.hub.model.request.CreateAccountRequest;
 import com.justedlev.hub.model.request.UpdateAccountRequest;
 import com.justedlev.hub.repository.AccountRepository;
-import com.justedlev.hub.repository.StatusRepository;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
@@ -20,11 +19,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+import static com.justedlev.hub.type.AccountStatus.ACTIVE;
+import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
+
 @Component
 @RequiredArgsConstructor
 public class AccountComponentImpl implements AccountComponent {
     private final AccountRepository accountRepository;
-    private final StatusRepository statusRepository;
     private final ModelMapper mapper;
 
     @Override
@@ -41,16 +42,10 @@ public class AccountComponentImpl implements AccountComponent {
     }
 
     @Override
-    public Account confirm(String activationCode) {
-        var filter = AccountFilter.builder()
-                .activationCodes(Set.of(activationCode))
-                .statusId(1L)
-                .build();
-        var account = accountRepository.findAll(AccountSpecification.from(filter))
-                .stream()
-                .max(Comparator.comparing(Account::getCreatedAt))
+    public Account confirm(String code) {
+        var account = accountRepository.findByConfirmCodeAndStatus(code, UNCONFIRMED.getLabel())
                 .orElseThrow(() -> new EntityNotFoundException("Already activated"));
-        account.setStatus(statusRepository.getById(2L));
+        account.setStatus(ACTIVE.getLabel());
 
         return save(account);
     }
@@ -120,15 +115,7 @@ public class AccountComponentImpl implements AccountComponent {
                 .nickname(nickname)
                 .build();
 
-        if (StringUtils.isNotBlank(request.getNickname()) &&
-                accountRepository.exists(
-                        AccountSpecification.from(
-                                AccountFilter.builder().nickname(request.getNickname()).build())))
-            throw new EntityExistsException("Nickname already taken");
-
-        var account = accountRepository.findAll(AccountSpecification.from(filter))
-                .stream()
-                .findFirst()
+        var account = accountRepository.findByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
         mapper.map(request, account);
 
