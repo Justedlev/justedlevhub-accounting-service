@@ -10,14 +10,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface AccountService {
     Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable);
 
     AccountResponse findByNickname(String nickname);
-
-    AccountResponse findById(UUID id);
 
     String confirm(String code);
 
@@ -28,4 +25,6 @@ public interface AccountService {
     List<AccountResponse> updateMode(UpdateAccountModeRequest request);
 
     AccountResponse create(CreateAccountRequest request);
+
+    void deleteByNickname(String nickname);
 }

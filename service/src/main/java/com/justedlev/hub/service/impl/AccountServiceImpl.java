@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,15 +46,6 @@ public class AccountServiceImpl implements AccountService {
                 .findFirst()
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
-
-        return mapper.map(account, AccountResponse.class);
-    }
-
-    @Override
-    public AccountResponse findById(UUID id) {
-        var account = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ExceptionConstant.USER_NOT_EXISTS, id)));
 
         return mapper.map(account, AccountResponse.class);
     }
@@ -91,5 +81,10 @@ public class AccountServiceImpl implements AccountService {
         var account = accountComponent.create(request);
 
         return mapper.map(account, AccountResponse.class);
+    }
+
+    @Override
+    public void deleteByNickname(String nickname) {
+        accountRepository.deleteByNickname(nickname);
     }
 }

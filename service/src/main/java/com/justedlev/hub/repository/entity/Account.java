@@ -13,7 +13,6 @@ import org.hibernate.Hibernate;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -43,7 +42,7 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 )
 public class Account extends Versionable implements Serializable {
     @Serial
-    private static final long serialVersionUID = 133152114202215145L;
+    private static final long serialVersionUID = 167144934L;
 
     @Id
     @UuidGenerator
@@ -96,13 +95,13 @@ public class Account extends Versionable implements Serializable {
 
     @Singular
     @ToString.Exclude
-    @NotAudited
     @OneToMany(mappedBy = "account")
     @Cascade({
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
-            CascadeType.REFRESH
+            CascadeType.REFRESH,
+            CascadeType.REMOVE
     })
     private Set<Contact> contacts;
 

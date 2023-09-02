@@ -88,4 +88,13 @@ public class AccountController {
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }
+
+    @DeleteMapping(value = ControllerResources.NICKNAME)
+    public ResponseEntity<Void> delete(@PathVariable @NotBlank @NotNull @NotEmpty String nickname) {
+        accountService.deleteByNickname(nickname);
+        return ResponseEntity
+                .noContent()
+                .header("X-alert","account.deleted")
+                .build();
+    }
 }

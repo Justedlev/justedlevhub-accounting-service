@@ -10,7 +10,6 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -49,7 +48,6 @@ public class Contact extends Versionable implements Serializable {
     private String value;
 
     @ToString.Exclude
-    @NotAudited
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "account_contact",
@@ -66,7 +64,8 @@ public class Contact extends Versionable implements Serializable {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST,
-            CascadeType.REFRESH
+            CascadeType.REFRESH,
+            CascadeType.REMOVE,
     })
     private Account account;
 

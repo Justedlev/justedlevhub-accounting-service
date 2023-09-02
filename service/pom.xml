@@ -34,7 +34,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.justedlev</groupId>
-            <artifactId>org-modelmapper-jtc</artifactId>
+            <artifactId>omm-jtc</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -46,6 +46,16 @@
             <groupId>com.github.justedlev.hub.api</groupId>
             <artifactId>jhusers-api-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-spring</artifactId>
+            <version>5.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.shedlock</groupId>
+            <artifactId>shedlock-provider-jdbc-template</artifactId>
+            <version>5.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.data</groupId>

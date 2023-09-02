@@ -110,11 +110,8 @@ public class AccountComponentImpl implements AccountComponent {
                 .max(Comparator.comparing(Account::getCreatedAt));
     }
 
+    @Override
     public Account updateByNickname(String nickname, UpdateAccountRequest request) {
-        var filter = AccountFilter.builder()
-                .nickname(nickname)
-                .build();
-
         var account = accountRepository.findByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
         mapper.map(request, account);
