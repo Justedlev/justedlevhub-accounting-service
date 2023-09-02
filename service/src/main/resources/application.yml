@@ -11,7 +11,7 @@ spring:
     restart:
       enabled: true
   application:
-    name: accounting-service
+    name: user-service
   jackson:
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
