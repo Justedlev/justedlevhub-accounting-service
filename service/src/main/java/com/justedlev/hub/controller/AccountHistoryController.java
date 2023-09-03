@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(ControllerResources.ACCOUNTS + "/history")
+@RequestMapping(ControllerResources.Account.ACCOUNTS + "/history")
 @RequiredArgsConstructor
 @Validated
 public class AccountHistoryController {

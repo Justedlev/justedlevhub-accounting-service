@@ -9,6 +9,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import java.io.Serial;
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Audited
+@AuditOverride(forClass = Auditable.class)
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.*;
+import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
 import java.io.Serial;
@@ -25,6 +26,7 @@ import static com.justedlev.hub.type.AccountMode.OFFLINE;
 import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 
 @Audited
+@AuditOverride(forClass = Auditable.class)
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor

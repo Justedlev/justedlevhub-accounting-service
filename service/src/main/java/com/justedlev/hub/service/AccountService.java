@@ -16,7 +16,7 @@ public interface AccountService {
 
     AccountResponse findByNickname(String nickname);
 
-    String confirm(String code);
+    AccountResponse confirm(String code);
 
     AccountResponse updateByNickname(String nickname, UpdateAccountRequest request);
 

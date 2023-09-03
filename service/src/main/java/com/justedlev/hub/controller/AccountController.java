@@ -1,7 +1,6 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.configuration.properties.Properties;
-import com.justedlev.hub.constant.ControllerResources;
+import com.justedlev.hub.util.AccountResponseEntityUtilities;
 import com.justedlev.hub.model.params.AccountFilterParams;
 import com.justedlev.hub.model.request.CreateAccountRequest;
 import com.justedlev.hub.model.request.UpdateAccountModeRequest;
@@ -16,58 +15,53 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
+import static com.justedlev.hub.constant.ControllerResources.Account.*;
+import static com.justedlev.hub.constant.ControllerResources.CREATE;
+import static com.justedlev.hub.constant.ControllerResources.PAGE;
+
 @RestController
-@RequestMapping(ControllerResources.ACCOUNTS)
+@RequestMapping(ACCOUNTS)
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
     private final AccountService accountService;
-    private final Properties.Service serviceProperties;
+    private final AccountResponseEntityUtilities utilities;
 
-    @GetMapping(value = ControllerResources.PAGE)
+    @GetMapping(value = PAGE)
     public ResponseEntity<Page<AccountResponse>>
     findPage(AccountFilterParams params, @PageableDefault(value = 50) Pageable pageable) {
         return ResponseEntity.ok(accountService.findPageByFilter(params, pageable));
     }
 
-    @GetMapping(value = ControllerResources.NICKNAME)
+    @GetMapping(value = NICKNAME)
     public ResponseEntity<AccountResponse>
     findByNickname(@PathVariable @NotBlank @NotNull @NotEmpty String nickname) {
         return ResponseEntity.ok(accountService.findByNickname(nickname));
     }
 
-    @PostMapping(value = ControllerResources.CREATE)
+    @PostMapping(value = CREATE)
     public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
         var account = accountService.create(request);
-        var createdUri = UriComponentsBuilder.fromUriString(serviceProperties.getUrl())
-                .path(ControllerResources.ACCOUNTS)
-                .path("/" + account.getNickname())
-                .build()
-                .toUri();
 
-        return ResponseEntity
-                .created(createdUri)
-                .body(account);
+        return utilities.created(account);
     }
 
-    @PutMapping(value = ControllerResources.NICKNAME)
+    @PutMapping(value = NICKNAME)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotBlank @NotNull @NotEmpty String nickname,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateByNickname(nickname, request));
     }
 
     @PatchMapping(
-            value = ControllerResources.NICKNAME_UPDATE_AVATAR,
+            value = NICKNAME_UPDATE_AVATAR,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<AccountResponse> updateAvatar(
@@ -78,23 +72,24 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateAvatar(nickname, file));
     }
 
-    @GetMapping(value = ControllerResources.CONFIRM_CODE)
-    public ResponseEntity<String> confirm(@PathVariable @NotEmpty String code) {
-        var nickname = accountService.confirm(code);
-        return new ResponseEntity<>("redirect:" + serviceProperties.getUrl() + "/" + nickname, HttpStatus.FOUND);
+    @GetMapping(value = CONFIRM_CODE)
+    public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
+        var response = accountService.confirm(code);
+
+        return utilities.found(response);
     }
 
-    @PutMapping(value = ControllerResources.UPDATE_MODE)
+    @PutMapping(value = UPDATE_MODE)
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }
 
-    @DeleteMapping(value = ControllerResources.NICKNAME)
+    @DeleteMapping(value = NICKNAME)
     public ResponseEntity<Void> delete(@PathVariable @NotBlank @NotNull @NotEmpty String nickname) {
         accountService.deleteByNickname(nickname);
         return ResponseEntity
                 .noContent()
-                .header("X-alert","account.deleted")
+                .header("X-alert", "account.deleted")
                 .build();
     }
 }

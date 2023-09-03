@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
+
 @RestController
 @RequestMapping("/registration")
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class RegistrationController {
     public ResponseEntity<Void> signUp(@RequestBody @Valid RegistrationRequest request) {
         registrationService.registration(request);
         var createdUri = UriComponentsBuilder.fromUriString(service.getUrl())
-                .path(ControllerResources.ACCOUNTS)
+                .path(ACCOUNTS)
                 .path("/" + request.getNickname())
                 .build()
                 .toUriString();

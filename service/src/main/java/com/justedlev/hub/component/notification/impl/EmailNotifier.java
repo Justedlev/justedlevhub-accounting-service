@@ -16,6 +16,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
+import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
+import static com.justedlev.hub.constant.ControllerResources.CONFIRM;
+
 @Component
 @RequiredArgsConstructor
 public class EmailNotifier implements TypedNotifier {
@@ -44,8 +47,8 @@ public class EmailNotifier implements TypedNotifier {
 
     private Map<String, String> buildContent(Account account) {
         var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
-                .path(ControllerResources.ACCOUNTS)
-                .path(ControllerResources.CONFIRM)
+                .path(ACCOUNTS)
+                .path(CONFIRM)
                 .path("/" + account.getConfirmCode())
                 .build().toUriString();
 

@@ -11,7 +11,7 @@ spring:
     restart:
       enabled: true
   application:
-    name: user-service
+    name: users-service
   jackson:
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
@@ -25,9 +25,15 @@ spring:
       org:
         hibernate:
           envers:
+            default_schema: history
             audit_table_suffix: _history
+            revision_field_name: rev_id
+            revision_type_field_name: rev_type
+            store_data_at_delete: true
+            audit_table_prefix:
       hibernate:
         enable_lazy_load_no_trans: true
+        default_schema: users
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     open-in-view: false

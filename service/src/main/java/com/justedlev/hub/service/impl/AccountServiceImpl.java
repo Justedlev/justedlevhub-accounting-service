@@ -51,10 +51,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String confirm(String code) {
+    public AccountResponse confirm(String code) {
         var account = accountComponent.confirm(code);
 
-        return account.getNickname();
+        return mapper.map(account, AccountResponse.class);
     }
 
     @Override
