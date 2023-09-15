@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+
 @Component
 public class AccountResponseEntityUtilities {
     public final UriComponentsBuilder uriBuilder;
@@ -19,7 +21,7 @@ public class AccountResponseEntityUtilities {
     public ResponseEntity<AccountResponse> created(AccountResponse response) {
         var uri = uriBuilder.path("/" + response.getNickname()).build().toUri();
 
-        return ResponseEntity.created(uri)
+        return ResponseEntity.created(URI.create("/" + response.getNickname()))
                 .body(response);
     }
 

@@ -25,7 +25,7 @@ public class ControllerResources {
         public static final String ID = "/" + ID_VAR;
         public static final String EMAIL = "/" + EMAIL_VAR;
         public static final String NICKNAME_UPDATE = NICKNAME + UPDATE;
-        public static final String NICKNAME_UPDATE_AVATAR = NICKNAME_UPDATE + AVATAR;
+        public static final String NICKNAME_AVATAR = NICKNAME + AVATAR;
         public static final String NICKNAME_DEACTIVATE = NICKNAME + DEACTIVATE;
         public static final String NICKNAME_ACTIVATE = NICKNAME + ACTIVATE;
         public static final String V1_ACCOUNT_NICKNAME_ACTIVATE = NICKNAME + NICKNAME_ACTIVATE;

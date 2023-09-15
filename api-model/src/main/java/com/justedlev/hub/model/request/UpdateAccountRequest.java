@@ -20,5 +20,6 @@ public class UpdateAccountRequest {
     private String lastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime birthDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
 }

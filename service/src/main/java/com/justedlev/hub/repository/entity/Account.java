@@ -1,17 +1,19 @@
 package com.justedlev.hub.repository.entity;
 
+import com.justedlev.hub.type.AccountMode;
+import com.justedlev.hub.type.AccountStatus;
 import com.justedlev.hub.type.Gender;
 import com.justedlev.hub.util.Generator;
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
-import jakarta.persistence.Table;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
@@ -69,9 +71,8 @@ public class Account extends Versionable implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
-    @Type(JsonBinaryType.class)
-    @Column(name = "avatar", columnDefinition = "jsonb")
-    private Avatar avatar;
+    @Column(name = "avatar", columnDefinition = "text")
+    private String avatar;
 
     @Builder.Default
     @Column(
@@ -106,6 +107,14 @@ public class Account extends Versionable implements Serializable {
             CascadeType.REMOVE
     })
     private Set<Contact> contacts;
+
+    public AccountMode getAccountMode() {
+        return AccountMode.labelOf(mode);
+    }
+
+    public AccountStatus getAccountStatus() {
+        return AccountStatus.labelOf(status);
+    }
 
     @Override
     public boolean equals(Object o) {

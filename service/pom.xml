@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.justedlev.hub</groupId>
-        <artifactId>jhusers</artifactId>
+        <artifactId>jh-users</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <version>0.0.1-SNAPSHOT</version>
-    <artifactId>jhusers-service</artifactId>
+    <artifactId>jh-users-service</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -44,7 +44,7 @@
         </dependency>
         <dependency>
             <groupId>com.github.justedlev.hub.api</groupId>
-            <artifactId>jhusers-api-model</artifactId>
+            <artifactId>jh-users-api-model</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
@@ -64,10 +64,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vladmihalcea</groupId>
@@ -97,6 +93,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.16.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

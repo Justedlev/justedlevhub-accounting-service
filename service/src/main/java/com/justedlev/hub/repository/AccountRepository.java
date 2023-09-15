@@ -11,6 +11,8 @@ import java.util.UUID;
 
 public interface AccountRepository extends
         JpaRepository<Account, UUID>, JpaSpecificationExecutor<Account>, RevisionRepository<Account, UUID, Long> {
+    boolean existsByNickname(String nickname);
+
     @Transactional
     void deleteByNickname(String nickname);
 
