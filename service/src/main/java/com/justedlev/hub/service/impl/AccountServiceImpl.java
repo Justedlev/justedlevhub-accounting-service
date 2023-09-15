@@ -48,9 +48,9 @@ public class AccountServiceImpl implements AccountService {
         return page.map(mapper::map);
     }
 
-    @Cacheable
+    @Cacheable(key = "#result.id")
     @Override
-    public AccountResponse findByNickname(String nickname) {
+    public AccountResponse getByNickname(String nickname) {
         return accountRepository.findByNickname(nickname)
                 .stream()
                 .findFirst()
@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
     }
 
-    @CachePut(key = "#result.nickname")
+    @CachePut(key = "#result.id")
     @Override
     public AccountResponse confirm(String code) {
         var account = accountRepository.findByConfirmCodeAndStatus(code, UNCONFIRMED.getLabel())
@@ -70,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
         return mapper.map(account);
     }
 
-    @CachePut(key = "#nickname")
+    @CachePut(key = "#result.id")
     @Override
     public AccountResponse updateByNickname(String nickname, UpdateAccountRequest request) {
         var account = accountRepository.findByNickname(nickname)
@@ -82,11 +82,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @SneakyThrows
-    @CachePut(key = "#nickname")
+    @CachePut(key = "#result.id")
     @Override
     public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
-//        var account = accountAvatarComponent.updateAvatar(nickname, photo);
-        var avatarData = String.format("data:%s;base64,%s", photo.getContentType(), Base64.getMimeEncoder().encodeToString(photo.getBytes()));
+        var avatarData = String.format("data:%s;base64,%s",
+                photo.getContentType(), Base64.getMimeEncoder().encodeToString(photo.getBytes()));
         var account = accountRepository.findByNickname(nickname)
                 .orElseThrow(EntityNotFoundException::new);
         account.setAvatar(avatarData);
@@ -101,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
         return accountModeComponent.updateMode(request);
     }
 
-    @CachePut(key = "#result.nickname")
+    @CachePut(key = "#result.id")
     @Override
     public AccountResponse create(CreateAccountRequest request) {
         if (accountRepository.existsByNickname(request.getNickname())) throw new EntityExistsException();

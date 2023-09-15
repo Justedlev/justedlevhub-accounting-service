@@ -14,6 +14,8 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Getter
@@ -23,7 +25,10 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable {
+public abstract class Auditable implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6861311600L;
+
     @CreatedBy
     @Column(name = "created_by")
     private String createdBy;

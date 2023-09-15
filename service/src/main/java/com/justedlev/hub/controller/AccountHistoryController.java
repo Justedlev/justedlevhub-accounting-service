@@ -23,7 +23,7 @@ import java.util.UUID;
 public class AccountHistoryController {
     private final AccountHistoryService accountHistoryService;
 
-    @GetMapping(value = ControllerResources.PAGE + "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Page<AccountAuditResponse>>
     findPage(@PathVariable UUID id, @PageableDefault(value = 50) Pageable pageable) {
         return ResponseEntity.ok(accountHistoryService.getPageById(id, pageable));

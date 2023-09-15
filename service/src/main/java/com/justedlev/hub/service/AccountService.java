@@ -14,7 +14,7 @@ import java.util.List;
 public interface AccountService {
     Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable);
 
-    AccountResponse findByNickname(String nickname);
+    AccountResponse getByNickname(String nickname);
 
     AccountResponse confirm(String code);
 

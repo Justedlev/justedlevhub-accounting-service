@@ -20,11 +20,11 @@ public enum AccountStatus {
     private final String label;
 
     public static AccountStatus labelOf(String label) {
-        return findByFilter(label).orElse(null);
+        return findByLabel(label).orElse(null);
     }
 
-    public static Optional<AccountStatus> findByFilter(String label) {
-        return findByFilter(value -> value.label.equals(label));
+    public static Optional<AccountStatus> findByLabel(String label) {
+        return findByFilter(v -> v.label.equals(label));
     }
 
     public static AccountStatus labelOfIgnoreCase(String label) {
@@ -32,7 +32,7 @@ public enum AccountStatus {
     }
 
     public static Optional<AccountStatus> findLabelIgnoreCase(String label) {
-        return findByFilter(value -> value.label.equalsIgnoreCase(label));
+        return findByFilter(v -> v.label.equalsIgnoreCase(label));
     }
 
     public static Optional<AccountStatus> findByFilter(Predicate<AccountStatus> filter) {

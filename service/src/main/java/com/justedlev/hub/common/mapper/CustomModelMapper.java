@@ -33,7 +33,7 @@ public class CustomModelMapper extends BaseModelMapper {
                 .addMapping(AccountFilterParams::getFreeText, AccountFilter::setFreeText);
         createTypeMap(RegistrationRequest.class, Contact.class)
                 .addMapping(RegistrationRequest::getEmail, Contact::setValue)
-                .addMapping(rr -> ContactType.EMAIL, Contact::setType);
+                .addMapping(rr -> ContactType.EMAIL.getLabel(), Contact::setType);
     }
 
     public AccountResponse map(Account account) {

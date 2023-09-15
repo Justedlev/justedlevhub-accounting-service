@@ -1,6 +1,5 @@
 package com.justedlev.hub.repository.entity;
 
-import com.justedlev.hub.type.ContactType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -29,14 +28,14 @@ import java.util.UUID;
 @DynamicUpdate
 @Table(name = "contacts")
 @NamedEntityGraph(
-        name = "eg-contact",
+        name = "contact-entity-graph",
         attributeNodes = {
                 @NamedAttributeNode("account"),
         }
 )
 public class Contact extends Versionable implements Serializable {
     @Serial
-    private static final long serialVersionUID = 167908448L;
+    private static final long serialVersionUID = 6790844800L;
 
     @Id
     @UuidGenerator
@@ -44,7 +43,7 @@ public class Contact extends Versionable implements Serializable {
     private UUID id;
 
     @Column(name = "type", nullable = false, updatable = false)
-    private ContactType type;
+    private String type;
 
     @Column(name = "value")
     private String value;
@@ -62,13 +61,7 @@ public class Contact extends Versionable implements Serializable {
                     referencedColumnName = "id"
             )
     )
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.REMOVE,
-    })
+    @Cascade({CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE,})
     private Account account;
 
     @Override

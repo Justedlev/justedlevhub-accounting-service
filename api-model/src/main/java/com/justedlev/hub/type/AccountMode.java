@@ -21,10 +21,10 @@ public enum AccountMode {
     private final String label;
 
     public static AccountMode labelOf(String label) {
-        return findByFilter(label).orElse(null);
+        return findByLabel(label).orElse(null);
     }
 
-    public static Optional<AccountMode> findByFilter(String label) {
+    public static Optional<AccountMode> findByLabel(String label) {
         return findByFilter(value -> value.label.equals(label));
     }
 

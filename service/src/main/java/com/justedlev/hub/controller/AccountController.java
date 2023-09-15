@@ -10,7 +10,6 @@ import com.justedlev.hub.util.AccountResponseEntityUtilities;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,9 +39,8 @@ public class AccountController {
     }
 
     @GetMapping(value = NICKNAME)
-    public ResponseEntity<AccountResponse>
-    findByNickname(@PathVariable @NotBlank @NotNull @NotEmpty String nickname) {
-        return ResponseEntity.ok(accountService.findByNickname(nickname));
+    public ResponseEntity<AccountResponse> getByNickname(@PathVariable @NotBlank String nickname) {
+        return ResponseEntity.ok(accountService.getByNickname(nickname));
     }
 
     @PostMapping
@@ -52,7 +50,7 @@ public class AccountController {
     }
 
     @PutMapping(value = NICKNAME)
-    public ResponseEntity<AccountResponse> update(@PathVariable @NotBlank @NotNull String nickname,
+    public ResponseEntity<AccountResponse> update(@PathVariable @NotBlank String nickname,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateByNickname(nickname, request));
     }
@@ -75,7 +73,7 @@ public class AccountController {
     }
 
     @DeleteMapping(value = NICKNAME)
-    public ResponseEntity<Void> delete(@PathVariable @NotBlank @NotNull @NotEmpty String nickname) {
+    public ResponseEntity<Void> delete(@PathVariable @NotBlank String nickname) {
         accountService.deleteByNickname(nickname);
         return ResponseEntity
                 .noContent()

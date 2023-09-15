@@ -39,14 +39,12 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 @DynamicUpdate
 @Table(name = "accounts")
 @NamedEntityGraph(
-        name = "eg-account",
-        attributeNodes = {
-                @NamedAttributeNode("contacts"),
-        }
+        name = "account-entity-graph",
+        attributeNodes = {@NamedAttributeNode("contacts"),}
 )
 public class Account extends Versionable implements Serializable {
     @Serial
-    private static final long serialVersionUID = 167144934L;
+    private static final long serialVersionUID = 6714493400L;
 
     @Id
     @UuidGenerator
@@ -71,17 +69,12 @@ public class Account extends Versionable implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
+    @Lob
     @Column(name = "avatar", columnDefinition = "text")
     private String avatar;
 
     @Builder.Default
-    @Column(
-            name = "confirm_code",
-            length = 32,
-            nullable = false,
-            unique = true,
-            updatable = false
-    )
+    @Column(name = "confirm_code", length = 32, nullable = false, unique = true, updatable = false)
     private String confirmCode = Generator.generateConfirmCode();
 
     @NotEmpty
@@ -99,13 +92,7 @@ public class Account extends Versionable implements Serializable {
     @Singular
     @ToString.Exclude
     @OneToMany(mappedBy = "account")
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.REMOVE
-    })
+    @Cascade({CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
     private Set<Contact> contacts;
 
     public AccountMode getAccountMode() {
