@@ -1,7 +1,6 @@
 package com.justedlev.hub.controller;
 
 import com.justedlev.hub.configuration.properties.Properties;
-import com.justedlev.hub.constant.ControllerResources;
 import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.service.RegistrationService;
 import jakarta.validation.Valid;

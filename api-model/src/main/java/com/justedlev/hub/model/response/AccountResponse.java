@@ -28,4 +28,5 @@ public class AccountResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdAt;
     private String avatar;
+    private Long version;
 }

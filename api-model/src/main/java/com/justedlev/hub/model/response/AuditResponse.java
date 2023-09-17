@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class AuditResponse<T> {
-    private T audit;
+    private T image;
     private Metadata metadata;
 
     @Data

@@ -7,6 +7,7 @@ import com.justedlev.hub.common.mapper.converter.String2PhoneNumberResponse;
 import com.justedlev.hub.model.params.AccountFilterParams;
 import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.model.response.AccountResponse;
+import com.justedlev.hub.model.response.ContactResponse;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Contact;
 import com.justedlev.hub.repository.filter.AccountFilter;
@@ -42,5 +43,9 @@ public class CustomModelMapper extends BaseModelMapper {
 
     public Account map(AccountResponse accountResponse) {
         return map(accountResponse, Account.class);
+    }
+
+    public ContactResponse map(Contact contact) {
+        return map(contact, ContactResponse.class);
     }
 }

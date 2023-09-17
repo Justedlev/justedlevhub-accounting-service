@@ -33,7 +33,7 @@ import static com.justedlev.hub.type.AccountStatus.ACTIVE;
 import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 
 @Service
-@CacheConfig(cacheNames = "account")
+@CacheConfig(cacheNames = "accounts")
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
@@ -48,7 +48,7 @@ public class AccountServiceImpl implements AccountService {
         return page.map(mapper::map);
     }
 
-    @Cacheable(key = "#result.id")
+    @Cacheable
     @Override
     public AccountResponse getByNickname(String nickname) {
         return accountRepository.findByNickname(nickname)
@@ -59,7 +59,7 @@ public class AccountServiceImpl implements AccountService {
                         String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
     }
 
-    @CachePut(key = "#result.id")
+    @CacheEvict(key = "#result.nickname")
     @Override
     public AccountResponse confirm(String code) {
         var account = accountRepository.findByConfirmCodeAndStatus(code, UNCONFIRMED.getLabel())
@@ -70,29 +70,29 @@ public class AccountServiceImpl implements AccountService {
         return mapper.map(account);
     }
 
-    @CachePut(key = "#result.id")
+    @CachePut(key = "#nickname")
     @Override
     public AccountResponse updateByNickname(String nickname, UpdateAccountRequest request) {
         var account = accountRepository.findByNickname(nickname)
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
         mapper.map(request, account);
-        var saved = accountRepository.save(account);
+        accountRepository.save(account);
 
-        return mapper.map(saved);
+        return mapper.map(account);
     }
 
     @SneakyThrows
-    @CachePut(key = "#result.id")
+    @CachePut(key = "#nickname")
     @Override
     public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
-        var avatarData = String.format("data:%s;base64,%s",
-                photo.getContentType(), Base64.getMimeEncoder().encodeToString(photo.getBytes()));
+//        var avatarData = String.format("data:%s;base64,%s",
+//                photo.getContentType(), Base64.getEncoder().encodeToString(photo.getBytes()));
         var account = accountRepository.findByNickname(nickname)
                 .orElseThrow(EntityNotFoundException::new);
-        account.setAvatar(avatarData);
-        var saved = accountRepository.save(account);
+        account.setAvatar(Base64.getEncoder().encodeToString(photo.getBytes()));
+        accountRepository.save(account);
 
-        return mapper.map(saved);
+        return mapper.map(account);
     }
 
     @CacheEvict(allEntries = true)
@@ -101,15 +101,15 @@ public class AccountServiceImpl implements AccountService {
         return accountModeComponent.updateMode(request);
     }
 
-    @CachePut(key = "#result.id")
+    @CachePut(key = "#result.nickname")
     @Override
     public AccountResponse create(CreateAccountRequest request) {
-        if (accountRepository.existsByNickname(request.getNickname())) throw new EntityExistsException();
+        if (accountRepository.existsByNickname(request.getNickname())) throw new EntityExistsException("Exists");
 
         var account = mapper.map(request, Account.class);
-        var saved = accountRepository.save(account);
+        accountRepository.save(account);
 
-        return mapper.map(saved);
+        return mapper.map(account);
     }
 
     @CacheEvict

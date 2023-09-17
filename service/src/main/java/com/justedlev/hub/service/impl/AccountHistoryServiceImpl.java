@@ -29,7 +29,7 @@ public class AccountHistoryServiceImpl implements AccountHistoryService {
     private AccountAuditResponse convert(Revision<Long, Account> revision) {
         return AccountAuditResponse.builder()
                 .metadata(mapper.map(revision.getMetadata(), AuditResponse.Metadata.class))
-                .audit(mapper.map(revision.getEntity(), AccountResponse.class))
+                .image(mapper.map(revision.getEntity(), AccountResponse.class))
                 .build();
     }
 }

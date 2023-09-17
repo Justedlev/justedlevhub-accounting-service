@@ -70,7 +70,7 @@ public class Account extends Versionable implements Serializable {
     private Gender gender;
 
     @Lob
-    @Column(name = "avatar", columnDefinition = "text")
+    @Column(name = "avatar", columnDefinition = "oid")
     private String avatar;
 
     @Builder.Default
