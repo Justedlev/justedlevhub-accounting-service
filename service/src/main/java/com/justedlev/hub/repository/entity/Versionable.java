@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -18,10 +17,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @MappedSuperclass
-public abstract class Versionable extends Auditable implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 693472400L;
-
+public abstract class Versionable<PK extends Serializable> extends Auditable<PK> {
     @Version
     @Column(name = "version", nullable = false)
     private Long version;

@@ -5,7 +5,6 @@ import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.service.RegistrationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,10 +30,8 @@ public class RegistrationController {
                 .path(ACCOUNTS)
                 .path("/" + request.getNickname())
                 .build()
-                .toUriString();
+                .toUri();
 
-        return ResponseEntity.noContent()
-                .header(HttpHeaders.LOCATION, createdUri)
-                .build();
+        return ResponseEntity.created(createdUri).build();
     }
 }

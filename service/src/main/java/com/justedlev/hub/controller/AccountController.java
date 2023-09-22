@@ -49,7 +49,7 @@ public class AccountController {
         return utilities.created(account);
     }
 
-    @PutMapping(value = NICKNAME)
+    @PatchMapping(value = NICKNAME)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotBlank String nickname,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateByNickname(nickname, request));
@@ -67,7 +67,7 @@ public class AccountController {
         return utilities.found(response);
     }
 
-    @PutMapping(value = UPDATE_MODE)
+    @PatchMapping(value = UPDATE_MODE)
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }

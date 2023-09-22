@@ -16,8 +16,8 @@ public enum ContactType {
 
     private final String label;
 
-    public static ContactType ofDisplayValue(String label) {
-        return findByLabel(label).orElse(null);
+    public static ContactType labelOf(String label) {
+        return findByLabel(label).orElseThrow(() -> new IllegalArgumentException("No enum by label " + label));
     }
 
     public static Optional<ContactType> findByLabel(String label) {
@@ -25,7 +25,7 @@ public enum ContactType {
     }
 
     public static ContactType labelOfIgnoreCase(String label) {
-        return findLabelIgnoreCase(label).orElse(null);
+        return findLabelIgnoreCase(label).orElseThrow(() -> new IllegalArgumentException("No enum by label " + label));
     }
 
     public static Optional<ContactType> findLabelIgnoreCase(String label) {

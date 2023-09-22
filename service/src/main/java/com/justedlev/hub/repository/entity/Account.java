@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,7 +19,6 @@ import org.hibernate.envers.Audited;
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,13 +40,13 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
         name = "account-entity-graph",
         attributeNodes = {@NamedAttributeNode("contacts"),}
 )
-public class Account extends Versionable implements Serializable {
+public class Account extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6714493400L;
 
-    @Id
     @UuidGenerator
-    @Column(name = "id", updatable = false)
+    @Column(name = "id")
+    @Setter(AccessLevel.PROTECTED)
     private UUID id;
 
     @NotBlank
@@ -70,7 +68,7 @@ public class Account extends Versionable implements Serializable {
     private Gender gender;
 
     @Lob
-    @Column(name = "avatar", columnDefinition = "oid")
+    @Column(name = "avatar", length = 1000)
     private String avatar;
 
     @Builder.Default
@@ -92,7 +90,13 @@ public class Account extends Versionable implements Serializable {
     @Singular
     @ToString.Exclude
     @OneToMany(mappedBy = "account")
-    @Cascade({CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE})
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH,
+            CascadeType.REMOVE,
+    })
     private Set<Contact> contacts;
 
     public AccountMode getAccountMode() {
@@ -101,18 +105,5 @@ public class Account extends Versionable implements Serializable {
 
     public AccountStatus getAccountStatus() {
         return AccountStatus.labelOf(status);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Account account = (Account) o;
-        return id != null && Objects.equals(id, account.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
     }
 }

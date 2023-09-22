@@ -1,9 +1,9 @@
 package com.justedlev.hub.repository.entity;
 
+import com.justedlev.hub.type.ContactType;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
@@ -13,7 +13,6 @@ import org.hibernate.envers.Audited;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.UUID;
 
 @Audited
@@ -33,11 +32,10 @@ import java.util.UUID;
                 @NamedAttributeNode("account"),
         }
 )
-public class Contact extends Versionable implements Serializable {
+public class Contact extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6790844800L;
 
-    @Id
     @UuidGenerator
     @Column(name = "id")
     private UUID id;
@@ -61,19 +59,16 @@ public class Contact extends Versionable implements Serializable {
                     referencedColumnName = "id"
             )
     )
-    @Cascade({CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.REMOVE,})
+    @Cascade({
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH,
+            CascadeType.REMOVE,
+    })
     private Account account;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Contact contact = (Contact) o;
-        return getId() != null && Objects.equals(getId(), contact.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
+    public ContactType getContactType() {
+        return ContactType.labelOf(type);
     }
 }

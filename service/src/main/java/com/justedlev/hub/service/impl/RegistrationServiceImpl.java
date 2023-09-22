@@ -26,6 +26,8 @@ public class RegistrationServiceImpl implements RegistrationService {
         accountValidator.validateNickname(request.getNickname());
         var account = mapper.map(request, Account.class);
         var contact = mapper.map(request, Contact.class);
+        Account.builder()
+                .build();
         contact.setAccount(account);
         contactRepository.save(contact);
         emailNotificationComponent.sendConfirmation(account, contact);

@@ -5,7 +5,6 @@ import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
 import com.justedlev.hub.configuration.properties.Properties;
-import com.justedlev.hub.constant.ControllerResources;
 import com.justedlev.hub.constant.MailSubjectConstant;
 import com.justedlev.hub.constant.MailTemplateConstant;
 import com.justedlev.hub.queue.NotificationQueue;

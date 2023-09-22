@@ -1,8 +1,8 @@
 package com.justedlev.hub.component.notification.manager;
 
 import com.justedlev.hub.component.notification.NotificationCommand;
-import com.justedlev.hub.component.notification.TypedNotifier;
 import com.justedlev.hub.component.notification.NotificationType;
+import com.justedlev.hub.component.notification.TypedNotifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
