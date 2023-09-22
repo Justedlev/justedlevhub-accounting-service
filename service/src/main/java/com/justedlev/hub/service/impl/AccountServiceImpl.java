@@ -15,6 +15,7 @@ import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.service.AccountService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.cache.annotation.CacheConfig;
@@ -28,9 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 import static com.justedlev.hub.type.AccountStatus.ACTIVE;
-import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 
 @Service
 @CacheConfig(cacheNames = "accounts")
@@ -50,30 +51,33 @@ public class AccountServiceImpl implements AccountService {
 
     @Cacheable
     @Override
-    public AccountResponse getByNickname(String nickname) {
-        return accountRepository.findByNickname(nickname)
+    public AccountResponse getById(@NotBlank UUID id) {
+        return accountRepository.findById(id)
                 .stream()
                 .findFirst()
                 .map(mapper::map)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ExceptionConstant.USER_NOT_EXISTS, nickname)));
+                        String.format(ExceptionConstant.USER_NOT_EXISTS, id)));
     }
 
-    @CacheEvict(key = "#result.nickname")
+    @CacheEvict(key = "#result")
     @Override
-    public AccountResponse confirm(String code) {
-        var account = accountRepository.findByConfirmCodeAndStatus(code, UNCONFIRMED.getLabel())
-                .orElseThrow(() -> new EntityNotFoundException("Already activated"));
+    public UUID confirm(String code) {
+        if (!accountRepository.isUnconfirmed(code)) {
+            throw new EntityNotFoundException("Already confirmed");
+        }
+
+        var account = accountRepository.findByConfirmCode(code)
+                .orElseThrow(() -> new EntityNotFoundException("Not found by code " + code));
         account.setStatus(ACTIVE.getLabel());
-        accountRepository.save(account);
 
-        return mapper.map(account);
+        return accountRepository.save(account).getId();
     }
 
-    @CachePut(key = "#nickname")
+    @CachePut(key = "#id")
     @Override
-    public AccountResponse updateByNickname(String nickname, UpdateAccountRequest request) {
-        var account = accountRepository.findByNickname(nickname)
+    public AccountResponse updateById(@NotBlank UUID id, UpdateAccountRequest request) {
+        var account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
         mapper.map(request, account);
         accountRepository.save(account);
@@ -82,14 +86,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @SneakyThrows
-    @CachePut(key = "#nickname")
+    @CachePut(key = "#id")
     @Override
-    public AccountResponse updateAvatar(String nickname, MultipartFile photo) {
-//        var avatarData = String.format("data:%s;base64,%s",
-//                photo.getContentType(), Base64.getEncoder().encodeToString(photo.getBytes()));
-        var account = accountRepository.findByNickname(nickname)
+    public AccountResponse updateAvatar(@NotBlank UUID id, MultipartFile photo) {
+        var avatarData = String.format("data:%s;base64,%s",
+                photo.getContentType(), Base64.getEncoder().encodeToString(photo.getBytes()));
+        var account = accountRepository.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        account.setAvatar(Base64.getEncoder().encodeToString(photo.getBytes()));
+        account.setAvatar(avatarData);
         accountRepository.save(account);
 
         return mapper.map(account);
@@ -114,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
 
     @CacheEvict
     @Override
-    public void deleteByNickname(String nickname) {
-        accountRepository.deleteByNickname(nickname);
+    public void deleteById(@NotBlank UUID id) {
+        accountRepository.deleteById(id);
     }
 }

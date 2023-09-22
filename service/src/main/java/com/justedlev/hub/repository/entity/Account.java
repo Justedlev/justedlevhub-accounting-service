@@ -9,10 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
@@ -43,11 +40,6 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 public class Account extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6714493400L;
-
-    @UuidGenerator
-    @Column(name = "id")
-    @Setter(AccessLevel.PROTECTED)
-    private UUID id;
 
     @NotBlank
     @NotEmpty
@@ -90,13 +82,6 @@ public class Account extends Versionable<UUID> implements Serializable {
     @Singular
     @ToString.Exclude
     @OneToMany(mappedBy = "account")
-    @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST,
-            CascadeType.REFRESH,
-            CascadeType.REMOVE,
-    })
     private Set<Contact> contacts;
 
     public AccountMode getAccountMode() {

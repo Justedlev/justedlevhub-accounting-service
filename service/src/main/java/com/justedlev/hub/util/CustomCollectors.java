@@ -1,7 +1,6 @@
 package com.justedlev.hub.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.Set;
@@ -12,7 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class CustomCollectors {
     public static <T, V>
     Collector<T, ?, TreeMap<String, V>>

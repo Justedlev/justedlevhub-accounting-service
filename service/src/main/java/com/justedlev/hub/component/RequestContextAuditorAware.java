@@ -16,7 +16,7 @@ public class RequestContextAuditorAware implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         return Optional.of(RequestContextHolder.currentRequestAttributes())
-                .map(requestAttributes -> requestAttributes.getAttribute("X-username", SCOPE_REQUEST))
+                .map(requestAttributes -> requestAttributes.getAttribute("X-user-id", SCOPE_REQUEST))
                 .map(Object::toString)
                 .or(() -> Optional.of(Constants.BOT_ID.toString()));
     }

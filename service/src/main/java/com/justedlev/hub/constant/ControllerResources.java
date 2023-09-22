@@ -4,6 +4,9 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ControllerResources {
+    public static final String API = "/api";
+    public static final String V1 = "/v1";
+    public static final String API_V1 = API + V1;
     public static final String PAGE = "/page";
     public static final String CREATE = "/create";
     public static final String UPDATE = "/update";
@@ -19,13 +22,14 @@ public class ControllerResources {
 
     @UtilityClass
     public static class Account {
-        public static final String ACCOUNTS = "/accounts";
+        public static final String ACCOUNTS = V1 + "/accounts";
         public static final String UPDATE_MODE = "/update-mode";
         public static final String NICKNAME = "/" + NICKNAME_VAR;
         public static final String ID = "/" + ID_VAR;
         public static final String EMAIL = "/" + EMAIL_VAR;
         public static final String NICKNAME_UPDATE = NICKNAME + UPDATE;
         public static final String NICKNAME_AVATAR = NICKNAME + AVATAR;
+        public static final String ID_AVATAR = ID + AVATAR;
         public static final String NICKNAME_DEACTIVATE = NICKNAME + DEACTIVATE;
         public static final String NICKNAME_ACTIVATE = NICKNAME + ACTIVATE;
         public static final String V1_ACCOUNT_NICKNAME_ACTIVATE = NICKNAME + NICKNAME_ACTIVATE;

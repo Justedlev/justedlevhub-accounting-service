@@ -1,14 +1,13 @@
 package com.justedlev.hub.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public final class Generator {
     public static Integer generateNumberCode(int length) {
         StringBuilder stringBuilder = new StringBuilder();

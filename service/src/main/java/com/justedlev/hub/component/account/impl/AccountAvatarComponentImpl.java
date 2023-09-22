@@ -1,7 +1,6 @@
 package com.justedlev.hub.component.account.impl;
 
 import com.justedlev.hub.component.account.AccountAvatarComponent;
-import com.justedlev.hub.component.account.AccountFinder;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Component
 @RequiredArgsConstructor
 public class AccountAvatarComponentImpl implements AccountAvatarComponent {
-    private final AccountFinder accountFinder;
     private final AccountRepository accountRepository;
     //    private final JStorageFeignClient storageFeignClient;
     private final ModelMapper mapper;

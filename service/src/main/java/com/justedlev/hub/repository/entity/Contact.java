@@ -7,7 +7,6 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
@@ -36,10 +35,6 @@ public class Contact extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6790844800L;
 
-    @UuidGenerator
-    @Column(name = "id")
-    private UUID id;
-
     @Column(name = "type", nullable = false, updatable = false)
     private String type;
 
@@ -60,11 +55,10 @@ public class Contact extends Versionable<UUID> implements Serializable {
             )
     )
     @Cascade({
-            CascadeType.DETACH,
-            CascadeType.MERGE,
             CascadeType.PERSIST,
+            CascadeType.MERGE,
             CascadeType.REFRESH,
-            CascadeType.REMOVE,
+            CascadeType.DETACH,
     })
     private Account account;
 
