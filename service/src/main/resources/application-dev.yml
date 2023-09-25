@@ -18,7 +18,9 @@ logging:
     web: debug
     sql: debug
     com.justedlev.hub: debug
-    org.hibernate.orm.jdbc.bind: trace
+    org:
+      hibernate.orm.jdbc.bind: trace
+      springframework.security: debug
 app-config:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}

@@ -1,3 +1,11 @@
+create schema if not exists users;
+
+alter schema users owner to justedlev;
+
+create schema if not exists history;
+
+alter schema history owner to justedlev;
+
 CREATE TABLE IF NOT EXISTS shedlock
 (
     name       VARCHAR(64),

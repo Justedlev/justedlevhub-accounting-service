@@ -7,6 +7,23 @@ logging:
     name: ${logging.file.path}/latest.log
     path: ./.logs
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          justedlevhub-users-service:
+            provider: keycloak
+            client-id: ${CLIENT_ID}
+            client_secret: ${CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            issuer-uri: ${keycloak.issuer-uri}
+            jwk-set-uri: ${keycloak.jwts-uri}
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.issuer-uri}
+          jwk-set-uri: ${keycloak.jwts-uri}
   devtools:
     restart:
       enabled: true
@@ -44,10 +61,6 @@ spring:
   sql:
     init:
       mode: always
-  security:
-    user:
-      name: ${USERNAME}
-      password: ${PASSWORD}
   rabbitmq:
     host: ${cloudamqp.host}
     port: ${cloudamqp.port}
@@ -77,6 +90,9 @@ management:
     refresh:
       enabled: true
 # Custom properties
+keycloak:
+  issuer-uri: ${ISSUER_URI}
+  jwts-uri: ${JWKS_URI}
 app-config:
   service:
     email: ${SERVICE_MAIL_USERNAME}
