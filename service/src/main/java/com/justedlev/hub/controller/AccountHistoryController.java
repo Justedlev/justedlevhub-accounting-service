@@ -1,6 +1,5 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.constant.ControllerResources;
 import com.justedlev.hub.model.response.AccountAuditResponse;
 import com.justedlev.hub.service.AccountHistoryService;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(ControllerResources.Account.ACCOUNTS_HISTORY)
+@RequestMapping("/v1/accounts/history")
 @RequiredArgsConstructor
 @Validated
 public class AccountHistoryController {
     private final AccountHistoryService accountHistoryService;
 
-    //    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(ControllerResources.Account.ID)
+    //        @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}")
     public ResponseEntity<Page<AccountAuditResponse>>
     findPage(@PathVariable UUID id, @PageableDefault(value = 50) Pageable pageable) {
         return ResponseEntity.ok(accountHistoryService.getPageById(id, pageable));

@@ -99,6 +99,9 @@ management:
 keycloak:
   issuer-uri: ${ISSUER_URI}
   jwt-set-uri: ${JWKS_URI}
+  jwt-converter:
+    role-claim-names: realm_access.roles,resource_access.account.roles
+    principal-claim-name: preferred_username
 app-config:
   service:
     email: ${SERVICE_MAIL_USERNAME}

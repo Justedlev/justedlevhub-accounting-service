@@ -26,7 +26,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         JNotificationProperties.Service.class,
         CloudAmqpProperties.class,
         CloudAmqpProperties.Queue.class,
-        KeycloakProperties.class
+        KeycloakProperties.class,
+        KeycloakProperties.JwtConverterProperties.class
 })
 public class AccountServiceApplication {
     public static void main(String[] args) {
