@@ -1,7 +1,9 @@
 server:
-  port: ${SERVER_PORT:0}
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api
+  error:
+    include-stacktrace: never
 logging:
   file:
     name: ${logging.file.path}/latest.log
@@ -9,26 +11,30 @@ logging:
 spring:
   security:
     oauth2:
-      client:
-        registration:
-          justedlevhub-users-service:
-            provider: keycloak
-            client-id: ${CLIENT_ID}
-            client_secret: ${CLIENT_SECRET}
-            authorization-grant-type: client_credentials
-        provider:
-          keycloak:
-            issuer-uri: ${keycloak.issuer-uri}
-            jwk-set-uri: ${keycloak.jwts-uri}
       resourceserver:
         jwt:
           issuer-uri: ${keycloak.issuer-uri}
-          jwk-set-uri: ${keycloak.jwts-uri}
+          jwk-set-uri: ${keycloak.jwt-set-uri}
+      client:
+        registration:
+          users-justedlevhub:
+            provider: keycloak
+            client-id: ${CLIENT_ID}
+            client_secret: ${CLIENT_SECRET}
+            scope:
+              - openid
+              - offline_access
+              - profile
+            authorization-grant-type: authorization_code
+        provider:
+          keycloak:
+            issuer-uri: ${keycloak.issuer-uri}
+            jwk-set-uri: ${keycloak.jwt-set-uri}
   devtools:
     restart:
       enabled: true
   application:
-    name: users-service
+    name: users-justedlevhub
   jackson:
     mapper:
       ACCEPT_CASE_INSENSITIVE_ENUMS: true
@@ -52,7 +58,7 @@ spring:
         enable_lazy_load_no_trans: true
         default_schema: users
     database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     show-sql: false
     hibernate:
@@ -92,7 +98,7 @@ management:
 # Custom properties
 keycloak:
   issuer-uri: ${ISSUER_URI}
-  jwts-uri: ${JWKS_URI}
+  jwt-set-uri: ${JWKS_URI}
 app-config:
   service:
     email: ${SERVICE_MAIL_USERNAME}

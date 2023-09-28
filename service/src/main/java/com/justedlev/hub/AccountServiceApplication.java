@@ -2,6 +2,7 @@ package com.justedlev.hub;
 
 import com.justedlev.hub.configuration.properties.CloudAmqpProperties;
 import com.justedlev.hub.configuration.properties.JNotificationProperties;
+import com.justedlev.hub.configuration.properties.KeycloakProperties;
 import com.justedlev.hub.configuration.properties.Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         JNotificationProperties.Service.class,
         CloudAmqpProperties.class,
         CloudAmqpProperties.Queue.class,
+        KeycloakProperties.class
 })
 public class AccountServiceApplication {
     public static void main(String[] args) {

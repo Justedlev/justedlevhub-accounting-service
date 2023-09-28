@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(ControllerResources.Account.ACCOUNTS + "/history")
+@RequestMapping(ControllerResources.Account.ACCOUNTS_HISTORY)
 @RequiredArgsConstructor
 @Validated
 public class AccountHistoryController {
     private final AccountHistoryService accountHistoryService;
 
-    @GetMapping("/{id}")
+    //    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping(ControllerResources.Account.ID)
     public ResponseEntity<Page<AccountAuditResponse>>
     findPage(@PathVariable UUID id, @PageableDefault(value = 50) Pageable pageable) {
         return ResponseEntity.ok(accountHistoryService.getPageById(id, pageable));

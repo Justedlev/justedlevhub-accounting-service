@@ -11,6 +11,7 @@ public class ControllerResources {
     public static final String CREATE = "/create";
     public static final String UPDATE = "/update";
     public static final String DELETE = "/delete";
+    public static final String HISTORY = "/history";
     public static final String DEACTIVATE = "/deactivate";
     public static final String ACTIVATE = "/activate";
     public static final String CONFIRM = "/confirm";
@@ -23,6 +24,7 @@ public class ControllerResources {
     @UtilityClass
     public static class Account {
         public static final String ACCOUNTS = V1 + "/accounts";
+        public static final String ACCOUNTS_HISTORY = ACCOUNTS + HISTORY;
         public static final String UPDATE_MODE = "/update-mode";
         public static final String NICKNAME = "/" + NICKNAME_VAR;
         public static final String ID = "/" + ID_VAR;
