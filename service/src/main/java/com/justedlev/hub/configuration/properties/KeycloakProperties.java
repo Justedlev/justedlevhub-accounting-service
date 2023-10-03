@@ -20,7 +20,7 @@ public class KeycloakProperties {
     @Getter
     @ConfigurationProperties(prefix = "keycloak.jwt-converter")
     public static class JwtConverterProperties {
-        private Set<String> roleClaimNames;
-        private String principalClaimName;
+        private Set<String> roleClaims;
+        private String usernameAttribute;
     }
 }

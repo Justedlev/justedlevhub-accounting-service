@@ -34,7 +34,7 @@ public class KeycloakGrantedAuthoritiesConverter implements Converter<Jwt, Colle
     }
 
     private Collection<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
-        return properties.getRoleClaimNames()
+        return properties.getRoleClaims()
                 .stream()
                 .map(path -> extractAuthority(jwt, path))
                 .filter(Objects::nonNull)

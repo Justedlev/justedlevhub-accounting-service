@@ -29,7 +29,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
     private String extractName(Jwt jwt) {
         return Optional.of(properties)
-                .map(KeycloakProperties.JwtConverterProperties::getPrincipalClaimName)
+                .map(KeycloakProperties.JwtConverterProperties::getUsernameAttribute)
                 .map(jwt::getClaimAsString)
                 .orElseGet(jwt::getSubject);
     }

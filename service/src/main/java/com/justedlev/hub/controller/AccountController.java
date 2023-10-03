@@ -26,10 +26,11 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.justedlev.hub.constant.ControllerResources.API;
-import static com.justedlev.hub.constant.ControllerResources.Account.*;
+import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
+import static com.justedlev.hub.constant.ControllerResources.Account.ID;
 
 @RestController
-@RequestMapping(ACCOUNTS)
+@RequestMapping("/v1/accounts")
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
@@ -41,7 +42,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findPageByFilter(params, pageable));
     }
 
-    @GetMapping(value = ID)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<AccountResponse> getById(@PathVariable @NotNull UUID id) {
         var response = accountService.getById(id);
 
@@ -56,25 +57,25 @@ public class AccountController {
         return ResponseEntity.created(buildAccountUri(account)).body(account);
     }
 
-    @PatchMapping(value = ID)
+    @PatchMapping(value = "/{id}")
     public ResponseEntity<AccountResponse> update(@PathVariable @NotNull UUID id,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateById(id, request));
     }
 
-    @PatchMapping(value = ID_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PatchMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<AccountResponse> updateAvatar(@PathVariable @NotNull UUID id,
                                                         @RequestPart MultipartFile file) {
         return ResponseEntity.ok(accountService.updateAvatar(id, file));
     }
 
-    @PatchMapping(value = CONFIRM_CODE)
+    @PatchMapping(value = "/confirm/{code}")
     public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
         var id = accountService.confirm(code);
         return ResponseEntityUtils.found(buildAccountUri(id)).build();
     }
 
-    @PatchMapping(value = UPDATE_MODE)
+    @PatchMapping(value = "/update-mode")
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
     }

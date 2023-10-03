@@ -1,23 +1,28 @@
 package com.justedlev.hub.component;
 
-import com.justedlev.hub.util.Constants;
 import lombok.NonNull;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.util.Optional;
-
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 
 @Component
 public class RequestContextAuditorAware implements AuditorAware<String> {
     @NonNull
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.of(RequestContextHolder.currentRequestAttributes())
-                .map(requestAttributes -> requestAttributes.getAttribute("X-user-id", SCOPE_REQUEST))
-                .map(Object::toString)
-                .or(() -> Optional.of(Constants.BOT_ID.toString()));
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null ||
+                !authentication.isAuthenticated() ||
+                authentication instanceof AnonymousAuthenticationToken
+        ) {
+            return Optional.empty();
+        }
+
+        var userPrincipal = (OidcUser) authentication.getPrincipal();
+        return Optional.ofNullable(userPrincipal.getSubject());
     }
 }
