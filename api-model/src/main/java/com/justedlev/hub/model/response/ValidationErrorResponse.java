@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Builder
-public class ValidationErrorResponse {
+public class ValidationErrorResponse implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Builder.Default
     private Date timestamp = new Date();

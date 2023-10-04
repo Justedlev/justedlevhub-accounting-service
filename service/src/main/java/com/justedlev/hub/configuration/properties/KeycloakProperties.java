@@ -1,6 +1,5 @@
 package com.justedlev.hub.configuration.properties;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.net.URI;
 import java.util.Set;
 
-@Setter(AccessLevel.PACKAGE)
+@Setter
 @Getter
 @ConfigurationProperties(prefix = "keycloak")
 public class KeycloakProperties {
@@ -16,7 +15,7 @@ public class KeycloakProperties {
     private URI jwkSetUri;
     private JwtConverterProperties jwtConverter;
 
-    @Setter(AccessLevel.PACKAGE)
+    @Setter
     @Getter
     @ConfigurationProperties(prefix = "keycloak.jwt-converter")
     public static class JwtConverterProperties {

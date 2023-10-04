@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Data
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class AuditResponse<T> {
+public class AuditResponse<T extends Serializable> implements Serializable {
     private T image;
     private Metadata metadata;
 
@@ -23,7 +24,7 @@ public class AuditResponse<T> {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Metadata {
+    public static class Metadata implements Serializable {
         private String revisionType;
         private Long revisionNumber;
         @JsonFormat(shape = JsonFormat.Shape.STRING)

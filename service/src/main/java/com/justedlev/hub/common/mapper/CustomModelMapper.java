@@ -31,7 +31,7 @@ public class CustomModelMapper extends BaseModelMapper {
 
     private void registerTypeMaps() {
         createTypeMap(AccountFilterParams.class, AccountFilter.class)
-                .addMapping(AccountFilterParams::getFreeText, AccountFilter::setFreeText);
+                .addMapping(AccountFilterParams::getQ, AccountFilter::setFreeText);
         createTypeMap(RegistrationRequest.class, Contact.class)
                 .addMapping(RegistrationRequest::getEmail, Contact::setValue)
                 .addMapping(rr -> ContactType.EMAIL.getLabel(), Contact::setType);

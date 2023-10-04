@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContactFilterParams {
+public class ContactFilterParams implements Serializable {
     private String freeText;
     private Collection<String> emails;
     private Collection<String> phoneNumbers;

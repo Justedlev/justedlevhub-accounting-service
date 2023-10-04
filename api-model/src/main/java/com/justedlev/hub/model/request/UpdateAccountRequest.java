@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Builder
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateAccountRequest {
+public class UpdateAccountRequest implements Serializable {
     private String firstName;
     private String lastName;
     @JsonFormat(shape = JsonFormat.Shape.STRING)

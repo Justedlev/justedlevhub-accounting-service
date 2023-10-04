@@ -4,37 +4,25 @@ server:
     context-path: /api
   error:
     include-stacktrace: never
+
 logging:
   file:
     name: ${logging.file.path}/latest.log
     path: ./.logs
+
 spring:
   application:
-    name: users-justedlevhub
+    name: '@project.name@'
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI}
-          jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+          issuer-uri: ${keycloak.issuer-uri}
+          jwk-set-uri: ${keycloak.jwk-set-uri}
         opaquetoken:
-          introspection-uri: ${KEYCLOAK_INTROSPECTION_ENDPOINT}
-          client-id: ${KEYCLOAK_CLIENT_ID}
-          client-secret: ${KEYCLOAK_CLIENT_SECRET}
-  #      client:
-  #        registration:
-  #          users-justedlevhub:
-  #            provider: keycloak
-  #            client-name: justedlevhub-users-rest-api
-  #            client-id: ${KEYCLOAK_CLIENT_ID}
-  #            client_secret: ${KEYCLOAK_CLIENT_SECRET}
-  #            scope: openid,offline_access,profile
-  #            authorization-grant-type: client_credentials
-  #        provider:
-  #          keycloak:
-  #            issuer-uri: ${KEYCLOAK_ISSUER_URI}
-  #            jwk-set-uri: ${KEYCLOAK_JWKS_URI}
-  #            user-name-attribute: preferred_username
+          introspection-uri: ${keycloak.introspection-uri}
+          client-id: ${keycloak.client-id}
+          client-secret: ${keycloak.client-secret}
   devtools:
     restart:
       enabled: true
@@ -76,20 +64,14 @@ spring:
     password: ${cloudamqp.password}
     username: ${cloudamqp.username}
     virtual-host: ${cloudamqp.virtual-host}
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.uuid}
   client:
     service-url:
-      default-zone: ${app-config.service-registry.url}
-cloudamqp:
-  host: ${CLOUDAMQP_HOST}
-  port: ${CLOUDAMQP_PORT}
-  password: ${CLOUDAMQP_PASSWORD}
-  username: ${CLOUDAMQP_USERNAME}
-  virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
-  queue:
-    send-template-mail: send-template-mail-queue
+      default-zone: ${configuration.service-registry.url}
+
 management:
   endpoint:
     health:
@@ -98,15 +80,36 @@ management:
       enabled: true
     refresh:
       enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+info:
+  name: ${spring.application.name}
+  version: '@project.version@'
 
 # Custom properties
+cloudamqp:
+  host: ${CLOUDAMQP_HOST}
+  port: ${CLOUDAMQP_PORT}
+  password: ${CLOUDAMQP_PASSWORD}
+  username: ${CLOUDAMQP_USERNAME}
+  virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
+  queue:
+    send-template-mail: send-template-mail-queue
+
 keycloak:
   issuer-uri: ${KEYCLOAK_ISSUER_URI}
   jwk-set-uri: ${KEYCLOAK_JWKS_URI}
+  introspection-uri: ${KEYCLOAK_INTROSPECTION_ENDPOINT}
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
   jwt-converter:
     role-claims: realm_access.roles,resource_access.account.roles
     username-attribute: preferred_username
-app-config:
+
+configuration:
   service:
     email: ${SERVICE_MAIL_USERNAME}
     name: ${SERVICE_NAME:JustedlevHub}

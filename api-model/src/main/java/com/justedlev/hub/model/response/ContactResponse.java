@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ContactResponse {
+public class ContactResponse implements Serializable {
     @Builder.Default
     private boolean main = Boolean.FALSE;
     private String email;

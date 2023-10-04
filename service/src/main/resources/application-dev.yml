@@ -13,6 +13,7 @@ spring:
 jstorage:
   client:
     url: ${GATEWAY_HOST}/api/v1/
+
 logging:
   level:
     web: debug
@@ -21,7 +22,8 @@ logging:
     org:
       hibernate.orm.jdbc.bind: trace
       springframework.security: trace
-app-config:
+
+configuration:
   activity-time: ${ACTIVITY_TIME:10m}
   offline-after-time: ${OFFLINE_AFTER_TIME:10m}
   service:

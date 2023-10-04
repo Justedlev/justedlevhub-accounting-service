@@ -73,7 +73,7 @@
                             <packageName>${jar.manifest.packageName}</packageName>
                         </manifest>
                         <manifestEntries>
-                            <Created-By>Justedlev {-...-}</Created-By>
+                            <Created-By>Justedlev</Created-By>
                             <Implementation-Title>${project.description}</Implementation-Title>
                             <Implementation-Version>${project.version}</Implementation-Version>
                         </manifestEntries>

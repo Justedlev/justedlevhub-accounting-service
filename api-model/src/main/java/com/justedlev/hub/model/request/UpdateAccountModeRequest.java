@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 @Data
@@ -17,7 +18,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UpdateAccountModeRequest {
+public class UpdateAccountModeRequest implements Serializable {
     @NotNull
     @NotEmpty
     private Collection<@NotNull AccountMode> fromAccountModes;

@@ -1,4 +1,6 @@
 package com.justedlev.hub.model.request;
 
-public class UpdateContactRequest {
+import java.io.Serializable;
+
+public class UpdateContactRequest implements Serializable {
 }

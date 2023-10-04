@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class ErrorDetailsResponse {
+public class ErrorDetailsResponse implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Builder.Default
     private Date timestamp = new Date();
