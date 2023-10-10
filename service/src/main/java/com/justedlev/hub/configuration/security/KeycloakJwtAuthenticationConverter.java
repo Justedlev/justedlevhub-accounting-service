@@ -1,6 +1,6 @@
 package com.justedlev.hub.configuration.security;
 
-import com.justedlev.hub.configuration.properties.KeycloakProperties;
+import com.justedlev.hub.configuration.properties.keycloak.KeycloakJwtConverterProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.core.convert.converter.Converter;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@Setter(onParam = @__(@NonNull))
+@Setter(onParam_ = @NonNull)
 @RequiredArgsConstructor
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
-    private final KeycloakProperties.JwtConverterProperties properties;
+    private final KeycloakJwtConverterProperties properties;
     private final KeycloakGrantedAuthoritiesConverter keycloakGrantedAuthoritiesConverter;
 
     @Override
@@ -29,7 +29,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
 
     private String extractName(Jwt jwt) {
         return Optional.of(properties)
-                .map(KeycloakProperties.JwtConverterProperties::getUsernameAttribute)
+                .map(KeycloakJwtConverterProperties::getUsernameAttribute)
                 .map(jwt::getClaimAsString)
                 .orElseGet(jwt::getSubject);
     }

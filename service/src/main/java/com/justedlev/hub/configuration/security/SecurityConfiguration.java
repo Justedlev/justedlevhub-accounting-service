@@ -44,7 +44,9 @@ public class SecurityConfiguration {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/actuator",
+                                "/actuator/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/history/accounts/**").hasRole("admin")
                         .requestMatchers(HttpMethod.GET, "/v1/accounts/**").hasRole("user")

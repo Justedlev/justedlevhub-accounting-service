@@ -1,5 +1,6 @@
 package com.justedlev.hub.repository.specification;
 
+import com.justedlev.hub.repository.entity.AbstractPersistable_;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Account_;
 import com.justedlev.hub.repository.filter.AccountFilter;
@@ -11,10 +12,12 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class AccountSpecification implements Specification<Account> {
@@ -31,7 +34,7 @@ public class AccountSpecification implements Specification<Account> {
         List<Predicate> predicates = new ArrayList<>();
 
         if (CollectionUtils.isNotEmpty(filter.getIds())) {
-            predicates.add(root.get(Account_.id).in(filter.getIds()));
+            predicates.add(root.get(AbstractPersistable_.id).in(filter.getIds()));
         }
 
         if (CollectionUtils.isNotEmpty(filter.getNicknames())) {
@@ -52,6 +55,21 @@ public class AccountSpecification implements Specification<Account> {
 
         if (CollectionUtils.isNotEmpty(filter.getConfirmCodes())) {
             predicates.add(root.get(Account_.confirmCode).in(filter.getConfirmCodes()));
+        }
+
+        if (StringUtils.isNotBlank(filter.getFreeText())) {
+            Pattern.compile("\\s+")
+                    .splitAsStream(filter.getFreeText())
+                    .filter(StringUtils::isNotBlank)
+                    .map(cb::literal)
+                    .map(cb::trim)
+                    .map(exp -> cb.concat("%", exp))
+                    .map(exp -> cb.concat(exp, "%"))
+                    .forEach(exp -> predicates.add(cb.or(
+                            cb.like(root.get(Account_.nickname), exp),
+                            cb.like(root.get(Account_.firstName), exp),
+                            cb.like(root.get(Account_.lastName), exp)
+                    )));
         }
 
         return cb.and(predicates.toArray(Predicate[]::new));

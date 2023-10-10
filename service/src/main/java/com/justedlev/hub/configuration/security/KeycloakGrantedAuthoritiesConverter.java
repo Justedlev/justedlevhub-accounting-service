@@ -1,6 +1,6 @@
 package com.justedlev.hub.configuration.security;
 
-import com.justedlev.hub.configuration.properties.KeycloakProperties;
+import com.justedlev.hub.configuration.properties.keycloak.KeycloakJwtConverterProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class KeycloakGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
     private static final String ROLE_PREFIX = "ROLE_";
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-    private final KeycloakProperties.JwtConverterProperties properties;
+    private final KeycloakJwtConverterProperties properties;
 
     @Override
     public Collection<GrantedAuthority> convert(@NonNull Jwt jwt) {

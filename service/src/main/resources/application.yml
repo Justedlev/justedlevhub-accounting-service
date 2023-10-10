@@ -12,7 +12,7 @@ logging:
 
 spring:
   application:
-    name: '@project.name@'
+    name: users
   security:
     oauth2:
       resourceserver:
@@ -20,7 +20,7 @@ spring:
           issuer-uri: ${keycloak.issuer-uri}
           jwk-set-uri: ${keycloak.jwk-set-uri}
         opaquetoken:
-          introspection-uri: ${keycloak.introspection-uri}
+          introspection-uri: ${keycloak.endpoints.introspection}
           client-id: ${keycloak.client-id}
           client-secret: ${keycloak.client-secret}
   devtools:
@@ -65,14 +65,35 @@ spring:
     username: ${cloudamqp.username}
     virtual-host: ${cloudamqp.virtual-host}
 
+springdoc:
+  swagger-ui:
+    oauth:
+      realm: ${keycloak.realm}
+      client-id: ${keycloak.client.id}
+      client-secret: ${keycloak.client.secret}
+  show-actuator: true
+  api-docs:
+    version: openapi_3_1
+
 eureka:
   instance:
     instance-id: ${spring.application.name}:${random.uuid}
+    app-group-name: justedlev-hub
+    appname: users
   client:
     service-url:
       default-zone: ${configuration.service-registry.url}
 
 management:
+  info:
+    build:
+      enabled: true
+    os:
+      enabled: true
+    defaults:
+      enabled: true
+    java:
+      enabled: true
   endpoint:
     health:
       enabled: true
@@ -84,10 +105,6 @@ management:
     web:
       exposure:
         include: '*'
-
-info:
-  name: ${spring.application.name}
-  version: '@project.version@'
 
 # Custom properties
 cloudamqp:
@@ -102,9 +119,14 @@ cloudamqp:
 keycloak:
   issuer-uri: ${KEYCLOAK_ISSUER_URI}
   jwk-set-uri: ${KEYCLOAK_JWKS_URI}
-  introspection-uri: ${KEYCLOAK_INTROSPECTION_ENDPOINT}
-  client-id: ${KEYCLOAK_CLIENT_ID}
-  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+  realm: ${KEYCLOAK_REALM}
+  client:
+    name:
+    id: ${KEYCLOAK_CLIENT_ID}
+    secret: ${KEYCLOAK_CLIENT_SECRET}
+  endpoints:
+    introspection: ${KEYCLOAK_INTROSPECTION_ENDPOINT}
+    token: ${KEYCLOAK_TOKEN_ENDPOINT}
   jwt-converter:
     role-claims: realm_access.roles,resource_access.account.roles
     username-attribute: preferred_username
@@ -113,7 +135,6 @@ configuration:
   service:
     email: ${SERVICE_MAIL_USERNAME}
     name: ${SERVICE_NAME:JustedlevHub}
-    label: "{•...•}"
     url: ${SERVICE_URL}
   service-registry:
     url: ${SERVICE_REGISTRY_URL}

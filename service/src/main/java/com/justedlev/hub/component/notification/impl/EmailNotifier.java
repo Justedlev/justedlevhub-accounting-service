@@ -4,7 +4,7 @@ import com.justedlev.hub.api.notification.model.request.SendNotificationRequest;
 import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
-import com.justedlev.hub.configuration.properties.Properties;
+import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import com.justedlev.hub.constant.MailSubjectConstant;
 import com.justedlev.hub.constant.MailTemplateConstant;
 import com.justedlev.hub.queue.NotificationQueue;
@@ -22,7 +22,7 @@ import static com.justedlev.hub.constant.ControllerResources.CONFIRM;
 @RequiredArgsConstructor
 public class EmailNotifier implements TypedNotifier {
     private final NotificationQueue notificationQueue;
-    private final Properties.Service properties;
+    private final ApplicationProperties.Service properties;
 
     @Override
     public void send(NotificationCommand context) {

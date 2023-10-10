@@ -18,44 +18,50 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         name = "Justedlev",
                         email = "justedlevhub@gmail.com"
                 ),
-                description = "Documentation",
-                title = "OpenApi specification - Justedlevhub",
-                version = "1.0",
+                description = "Users Service APIs Documentation",
+                title = "OpenApi specification - Justedlevhub Users APIs",
+                version = "v1.0",
                 license = @License(
                         name = "Apache 2.0",
-                        url = "springdoc.org"
-                ),
-                termsOfService = "Terms of service"
+                        url = "https://springdoc.org"
+                )
         ),
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:8080"
+                        url = "http://localhost:${server.port}${server.servlet.context-path}"
                 ),
         },
         security = {
-                @SecurityRequirement(
-                        name = "bearerAuth"
-                )
+                @SecurityRequirement(name = "OAuth2"),
+                @SecurityRequirement(name = "bearer-auth"),
         }
 )
 @SecurityScheme(
-        name = "bearerAuth",
-        description = "JWT auth description",
+        name = "OAuth2",
+        description = "Authentication by OAuth2 protocol",
+        scheme = "bearer",
+        type = SecuritySchemeType.OAUTH2,
+        bearerFormat = "JWT",
+        in = SecuritySchemeIn.COOKIE,
+        flows = @OAuthFlows(
+                password = @OAuthFlow(
+                        tokenUrl = "${keycloak.endpoints.token}",
+                        refreshUrl = "${keycloak.endpoints.token}"
+                ),
+                clientCredentials = @OAuthFlow(
+                        tokenUrl = "${keycloak.endpoints.token}",
+                        refreshUrl = "${keycloak.endpoints.token}"
+                )
+        )
+)
+@SecurityScheme(
+        name = "bearer-auth",
+        description = "Authentication by JWT",
         scheme = "bearer",
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
-        in = SecuritySchemeIn.HEADER,
-        flows = @OAuthFlows(
-                password = @OAuthFlow(
-                        tokenUrl = "http://localhost:9321/realms/justedlevhub/protocol/openid-connect/token",
-                        refreshUrl = "http://localhost:9321/realms/justedlevhub/protocol/openid-connect/token"
-                ),
-                clientCredentials = @OAuthFlow(
-                        tokenUrl = "http://localhost:9321/realms/justedlevhub/protocol/openid-connect/token",
-                        refreshUrl = "http://localhost:9321/realms/justedlevhub/protocol/openid-connect/token"
-                )
-        )
+        in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfiguration {
 }

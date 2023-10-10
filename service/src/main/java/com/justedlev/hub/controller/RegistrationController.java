@@ -1,6 +1,6 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.configuration.properties.Properties;
+import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.service.RegistrationService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
 @Validated
 public class RegistrationController {
     private final RegistrationService registrationService;
-    private final Properties.Service service;
+    private final ApplicationProperties.Service service;
 
     @PostMapping(value = "/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid RegistrationRequest request) {

@@ -1,7 +1,7 @@
 package com.justedlev.hub.component.account.impl;
 
 import com.justedlev.hub.component.account.AccountModeComponent;
-import com.justedlev.hub.configuration.properties.Properties;
+import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import com.justedlev.hub.model.request.UpdateAccountModeRequest;
 import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.repository.AccountRepository;
@@ -22,7 +22,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class AccountModeComponentImpl implements AccountModeComponent {
-    private final Properties properties;
+    private final ApplicationProperties properties;
     private final AccountRepository accountRepository;
     private final ModelMapper mapper;
 
