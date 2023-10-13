@@ -18,7 +18,6 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,8 +41,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @Operation(summary = "Find the page of accounts")
-    @ApiResponse(description = "Found the page of accounts")
-    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200", description = "Found the page of accounts")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AccountResponse>>
     findPage(@ParameterObject AccountFilterParams params,
@@ -52,14 +50,14 @@ public class AccountController {
     }
 
     @Operation(summary = "Find the account by its id")
-    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200")
     @GetMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> getById(@PathVariable @NotNull UUID id) {
         return ResponseEntity.ok(accountService.getById(id));
     }
 
     @Operation(summary = "Create new account")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponse(responseCode = "201")
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
         var account = accountService.create(request);
@@ -68,7 +66,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Update account")
-    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200")
     @PatchMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotNull UUID id,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
@@ -76,7 +74,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Update account avatar")
-    @ResponseStatus(HttpStatus.OK)
+    @ApiResponse(responseCode = "200")
     @PatchMapping(
             value = ID_AVATAR,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
@@ -88,7 +86,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Account confirmation")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ApiResponse(responseCode = "302")
     @PatchMapping(value = CONFIRM_CODE)
     public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
         var id = accountService.confirm(code);
@@ -96,6 +94,7 @@ public class AccountController {
     }
 
     @Operation(summary = "Update account mode")
+    @ApiResponse(responseCode = "200")
     @PatchMapping(value = UPDATE_MODE)
     public ResponseEntity<List<AccountResponse>> updateMode(@Valid @RequestBody UpdateAccountModeRequest request) {
         return ResponseEntity.ok(accountService.updateMode(request));
@@ -103,7 +102,7 @@ public class AccountController {
 
     @Operation(summary = "Delete account by its id")
     @ApiResponse(description = "Successfully deleted")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponse(responseCode = "204")
     @DeleteMapping(value = ID)
     public ResponseEntity<Void> delete(@PathVariable @NotNull UUID id) {
         accountService.deleteById(id);
