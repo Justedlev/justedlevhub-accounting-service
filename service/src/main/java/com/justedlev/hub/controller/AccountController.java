@@ -18,6 +18,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -42,7 +43,7 @@ public class AccountController {
 
     @Operation(summary = "Find the page of accounts")
     @ApiResponse(responseCode = "200", description = "Found the page of accounts")
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AccountResponse>>
     findPage(@ParameterObject AccountFilterParams params,
              @ParameterObject @PageableDefault(value = 50) Pageable pageable) {
@@ -91,7 +92,8 @@ public class AccountController {
     }
 
     @Operation(summary = "Delete account by its id")
-    @ApiResponse(responseCode = "204", description = "Successfully deleted")
+    @ApiResponse(description = "Successfully deleted")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = ID)
     public ResponseEntity<Void> delete(@PathVariable @NotNull UUID id) {
         accountService.deleteById(id);

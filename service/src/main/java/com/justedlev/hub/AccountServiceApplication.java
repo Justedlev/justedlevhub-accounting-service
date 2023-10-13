@@ -4,7 +4,6 @@ import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import com.justedlev.hub.configuration.properties.CloudAmqpProperties;
 import com.justedlev.hub.configuration.properties.JNotificationProperties;
 import com.justedlev.hub.configuration.properties.keycloak.KeycloakClientProperties;
-import com.justedlev.hub.configuration.properties.keycloak.KeycloakEndpointsProperties;
 import com.justedlev.hub.configuration.properties.keycloak.KeycloakJwtConverterProperties;
 import com.justedlev.hub.configuration.properties.keycloak.KeycloakProperties;
 import org.springframework.boot.SpringApplication;
@@ -30,7 +29,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         CloudAmqpProperties.class,
         CloudAmqpProperties.Queue.class,
         KeycloakProperties.class,
-        KeycloakEndpointsProperties.class,
         KeycloakClientProperties.class,
         KeycloakJwtConverterProperties.class
 })

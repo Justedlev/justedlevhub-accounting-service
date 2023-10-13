@@ -12,7 +12,8 @@ import java.net.URI;
 public class KeycloakProperties {
     private URI issuerUri;
     private URI jwkSetUri;
+    private URI introspectionUri;
+    private URI tokenUri;
     private KeycloakClientProperties client;
-    private KeycloakEndpointsProperties endpoints;
     private KeycloakJwtConverterProperties jwtConverter;
 }

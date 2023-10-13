@@ -29,7 +29,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         servers = {
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:${server.port}${server.servlet.context-path}"
+                        url = "${configuration.service.url}"
                 ),
         },
         security = {
@@ -46,12 +46,12 @@ import io.swagger.v3.oas.annotations.servers.Server;
         in = SecuritySchemeIn.COOKIE,
         flows = @OAuthFlows(
                 password = @OAuthFlow(
-                        tokenUrl = "${keycloak.endpoints.token}",
-                        refreshUrl = "${keycloak.endpoints.token}"
+                        tokenUrl = "${keycloak.token-uri}",
+                        refreshUrl = "${keycloak.token-uri}"
                 ),
                 clientCredentials = @OAuthFlow(
-                        tokenUrl = "${keycloak.endpoints.token}",
-                        refreshUrl = "${keycloak.endpoints.token}"
+                        tokenUrl = "${keycloak.token-uri}",
+                        refreshUrl = "${keycloak.token-uri}"
                 )
         )
 )
