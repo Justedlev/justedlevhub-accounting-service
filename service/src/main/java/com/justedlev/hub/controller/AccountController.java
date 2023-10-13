@@ -42,7 +42,8 @@ public class AccountController {
     private final AccountService accountService;
 
     @Operation(summary = "Find the page of accounts")
-    @ApiResponse(responseCode = "200", description = "Found the page of accounts")
+    @ApiResponse(description = "Found the page of accounts")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<AccountResponse>>
     findPage(@ParameterObject AccountFilterParams params,
@@ -51,13 +52,15 @@ public class AccountController {
     }
 
     @Operation(summary = "Find the account by its id")
-    @GetMapping(value = ID)
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> getById(@PathVariable @NotNull UUID id) {
         return ResponseEntity.ok(accountService.getById(id));
     }
 
     @Operation(summary = "Create new account")
-    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> create(@Valid @RequestBody CreateAccountRequest request) {
         var account = accountService.create(request);
 
@@ -65,20 +68,27 @@ public class AccountController {
     }
 
     @Operation(summary = "Update account")
-    @PatchMapping(value = ID)
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotNull UUID id,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateById(id, request));
     }
 
     @Operation(summary = "Update account avatar")
-    @PatchMapping(value = ID_AVATAR, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(
+            value = ID_AVATAR,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public ResponseEntity<AccountResponse> updateAvatar(@PathVariable @NotNull UUID id,
                                                         @RequestPart MultipartFile file) {
         return ResponseEntity.ok(accountService.updateAvatar(id, file));
     }
 
     @Operation(summary = "Account confirmation")
+    @ResponseStatus(HttpStatus.FOUND)
     @PatchMapping(value = CONFIRM_CODE)
     public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
         var id = accountService.confirm(code);

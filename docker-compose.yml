@@ -1,0 +1,11 @@
+version: "3.9"
+name: justedlevhub
+services:
+  service-registry:
+    build: .
+    container_name: users-service
+    image: justedlev/users-service:1.0.0
+    env_file:
+      - ""
+    ports:
+      - "0:8080"
