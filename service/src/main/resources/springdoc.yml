@@ -1,0 +1,10 @@
+springdoc:
+  swagger-ui:
+    oauth:
+      realm: ${keycloak.realm}
+      client-id: ${keycloak.client.id}
+      client-secret: ${keycloak.client.secret}
+    operations-sorter: method
+  show-actuator: true
+  api-docs:
+    version: openapi_3_1

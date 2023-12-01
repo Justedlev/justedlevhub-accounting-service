@@ -1,0 +1,7 @@
+application:
+  service:
+    email: ${SERVICE_MAIL_USERNAME}
+    name: ${SERVICE_NAME:JustedlevHub}
+    url: ${GATEWAY_HOST}/${spring.application.name}${server.servlet.context-path}
+  service-registry:
+    url: ${SERVICE_REGISTRY_URL}

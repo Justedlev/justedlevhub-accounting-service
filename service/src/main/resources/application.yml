@@ -5,12 +5,17 @@ server:
   error:
     include-stacktrace: never
 
-logging:
-  file:
-    name: ${logging.file.path}/latest.log
-    path: ./.logs
-
 spring:
+  config:
+    import:
+      - classpath:/cloudamqp.yml
+      - classpath:/security.yml
+      - classpath:/keycloak.yml
+      - classpath:/config.yml
+      - classpath:/springdoc.yml
+      - classpath:/logging.yml
+      - classpath:/eureka.yml
+      - classpath:/management.yml
   application:
     name: users-service
   security:
@@ -39,6 +44,7 @@ spring:
       org:
         hibernate:
           envers:
+            audit_strategy: org.hibernate.envers.strategy.ValidityAuditStrategy
             default_schema: history
             audit_table_suffix: _history
             revision_field_name: rev_id
@@ -64,77 +70,3 @@ spring:
     password: ${cloudamqp.password}
     username: ${cloudamqp.username}
     virtual-host: ${cloudamqp.virtual-host}
-
-springdoc:
-  swagger-ui:
-    oauth:
-      realm: ${keycloak.realm}
-      client-id: ${keycloak.client.id}
-      client-secret: ${keycloak.client.secret}
-    operations-sorter: method
-  show-actuator: true
-  api-docs:
-    version: openapi_3_1
-
-eureka:
-  instance:
-    instance-id: ${spring.application.name}:${random.uuid}
-    app-group-name: justedlev-hub
-    appname: ${spring.application.name}
-  client:
-    service-url:
-      default-zone: ${configuration.service-registry.url}
-
-management:
-  info:
-    build:
-      enabled: true
-    os:
-      enabled: true
-    defaults:
-      enabled: true
-    java:
-      enabled: true
-  endpoint:
-    health:
-      enabled: true
-    restart:
-      enabled: true
-    refresh:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-
-# Custom properties
-cloudamqp:
-  host: ${CLOUDAMQP_HOST}
-  port: ${CLOUDAMQP_PORT}
-  password: ${CLOUDAMQP_PASSWORD}
-  username: ${CLOUDAMQP_USERNAME}
-  virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
-  queue:
-    send-template-mail: send-template-mail-queue
-
-keycloak:
-  issuer-uri: ${KEYCLOAK_ISSUER_URI}
-  jwk-set-uri: ${KEYCLOAK_JWKS_URI}
-  introspection-uri: ${KEYCLOAK_INTROSPECTION_ENDPOINT}
-  token-uri: ${KEYCLOAK_TOKEN_ENDPOINT}
-  realm: ${KEYCLOAK_REALM}
-  client:
-    name:
-    id: ${KEYCLOAK_CLIENT_ID}
-    secret: ${KEYCLOAK_CLIENT_SECRET}
-  jwt-converter:
-    role-claims: realm_access.roles,resource_access.account.roles
-    username-attribute: preferred_username
-
-configuration:
-  service:
-    email: ${SERVICE_MAIL_USERNAME}
-    name: ${SERVICE_NAME:JustedlevHub}
-    url: ${GATEWAY_HOST}/${spring.application.name}${server.servlet.context-path}
-  service-registry:
-    url: ${SERVICE_REGISTRY_URL}

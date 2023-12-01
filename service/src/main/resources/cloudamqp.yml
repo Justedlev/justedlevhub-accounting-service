@@ -1,0 +1,8 @@
+cloudamqp:
+  host: ${CLOUDAMQP_HOST}
+  port: ${CLOUDAMQP_PORT}
+  password: ${CLOUDAMQP_PASSWORD}
+  username: ${CLOUDAMQP_USERNAME}
+  virtual-host: ${CLOUDAMQP_VIRTUAL_HOST}
+  queue:
+    send-template-mail: send-template-mail-queue
