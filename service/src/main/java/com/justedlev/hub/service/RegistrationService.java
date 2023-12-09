@@ -1,7 +1,8 @@
 package com.justedlev.hub.service;
 
 import com.justedlev.hub.model.request.RegistrationRequest;
+import com.justedlev.hub.model.response.RegistrationResponse;
 
 public interface RegistrationService {
-    void registration(RegistrationRequest request);
+    RegistrationResponse registration(RegistrationRequest request);
 }

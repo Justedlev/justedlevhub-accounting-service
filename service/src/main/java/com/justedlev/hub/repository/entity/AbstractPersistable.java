@@ -12,10 +12,10 @@ import org.springframework.data.domain.Persistable;
 import java.io.Serializable;
 import java.util.Objects;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @SuperBuilder
-@AllArgsConstructor
-@NoArgsConstructor
 @MappedSuperclass
 public abstract class AbstractPersistable<PK extends Serializable> implements Persistable<PK> {
     @Id

@@ -17,11 +17,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Auditable<PK extends Serializable> extends AbstractPersistable<PK> {

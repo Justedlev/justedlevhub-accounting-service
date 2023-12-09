@@ -9,8 +9,10 @@ import org.springframework.data.repository.history.RevisionRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AccountRepository extends
-        JpaRepository<Account, UUID>, JpaSpecificationExecutor<Account>, RevisionRepository<Account, UUID, Long> {
+public interface AccountRepository extends JpaRepository<Account, UUID>,
+        JpaSpecificationExecutor<Account>,
+        RevisionRepository<Account, UUID, Long> {
+
     boolean existsByNickname(String nickname);
 
     boolean existsByConfirmCodeAndStatus(String confirmCode, String status);

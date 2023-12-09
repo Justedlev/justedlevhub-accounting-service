@@ -3,43 +3,48 @@ package com.justedlev.hub.repository.entity;
 import com.justedlev.hub.type.AccountMode;
 import com.justedlev.hub.type.AccountStatus;
 import com.justedlev.hub.type.Gender;
-import com.justedlev.hub.util.Generator;
+import com.justedlev.util.Generator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
+import org.springframework.data.history.Revision;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import static com.justedlev.hub.type.AccountMode.OFFLINE;
 import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 
-@Audited
-@AuditOverride(forClass = Auditable.class)
-@SuperBuilder
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@SuperBuilder
+@Audited
+@AuditOverride(forClass = Auditable.class)
 @Entity
 @DynamicUpdate
 @Table(name = "accounts")
 @NamedEntityGraph(
-        name = "account-entity-graph",
+        name = Account.ENTITY_GRAPH_NAME,
         attributeNodes = {@NamedAttributeNode("contacts"),}
 )
 public class Account extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6714493400L;
+    public static final String ENTITY_GRAPH_NAME = "account-entity-graph";
 
     @NotBlank
     @NotEmpty
@@ -82,7 +87,16 @@ public class Account extends Versionable<UUID> implements Serializable {
     @Singular
     @ToString.Exclude
     @OneToMany(mappedBy = "account")
+    @Cascade({
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH,
+            CascadeType.DETACH,
+            CascadeType.DELETE_ORPHAN,
+    })
     private Set<Contact> contacts;
+
+    private transient List<Revision<Long, Account>> revisions;
 
     public AccountMode getAccountMode() {
         return AccountMode.labelOf(mode);

@@ -1,8 +1,9 @@
 package com.justedlev.hub.controller;
 
-import com.justedlev.hub.configuration.properties.ApplicationProperties;
+import com.justedlev.common.constant.ControllerResources;
 import com.justedlev.hub.model.request.RegistrationRequest;
 import com.justedlev.hub.service.RegistrationService;
+import com.justedlev.util.ServiceHttpHeaders;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -11,27 +12,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
+import java.net.URI;
+
+import static com.justedlev.common.constant.ControllerResources.Account.ACCOUNTS;
 
 @RestController
-@RequestMapping("/registration")
+@RequestMapping("/v1/registration")
 @RequiredArgsConstructor
 @Validated
 public class RegistrationController {
     private final RegistrationService registrationService;
-    private final ApplicationProperties.Service service;
 
     @PostMapping(value = "/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid RegistrationRequest request) {
-        registrationService.registration(request);
-        var createdUri = UriComponentsBuilder.fromUriString(service.getUrl())
-                .path(ACCOUNTS)
-                .path("/" + request.getNickname())
-                .build()
-                .toUri();
+        var res = registrationService.registration(request);
 
-        return ResponseEntity.created(createdUri).build();
+        return ResponseEntity.created(URI.create(ControllerResources.API + ACCOUNTS + "/" + res.getUserId()))
+                .header(ServiceHttpHeaders.X_USER_ID, String.valueOf(res.getUserId()))
+                .build();
     }
 }

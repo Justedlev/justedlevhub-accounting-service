@@ -1,8 +1,8 @@
 package com.justedlev.hub.repository.entity;
 
-import com.justedlev.hub.type.ContactType;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @Audited
 @AuditOverride(forClass = Auditable.class)
+@Accessors(chain = true)
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,14 +27,13 @@ import java.util.UUID;
 @DynamicUpdate
 @Table(name = "contacts")
 @NamedEntityGraph(
-        name = "contact-entity-graph",
-        attributeNodes = {
-                @NamedAttributeNode("account"),
-        }
+        name = Contact.ENTITY_GRAPH_NAME,
+        attributeNodes = {@NamedAttributeNode("account"),}
 )
 public class Contact extends Versionable<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6790844800L;
+    public static final String ENTITY_GRAPH_NAME = "contact-entity-graph";
 
     @Column(name = "type", nullable = false, updatable = false)
     private String type;
@@ -45,24 +45,15 @@ public class Contact extends Versionable<UUID> implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(
             name = "account_contact",
-            joinColumns = @JoinColumn(
-                    name = "contact_id",
-                    referencedColumnName = "id"
-            ),
-            inverseJoinColumns = @JoinColumn(
-                    name = "account_id",
-                    referencedColumnName = "id"
-            )
+            joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id")
     )
     @Cascade({
             CascadeType.PERSIST,
             CascadeType.MERGE,
             CascadeType.REFRESH,
             CascadeType.DETACH,
+            CascadeType.REMOVE,
     })
     private Account account;
-
-    public ContactType getContactType() {
-        return ContactType.labelOf(type);
-    }
 }

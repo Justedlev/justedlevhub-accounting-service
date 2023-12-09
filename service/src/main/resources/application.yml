@@ -17,7 +17,7 @@ spring:
       - classpath:/eureka.yml
       - classpath:/management.yml
   application:
-    name: users-service
+    name: service.users
   security:
     oauth2:
       resourceserver:

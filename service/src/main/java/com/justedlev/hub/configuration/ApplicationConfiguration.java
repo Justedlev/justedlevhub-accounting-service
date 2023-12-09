@@ -1,8 +1,10 @@
 package com.justedlev.hub.configuration;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.justedlev.common.mapper.CustomModelMapper;
 import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import org.apache.commons.validator.routines.EmailValidator;
+import org.modelmapper.ModelMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -42,5 +44,10 @@ public class ApplicationConfiguration {
     @Bean
     UriComponentsBuilder serviceUriBuilder(ApplicationProperties.Service service) {
         return UriComponentsBuilder.fromUriString(service.getUrl());
+    }
+
+    @Bean
+    ModelMapper modelMapper() {
+        return new CustomModelMapper();
     }
 }

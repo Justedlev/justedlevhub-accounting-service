@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
+import org.keycloak.OAuth2Constants;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -29,7 +30,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         servers = {
                 @Server(
                         description = "Gateway ENV",
-                        url = "${configuration.service.url}"
+                        url = "${application.service.url}"
                 ),
         },
         security = {
@@ -42,7 +43,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         description = "Authentication by OAuth2 protocol",
         scheme = "bearer",
         type = SecuritySchemeType.OAUTH2,
-        bearerFormat = "JWT",
+        bearerFormat = OAuth2Constants.JWT,
         in = SecuritySchemeIn.COOKIE,
         flows = @OAuthFlows(
                 password = @OAuthFlow(
@@ -60,7 +61,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
         description = "Authentication by JWT",
         scheme = "bearer",
         type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
+        bearerFormat = OAuth2Constants.JWT,
         in = SecuritySchemeIn.HEADER
 )
 public class OpenApiConfiguration {

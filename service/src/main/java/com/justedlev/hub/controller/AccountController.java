@@ -6,7 +6,8 @@ import com.justedlev.hub.model.request.UpdateAccountModeRequest;
 import com.justedlev.hub.model.request.UpdateAccountRequest;
 import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.service.AccountService;
-import com.justedlev.hub.util.ResponseEntityUtils;
+import com.justedlev.util.ResponseEntities;
+import com.justedlev.util.ServiceHttpHeaders;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,8 +30,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static com.justedlev.hub.constant.ControllerResources.API;
-import static com.justedlev.hub.constant.ControllerResources.Account.*;
+import static com.justedlev.common.constant.ControllerResources.API;
+import static com.justedlev.common.constant.ControllerResources.Account.*;
 
 @Tag(name = "Accounts", description = "Endpoints for accounts operations")
 @RestController
@@ -90,7 +91,7 @@ public class AccountController {
     @PatchMapping(value = CONFIRM_CODE)
     public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
         var id = accountService.confirm(code);
-        return ResponseEntityUtils.found(buildAccountUri(id)).build();
+        return ResponseEntities.found(buildAccountUri(id));
     }
 
     @Operation(summary = "Update account mode")
@@ -108,7 +109,7 @@ public class AccountController {
         accountService.deleteById(id);
         return ResponseEntity
                 .noContent()
-                .header("X-alert", "account.deleted")
+                .header(ServiceHttpHeaders.X_ALERT, "account.deleted")
                 .build();
     }
 

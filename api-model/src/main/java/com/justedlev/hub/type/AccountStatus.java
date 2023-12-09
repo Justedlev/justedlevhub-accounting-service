@@ -11,11 +11,13 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor
 public enum AccountStatus {
-    ACTIVE("active"),
-    UNCONFIRMED("unconfirmed"),
-    RESTORED("restored"),
-    DEACTIVATED("deactivated"),
-    DELETED("deleted");
+    ACTIVE(AccountStatus.PREFIX + "active"),
+    UNCONFIRMED(AccountStatus.PREFIX + "unconfirmed"),
+    RESTORED(AccountStatus.PREFIX + "restored"),
+    DEACTIVATED(AccountStatus.PREFIX + "deactivated"),
+    DELETED(AccountStatus.PREFIX + "deleted");
+
+    private static final String PREFIX = "account.status.";
 
     private final String label;
 

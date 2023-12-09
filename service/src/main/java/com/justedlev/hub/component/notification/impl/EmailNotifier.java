@@ -5,8 +5,8 @@ import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
 import com.justedlev.hub.configuration.properties.ApplicationProperties;
-import com.justedlev.hub.constant.MailSubjectConstant;
-import com.justedlev.hub.constant.MailTemplateConstant;
+import com.justedlev.common.constant.MailSubjectConstant;
+import com.justedlev.common.constant.MailTemplateConstant;
 import com.justedlev.hub.queue.NotificationQueue;
 import com.justedlev.hub.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +15,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
-import static com.justedlev.hub.constant.ControllerResources.Account.ACCOUNTS;
-import static com.justedlev.hub.constant.ControllerResources.CONFIRM;
+import static com.justedlev.common.constant.ControllerResources.Account.ACCOUNTS;
+import static com.justedlev.common.constant.ControllerResources.CONFIRM;
 
 @Component
 @RequiredArgsConstructor

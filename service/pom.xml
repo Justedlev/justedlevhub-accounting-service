@@ -18,6 +18,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <org.keycloak.admin-client.version>22.0.5</org.keycloak.admin-client.version>
     </properties>
 
     <dependencyManagement>
@@ -106,6 +107,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-admin-client</artifactId>
+            <version>${org.keycloak.admin-client.version}</version>
         </dependency>
 
         <dependency>

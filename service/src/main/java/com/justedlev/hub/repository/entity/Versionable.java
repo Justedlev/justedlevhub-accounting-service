@@ -11,14 +11,14 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
 @MappedSuperclass
 public abstract class Versionable<PK extends Serializable> extends Auditable<PK> {
     @Version
     @Column(name = "version", nullable = false)
-    private Long version;
+    private long version;
 }

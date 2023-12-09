@@ -26,4 +26,6 @@ public class RegistrationRequest implements Serializable {
     @NotEmpty
     @NotBlank
     private String nickname;
+    private String firstName;
+    private String lastName;
 }

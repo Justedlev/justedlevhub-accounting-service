@@ -12,10 +12,12 @@ import java.util.stream.Stream;
 @Getter
 @RequiredArgsConstructor
 public enum AccountMode {
-    ONLINE("online"),
-    OFFLINE("offline"),
-    HIDDEN("hidden"),
-    SLEEP("sleep");
+    ONLINE(AccountMode.PREFIX + "online"),
+    OFFLINE(AccountMode.PREFIX + "offline"),
+    HIDDEN(AccountMode.PREFIX + "hidden"),
+    SLEEP(AccountMode.PREFIX + "sleep");
+
+    private static final String PREFIX = "account.mode.";
 
     @JsonValue
     private final String label;

@@ -8,58 +8,82 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.Singular;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class AccountSpecification implements Specification<Account> {
-    private final AccountFilter filter;
-
-    public static AccountSpecification from(AccountFilter filter) {
-        return new AccountSpecification(filter);
+@Builder
+public record AccountSpecification(
+        @Singular(ignoreNullCollections = true)
+        Collection<UUID> ids,
+        @Singular(ignoreNullCollections = true)
+        Collection<String> nicknames,
+        @Singular(ignoreNullCollections = true)
+        Collection<String> statuses,
+        @Singular(ignoreNullCollections = true)
+        Collection<String> excludeStatuses,
+        @Singular(ignoreNullCollections = true)
+        Collection<String> modes,
+        @Singular(ignoreNullCollections = true)
+        Collection<String> confirmCodes,
+        String freeText
+) implements Specification<Account> {
+    @NonNull
+    public static AccountSpecification from(@NonNull AccountFilter filter) {
+        return AccountSpecification.builder()
+                .ids(filter.getIds())
+                .nicknames(filter.getNicknames())
+                .statuses(filter.getStatuses())
+                .excludeStatuses(filter.getExcludeStatuses())
+                .modes(filter.getModes())
+                .confirmCodes(filter.getConfirmCodes())
+                .freeText(filter.getFreeText())
+                .build();
     }
 
+    @NonNull
     @Override
     public Predicate toPredicate(@NonNull Root<Account> root,
                                  @NonNull CriteriaQuery<?> cq,
                                  @NonNull CriteriaBuilder cb) {
         List<Predicate> predicates = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(filter.getIds())) {
-            predicates.add(root.get(AbstractPersistable_.id).in(filter.getIds()));
+        if (CollectionUtils.isNotEmpty(ids())) {
+            predicates.add(root.get(AbstractPersistable_.id).in(ids()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getNicknames())) {
-            predicates.add(root.get(Account_.nickname).in(filter.getNicknames()));
+        if (CollectionUtils.isNotEmpty(nicknames())) {
+            predicates.add(root.get(Account_.nickname).in(nicknames()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getModes())) {
-            predicates.add(root.get(Account_.mode).in(filter.getModes()));
+        if (CollectionUtils.isNotEmpty(modes())) {
+            predicates.add(root.get(Account_.mode).in(modes()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getStatuses())) {
-            predicates.add(root.get(Account_.status).in(filter.getStatuses()));
+        if (CollectionUtils.isNotEmpty(statuses())) {
+            predicates.add(root.get(Account_.status).in(statuses()));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getExcludeStatuses())) {
-            predicates.add(cb.not(root.get(Account_.status).in(filter.getExcludeStatuses())));
+        if (CollectionUtils.isNotEmpty(excludeStatuses())) {
+            predicates.add(cb.not(root.get(Account_.status).in(excludeStatuses())));
         }
 
-        if (CollectionUtils.isNotEmpty(filter.getConfirmCodes())) {
-            predicates.add(root.get(Account_.confirmCode).in(filter.getConfirmCodes()));
+        if (CollectionUtils.isNotEmpty(confirmCodes())) {
+            predicates.add(root.get(Account_.confirmCode).in(confirmCodes()));
         }
 
-        if (StringUtils.isNotBlank(filter.getFreeText())) {
+        if (StringUtils.isNotBlank(freeText())) {
             Pattern.compile("\\s+")
-                    .splitAsStream(filter.getFreeText())
+                    .splitAsStream(freeText())
                     .filter(StringUtils::isNotBlank)
                     .map(cb::literal)
                     .map(cb::trim)

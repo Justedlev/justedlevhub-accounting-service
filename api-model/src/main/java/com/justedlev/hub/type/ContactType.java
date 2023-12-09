@@ -1,38 +1,37 @@
 package com.justedlev.hub.type;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.io.Serializable;
+import java.util.Set;
 
 @Getter
-@RequiredArgsConstructor
-public enum ContactType {
-    EMAIL("email"),
-    PHONE_NUMBER("phone-number");
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
+public class ContactType implements Comparable<ContactType>, Serializable {
+    public static final String PREFIX = "contact.type.";
+
+    private static final String EMAIL_LABEL = PREFIX + "email";
+    public static final ContactType EMAIL = new ContactType(EMAIL_LABEL);
+
+    private static final String PHONE_NUMBER_LABEL = PREFIX + "phone-number";
+    public static final ContactType PHONE_NUMBER = new ContactType(PHONE_NUMBER_LABEL);
+
+    private static final Set<ContactType> values = Set.of(EMAIL, PHONE_NUMBER);
 
     private final String label;
 
-    public static ContactType labelOf(String label) {
-        return findByLabel(label).orElseThrow(() -> new IllegalArgumentException("No enum by label " + label));
+    @NonNull
+    public static ContactType valueOf(@NonNull String label) {
+        return switch (label) {
+            case EMAIL_LABEL -> EMAIL;
+            case PHONE_NUMBER_LABEL -> PHONE_NUMBER;
+            default -> new ContactType(label);
+        };
     }
 
-    public static Optional<ContactType> findByLabel(String label) {
-        return findByFilter(v -> v.label.equals(label));
-    }
-
-    public static ContactType labelOfIgnoreCase(String label) {
-        return findLabelIgnoreCase(label).orElseThrow(() -> new IllegalArgumentException("No enum by label " + label));
-    }
-
-    public static Optional<ContactType> findLabelIgnoreCase(String label) {
-        return findByFilter(v -> v.label.equalsIgnoreCase(label));
-    }
-
-    public static Optional<ContactType> findByFilter(Predicate<ContactType> filter) {
-        return Objects.isNull(filter) ? Optional.empty() : Stream.of(values()).filter(filter).findFirst();
+    @Override
+    public int compareTo(ContactType other) {
+        return this.label.compareTo(other.label);
     }
 }

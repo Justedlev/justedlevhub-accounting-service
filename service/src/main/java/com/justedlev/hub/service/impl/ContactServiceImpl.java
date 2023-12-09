@@ -1,6 +1,6 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.common.mapper.CustomModelMapper;
+import com.justedlev.common.mapper.CustomModelMapper;
 import com.justedlev.hub.component.ContactFinder;
 import com.justedlev.hub.model.params.ContactFilterParams;
 import com.justedlev.hub.model.request.CreateContactRequest;

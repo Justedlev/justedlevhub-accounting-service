@@ -6,7 +6,7 @@ keycloak:
   token-uri: ${KEYCLOAK_TOKEN_ENDPOINT}
   realm: ${KEYCLOAK_REALM}
   client:
-    name: justedlevhub-users-rest-api
+    name: api-gateway
     id: ${KEYCLOAK_CLIENT_ID}
     secret: ${KEYCLOAK_CLIENT_SECRET}
     username: admin@justedlevhub.com

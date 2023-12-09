@@ -1,8 +1,8 @@
 package com.justedlev.hub.service.impl;
 
-import com.justedlev.hub.common.mapper.CustomModelMapper;
+import com.justedlev.common.constant.ExceptionConstant;
+import com.justedlev.common.mapper.CustomModelMapper;
 import com.justedlev.hub.component.account.AccountModeComponent;
-import com.justedlev.hub.constant.ExceptionConstant;
 import com.justedlev.hub.model.params.AccountFilterParams;
 import com.justedlev.hub.model.request.CreateAccountRequest;
 import com.justedlev.hub.model.request.UpdateAccountModeRequest;
@@ -80,9 +80,9 @@ public class AccountServiceImpl implements AccountService {
         var account = accountRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Not exist"));
         mapper.map(request, account);
-        accountRepository.save(account);
+        var saved = accountRepository.save(account);
 
-        return mapper.map(account);
+        return mapper.map(saved);
     }
 
     @SneakyThrows
@@ -105,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
         return accountModeComponent.updateMode(request);
     }
 
-    @CachePut(key = "#result.nickname")
+    @CachePut(key = "#result.id")
     @Override
     public AccountResponse create(CreateAccountRequest request) {
         if (accountRepository.existsByNickname(request.getNickname())) throw new EntityExistsException("Exists");

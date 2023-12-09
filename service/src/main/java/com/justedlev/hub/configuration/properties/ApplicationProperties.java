@@ -8,7 +8,7 @@ import java.time.Duration;
 
 @Getter
 @Setter
-@ConfigurationProperties(prefix = "configuration")
+@ConfigurationProperties(prefix = "application")
 public class ApplicationProperties {
     private Duration activityTime;
     private Duration offlineAfterTime;
@@ -16,7 +16,7 @@ public class ApplicationProperties {
 
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = "configuration.service")
+    @ConfigurationProperties(prefix = "application.service")
     public static class Service {
         private String name;
         private String email;
