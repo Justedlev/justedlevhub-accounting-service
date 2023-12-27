@@ -9,10 +9,10 @@ keycloak:
     name: api-gateway
     id: ${KEYCLOAK_CLIENT_ID}
     secret: ${KEYCLOAK_CLIENT_SECRET}
-    username: admin@justedlevhub.com
+    username: admin
     password: Just96lyk3@d
   jwt-converter:
     role-claims: realm_access.roles,resource_access.account.roles
     username-attribute: preferred_username
   user-groups:
-    - f9fef35f-a9cc-4ac1-a164-e9755700d56e
+    - 6ed2a8f7-d791-4445-ada6-b0eaa4ef0330

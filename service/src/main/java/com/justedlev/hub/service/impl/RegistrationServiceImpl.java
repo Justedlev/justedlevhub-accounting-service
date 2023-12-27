@@ -12,6 +12,7 @@ import com.justedlev.hub.service.RegistrationService;
 import com.justedlev.hub.type.ContactType;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.representations.idm.CredentialRepresentation;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
@@ -50,6 +52,11 @@ public class RegistrationServiceImpl implements RegistrationService {
     private String createKeycloakUser(RegistrationRequest request) {
         var user = createUser(request);
         var response = keycloakRealmsResource.users().create(user);
+//        try {
+//            log.debug("{}", new ObjectMapper().readValue(((InputStream) response.getEntity()), JsonNode.class));
+//        } catch (IOException e) {
+//            log.
+//        }
         var kcUserId = CreatedResponseUtil.getCreatedId(response);
         var userResource = keycloakRealmsResource.users().get(kcUserId);
         properties.getUserGroups().forEach(userResource::joinGroup);

@@ -17,8 +17,11 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spring-cloud.version>2022.0.4</spring-cloud.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
         <org.keycloak.admin-client.version>22.0.5</org.keycloak.admin-client.version>
+        <!--        <tomcat.version>11.0.0-M15</tomcat.version>-->
+        <!--        <logback.version>1.4.14</logback.version>-->
+        <!--        <snakeyaml.version>2.2</snakeyaml.version>-->
     </properties>
 
     <dependencyManagement>
@@ -53,18 +56,18 @@
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-spring</artifactId>
-            <version>5.7.0</version>
+            <version>5.10.0</version>
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-provider-jdbc-template</artifactId>
             <version>5.7.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.vladmihalcea</groupId>
-            <artifactId>hibernate-types-60</artifactId>
-            <version>2.21.1</version>
-        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>com.vladmihalcea</groupId>-->
+        <!--            <artifactId>hibernate-types-60</artifactId>-->
+        <!--            <version>2.21.1</version>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
@@ -97,7 +100,7 @@
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
-            <version>1.7</version>
+            <version>1.8.0</version>
         </dependency>
 
         <dependency>

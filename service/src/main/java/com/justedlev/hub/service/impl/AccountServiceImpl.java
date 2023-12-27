@@ -1,7 +1,6 @@
 package com.justedlev.hub.service.impl;
 
 import com.justedlev.common.constant.ExceptionConstant;
-import com.justedlev.common.mapper.CustomModelMapper;
 import com.justedlev.hub.component.account.AccountModeComponent;
 import com.justedlev.hub.model.params.AccountFilterParams;
 import com.justedlev.hub.model.request.CreateAccountRequest;
@@ -18,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -39,14 +39,14 @@ import static com.justedlev.hub.type.AccountStatus.ACTIVE;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountModeComponent accountModeComponent;
-    private final CustomModelMapper mapper;
+    private final ModelMapper mapper;
 
     @Override
     public Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable) {
         var filter = mapper.map(params, AccountFilter.class);
         var page = accountRepository.findAll(AccountSpecification.from(filter), pageable);
 
-        return page.map(mapper::map);
+        return page.map(current -> mapper.map(current, AccountResponse.class));
     }
 
     @Cacheable
@@ -55,7 +55,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findById(id)
                 .stream()
                 .findFirst()
-                .map(mapper::map)
+                .map(current -> mapper.map(current, AccountResponse.class))
                 .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ExceptionConstant.USER_NOT_EXISTS, id)));
     }
@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
         mapper.map(request, account);
         var saved = accountRepository.save(account);
 
-        return mapper.map(saved);
+        return mapper.map(saved, AccountResponse.class);
     }
 
     @SneakyThrows
@@ -96,7 +96,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAvatar(avatarData);
         accountRepository.save(account);
 
-        return mapper.map(account);
+        return mapper.map(account, AccountResponse.class);
     }
 
     @CacheEvict(allEntries = true)
@@ -113,7 +113,7 @@ public class AccountServiceImpl implements AccountService {
         var account = mapper.map(request, Account.class);
         accountRepository.save(account);
 
-        return mapper.map(account);
+        return mapper.map(account, AccountResponse.class);
     }
 
     @CacheEvict

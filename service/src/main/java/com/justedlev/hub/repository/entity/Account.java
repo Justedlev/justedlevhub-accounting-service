@@ -39,7 +39,9 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 @Table(name = "accounts")
 @NamedEntityGraph(
         name = Account.ENTITY_GRAPH_NAME,
-        attributeNodes = {@NamedAttributeNode("contacts"),}
+        attributeNodes = {
+                @NamedAttributeNode("contacts"),
+        }
 )
 public class Account extends Versionable<UUID> implements Serializable {
     @Serial

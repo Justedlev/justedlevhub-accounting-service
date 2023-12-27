@@ -25,7 +25,7 @@ public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, Abstra
         return new JwtAuthenticationToken(jwt, authorities, name);
     }
 
-    private String extractName(Jwt jwt) {
+    private String extractName(@NonNull Jwt jwt) {
         return Optional.of(properties)
                 .map(KeycloakJwtConverterProperties::getUsernameAttribute)
                 .map(jwt::getClaimAsString)
