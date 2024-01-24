@@ -15,7 +15,6 @@ import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 import org.springframework.data.history.Revision;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -43,8 +42,6 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
         }
 )
 public class Account extends Versioning<UUID> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 6714493400L;
     public static final String ENTITY_GRAPH_NAME = "account-entity-graph";
 
     @NotBlank

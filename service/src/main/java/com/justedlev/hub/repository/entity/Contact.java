@@ -11,7 +11,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -32,8 +31,6 @@ import java.util.UUID;
         attributeNodes = {@NamedAttributeNode("account"),}
 )
 public class Contact extends Versioning<UUID> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 6790844800L;
     public static final String ENTITY_GRAPH_NAME = "contact-entity-graph";
 
     @Column(name = "type", nullable = false, updatable = false)
