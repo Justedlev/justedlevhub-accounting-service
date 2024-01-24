@@ -10,8 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID>,
-        JpaSpecificationExecutor<Account>,
-        RevisionRepository<Account, UUID, Long> {
+        JpaSpecificationExecutor<Account>, RevisionRepository<Account, UUID, Long> {
 
     boolean existsByNickname(String nickname);
 

@@ -12,7 +12,7 @@
 
     <groupId>com.github.justedlev.hub</groupId>
     <artifactId>jh-users</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Justedlev Hub Microservices</description>
 
@@ -41,7 +41,7 @@
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <!--                    <compilerArgs>&#45;&#45;enable-preview</compilerArgs>-->
                 </configuration>
             </plugin>
             <plugin>

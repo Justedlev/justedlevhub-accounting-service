@@ -1,9 +1,10 @@
 package com.justedlev.hub.repository.entity;
 
+import com.justedlev.common.jpa.Auditable;
+import com.justedlev.common.jpa.Versioning;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Audited
 @AuditOverride(forClass = Auditable.class)
 @Accessors(chain = true)
-@SuperBuilder
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -30,7 +31,7 @@ import java.util.UUID;
         name = Contact.ENTITY_GRAPH_NAME,
         attributeNodes = {@NamedAttributeNode("account"),}
 )
-public class Contact extends Versionable<UUID> implements Serializable {
+public class Contact extends Versioning<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6790844800L;
     public static final String ENTITY_GRAPH_NAME = "contact-entity-graph";
@@ -56,4 +57,14 @@ public class Contact extends Versionable<UUID> implements Serializable {
             CascadeType.REMOVE,
     })
     private Account account;
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

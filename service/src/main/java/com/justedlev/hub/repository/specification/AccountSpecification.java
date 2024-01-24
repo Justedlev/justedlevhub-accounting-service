@@ -1,6 +1,5 @@
 package com.justedlev.hub.repository.specification;
 
-import com.justedlev.hub.repository.entity.AbstractPersistable_;
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Account_;
 import com.justedlev.hub.repository.filter.AccountFilter;
@@ -13,6 +12,7 @@ import lombok.NonNull;
 import lombok.Singular;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.jpa.domain.AbstractPersistable_;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;

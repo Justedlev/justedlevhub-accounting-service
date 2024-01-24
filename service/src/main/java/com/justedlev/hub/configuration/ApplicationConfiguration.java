@@ -3,7 +3,6 @@ package com.justedlev.hub.configuration;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.justedlev.common.mapper.CustomModelMapper;
 import com.justedlev.hub.configuration.properties.ApplicationProperties;
-import org.apache.commons.validator.routines.EmailValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -29,11 +28,6 @@ public class ApplicationConfiguration {
     @Bean
     PhoneNumberUtil phoneNumberUtil() {
         return PhoneNumberUtil.getInstance();
-    }
-
-    @Bean
-    EmailValidator emailValidator() {
-        return EmailValidator.getInstance();
     }
 
     @Bean

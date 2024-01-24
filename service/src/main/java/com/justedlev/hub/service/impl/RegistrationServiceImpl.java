@@ -46,7 +46,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         contactRepository.save(contact);
         emailNotificationSender.sendConfirmation(account, contact);
 
-        return RegistrationResponse.builder().userId(account.getId()).build();
+        return new RegistrationResponse(account.getId());
     }
 
     private String createKeycloakUser(RegistrationRequest request) {

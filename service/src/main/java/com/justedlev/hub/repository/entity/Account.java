@@ -1,14 +1,13 @@
 package com.justedlev.hub.repository.entity;
 
-import com.justedlev.hub.type.AccountMode;
-import com.justedlev.hub.type.AccountStatus;
+import com.justedlev.common.jpa.Auditable;
+import com.justedlev.common.jpa.Versioning;
 import com.justedlev.hub.type.Gender;
 import com.justedlev.util.Generator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,7 +30,7 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@Builder
 @Audited
 @AuditOverride(forClass = Auditable.class)
 @Entity
@@ -43,7 +42,7 @@ import static com.justedlev.hub.type.AccountStatus.UNCONFIRMED;
                 @NamedAttributeNode("contacts"),
         }
 )
-public class Account extends Versionable<UUID> implements Serializable {
+public class Account extends Versioning<UUID> implements Serializable {
     @Serial
     private static final long serialVersionUID = 6714493400L;
     public static final String ENTITY_GRAPH_NAME = "account-entity-graph";
@@ -100,11 +99,13 @@ public class Account extends Versionable<UUID> implements Serializable {
 
     private transient List<Revision<Long, Account>> revisions;
 
-    public AccountMode getAccountMode() {
-        return AccountMode.labelOf(mode);
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
     }
 
-    public AccountStatus getAccountStatus() {
-        return AccountStatus.labelOf(status);
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }
