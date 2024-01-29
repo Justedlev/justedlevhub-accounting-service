@@ -2,7 +2,7 @@ package com.justedlev.hub.repository.specification;
 
 import com.justedlev.hub.repository.entity.Account;
 import com.justedlev.hub.repository.entity.Account_;
-import com.justedlev.hub.repository.filter.AccountFilter;
+import com.justedlev.util.Constants;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 @Builder
 public record AccountSpecification(
@@ -37,19 +36,6 @@ public record AccountSpecification(
         Collection<String> confirmCodes,
         String freeText
 ) implements Specification<Account> {
-    @NonNull
-    public static AccountSpecification from(@NonNull AccountFilter filter) {
-        return AccountSpecification.builder()
-                .ids(filter.getIds())
-                .nicknames(filter.getNicknames())
-                .statuses(filter.getStatuses())
-                .excludeStatuses(filter.getExcludeStatuses())
-                .modes(filter.getModes())
-                .confirmCodes(filter.getConfirmCodes())
-                .freeText(filter.getFreeText())
-                .build();
-    }
-
     @NonNull
     @Override
     public Predicate toPredicate(@NonNull Root<Account> root,
@@ -82,13 +68,12 @@ public record AccountSpecification(
         }
 
         if (StringUtils.isNotBlank(freeText())) {
-            Pattern.compile("\\s+")
-                    .splitAsStream(freeText())
+            Constants.WHITE_SPACE.splitAsStream(freeText())
                     .filter(StringUtils::isNotBlank)
+                    .map(String::strip)
                     .map(cb::literal)
-                    .map(cb::trim)
-                    .map(exp -> cb.concat("%", exp))
-                    .map(exp -> cb.concat(exp, "%"))
+                    .map(exp -> cb.concat(Constants.PERCENT, exp))
+                    .map(exp -> cb.concat(exp, Constants.PERCENT))
                     .forEach(exp -> predicates.add(cb.or(
                             cb.like(root.get(Account_.nickname), exp),
                             cb.like(root.get(Account_.firstName), exp),

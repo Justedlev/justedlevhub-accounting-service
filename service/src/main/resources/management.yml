@@ -11,6 +11,7 @@ management:
   endpoint:
     health:
       enabled: true
+      show-details: always
     restart:
       enabled: true
     refresh:

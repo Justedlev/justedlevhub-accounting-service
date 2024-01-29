@@ -7,7 +7,6 @@ import com.justedlev.hub.model.request.UpdateAccountRequest;
 import com.justedlev.hub.model.response.AccountResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +20,7 @@ public interface AccountService {
 
     AccountResponse updateById(UUID id, UpdateAccountRequest request);
 
-    AccountResponse updateAvatar(UUID id, MultipartFile photo);
+//    AccountResponse updateAvatar(UUID id, MultipartFile photo);
 
     List<AccountResponse> updateMode(UpdateAccountModeRequest request);
 

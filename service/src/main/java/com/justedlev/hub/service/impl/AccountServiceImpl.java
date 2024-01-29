@@ -9,14 +9,12 @@ import com.justedlev.hub.model.request.UpdateAccountRequest;
 import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
-import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.service.AccountService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,9 +23,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,10 +39,10 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<AccountResponse> findPageByFilter(AccountFilterParams params, Pageable pageable) {
-        var filter = mapper.map(params, AccountFilter.class);
-        var page = accountRepository.findAll(AccountSpecification.from(filter), pageable);
+        var spec = mapper.map(params, AccountSpecification.class);
+        var page = accountRepository.findAll(spec, pageable);
 
-        return page.map(current -> mapper.map(current, AccountResponse.class));
+        return page.map(this::map);
     }
 
     @Cacheable
@@ -69,35 +65,34 @@ public class AccountServiceImpl implements AccountService {
 
         var account = accountRepository.findByConfirmCode(code)
                 .orElseThrow(() -> new EntityNotFoundException("Not found by code " + code));
-        account.setStatus(ACTIVE.getLabel());
+        account.setStatus(ACTIVE);
 
         return accountRepository.save(account).getId();
     }
 
     @CachePut(key = "#id")
     @Override
-    public AccountResponse updateById(@NotBlank UUID id, UpdateAccountRequest request) {
-        var account = accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Not exist"));
+    public AccountResponse updateById(UUID id, UpdateAccountRequest request) {
+        var account = accountRepository.getReferenceById(id);
         mapper.map(request, account);
         var saved = accountRepository.save(account);
 
         return mapper.map(saved, AccountResponse.class);
     }
 
-    @SneakyThrows
-    @CachePut(key = "#id")
-    @Override
-    public AccountResponse updateAvatar(@NotBlank UUID id, MultipartFile photo) {
-        var avatarData = String.format("data:%s;base64,%s",
-                photo.getContentType(), Base64.getEncoder().encodeToString(photo.getBytes()));
-        var account = accountRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
-        account.setAvatar(avatarData);
-        accountRepository.save(account);
-
-        return mapper.map(account, AccountResponse.class);
-    }
+//    @SneakyThrows
+//    @CachePut(key = "#id")
+//    @Override
+//    public AccountResponse updateAvatar(@NotBlank UUID id, MultipartFile photo) {
+//        var avatarData = String.format("data:%s;base64,%s",
+//                photo.getContentType(), Base64.getEncoder().encodeToString(photo.getBytes()));
+//        var account = accountRepository.findById(id)
+//                .orElseThrow(EntityNotFoundException::new);
+//        account.setAvatarUrl(avatarData);
+//        accountRepository.save(account);
+//
+//        return mapper.map(account, AccountResponse.class);
+//    }
 
     @CacheEvict(allEntries = true)
     @Override
@@ -120,5 +115,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void deleteById(@NotBlank UUID id) {
         accountRepository.deleteById(id);
+    }
+
+    private AccountResponse map(Account account) {
+        return mapper.map(account, AccountResponse.class);
     }
 }

@@ -1,43 +1,14 @@
 package com.justedlev.hub.type;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
-
-@Getter
-@RequiredArgsConstructor
-public enum AccountStatus {
-    ACTIVE(AccountStatus.PREFIX + "active"),
-    UNCONFIRMED(AccountStatus.PREFIX + "unconfirmed"),
-    RESTORED(AccountStatus.PREFIX + "restored"),
-    DEACTIVATED(AccountStatus.PREFIX + "deactivated"),
-    DELETED(AccountStatus.PREFIX + "deleted");
-
+@UtilityClass
+public class AccountStatus {
     private static final String PREFIX = "account.status.";
 
-    private final String label;
-
-    public static AccountStatus labelOf(String label) {
-        return findByLabel(label).orElse(null);
-    }
-
-    public static Optional<AccountStatus> findByLabel(String label) {
-        return findByFilter(v -> v.label.equals(label));
-    }
-
-    public static AccountStatus labelOfIgnoreCase(String label) {
-        return findLabelIgnoreCase(label).orElse(null);
-    }
-
-    public static Optional<AccountStatus> findLabelIgnoreCase(String label) {
-        return findByFilter(v -> v.label.equalsIgnoreCase(label));
-    }
-
-    public static Optional<AccountStatus> findByFilter(Predicate<AccountStatus> filter) {
-        return Objects.isNull(filter) ? Optional.empty() : Stream.of(values()).filter(filter).findFirst();
-    }
+    public static final String ACTIVE = AccountStatus.PREFIX + "active";
+    public static final String UNCONFIRMED = AccountStatus.PREFIX + "unconfirmed";
+    public static final String RESTORED = AccountStatus.PREFIX + "restored";
+    public static final String DEACTIVATED = AccountStatus.PREFIX + "deactivated";
+    public static final String DELETED = AccountStatus.PREFIX + "deleted";
 }

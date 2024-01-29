@@ -1,12 +1,13 @@
 package com.justedlev.hub.component.notification.impl;
 
+import com.justedlev.common.constant.MailSubjectConstant;
+import com.justedlev.common.constant.MailTemplateConstant;
 import com.justedlev.hub.api.notification.model.request.SendNotificationRequest;
 import com.justedlev.hub.component.notification.NotificationCommand;
 import com.justedlev.hub.component.notification.NotificationType;
 import com.justedlev.hub.component.notification.TypedNotifier;
 import com.justedlev.hub.configuration.properties.ApplicationProperties;
-import com.justedlev.common.constant.MailSubjectConstant;
-import com.justedlev.common.constant.MailTemplateConstant;
+import com.justedlev.hub.controller.AccountController;
 import com.justedlev.hub.queue.NotificationQueue;
 import com.justedlev.hub.repository.entity.Account;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
-
-import static com.justedlev.common.constant.ControllerResources.Account.ACCOUNTS;
-import static com.justedlev.common.constant.ControllerResources.CONFIRM;
 
 @Component
 @RequiredArgsConstructor
@@ -46,8 +44,8 @@ public class EmailNotifier implements TypedNotifier {
 
     private Map<String, String> buildContent(Account account) {
         var confirmationLink = UriComponentsBuilder.fromHttpUrl(properties.getUrl())
-                .path(ACCOUNTS)
-                .path(CONFIRM)
+                .path(AccountController.ACCOUNTS)
+                .path(AccountController.CONFIRM)
                 .path("/" + account.getConfirmCode())
                 .build().toUriString();
 

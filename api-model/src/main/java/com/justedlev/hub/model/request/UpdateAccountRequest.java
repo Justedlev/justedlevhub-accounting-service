@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.time.LocalDateTime;
 
 @Builder
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 public class UpdateAccountRequest implements Serializable {
     private String firstName;
     private String lastName;
+    private URI avatarUrl;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime birthDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING)

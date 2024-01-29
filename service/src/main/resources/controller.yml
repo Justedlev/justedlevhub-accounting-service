@@ -1,0 +1,9 @@
+controller:
+  account:
+    path: /v1/accounts
+    resources:
+      id: /{id}
+  registration:
+    path: /v1/registration
+    resources:
+      sign-up: /sign-up

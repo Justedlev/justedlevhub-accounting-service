@@ -6,7 +6,6 @@ import com.justedlev.hub.model.request.UpdateAccountModeRequest;
 import com.justedlev.hub.model.response.AccountResponse;
 import com.justedlev.hub.repository.AccountRepository;
 import com.justedlev.hub.repository.entity.Account;
-import com.justedlev.hub.repository.filter.AccountFilter;
 import com.justedlev.hub.repository.specification.AccountSpecification;
 import com.justedlev.hub.type.AccountMode;
 import lombok.RequiredArgsConstructor;
@@ -40,22 +39,22 @@ public class AccountModeComponentImpl implements AccountModeComponent {
     }
 
     private List<Account> getActiveAccount(UpdateAccountModeRequest request) {
-        var filter = AccountFilter.builder()
-//                .modeIds(request.getFromModes())
+        var spec = AccountSpecification.builder()
+//                .modes(request.getFromAccountModes())
                 .build();
         var now = System.currentTimeMillis();
         var duration = getDuration(request.getToAccountMode());
 
-        return accountRepository.findAll(AccountSpecification.from(filter))
+        return accountRepository.findAll(spec)
                 .parallelStream()
                 .filter(current -> filterOutByModeAt(current, now, duration))
                 .toList();
     }
 
-    private Duration getDuration(AccountMode accountMode) {
+    private Duration getDuration(String accountMode) {
         return switch (accountMode) {
-            case SLEEP -> properties.getActivityTime();
-            case OFFLINE -> properties.getOfflineAfterTime();
+            case AccountMode.SLEEP -> properties.getActivityTime();
+            case AccountMode.OFFLINE -> properties.getOfflineAfterTime();
             default -> Duration.of(1, ChronoUnit.MINUTES);
         };
     }

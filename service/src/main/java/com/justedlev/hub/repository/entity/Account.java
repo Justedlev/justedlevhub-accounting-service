@@ -6,7 +6,6 @@ import com.justedlev.hub.type.Gender;
 import com.justedlev.util.Generator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -16,6 +15,7 @@ import org.hibernate.envers.Audited;
 import org.springframework.data.history.Revision;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +45,6 @@ public class Account extends Versioning<UUID> implements Serializable {
     public static final String ENTITY_GRAPH_NAME = "account-entity-graph";
 
     @NotBlank
-    @NotEmpty
     @Column(name = "nickname", nullable = false, unique = true)
     private String nickname;
 
@@ -62,25 +61,22 @@ public class Account extends Versioning<UUID> implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
-    @Lob
-    @Column(name = "avatar", length = 1000)
-    private String avatar;
+    @Column(name = "avatar_url")
+    private URI avatarUrl;
 
     @Builder.Default
     @Column(name = "confirm_code", length = 32, nullable = false, unique = true, updatable = false)
     private String confirmCode = Generator.generateConfirmCode();
 
-    @NotEmpty
     @NotBlank
     @Builder.Default
     @Column(name = "status", nullable = false)
-    private String status = UNCONFIRMED.getLabel();
+    private String status = UNCONFIRMED;
 
-    @NotEmpty
     @NotBlank
     @Builder.Default
     @Column(name = "mode", nullable = false)
-    private String mode = OFFLINE.getLabel();
+    private String mode = OFFLINE;
 
     @Singular
     @ToString.Exclude

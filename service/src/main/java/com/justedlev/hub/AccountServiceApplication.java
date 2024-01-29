@@ -1,5 +1,6 @@
 package com.justedlev.hub;
 
+import com.justedlev.hub.configuration.properties.AccountControllerProperties;
 import com.justedlev.hub.configuration.properties.ApplicationProperties;
 import com.justedlev.hub.configuration.properties.CloudAmqpProperties;
 import com.justedlev.hub.configuration.properties.JNotificationProperties;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         KeycloakJwtConverterProperties.class,
         KeycloakUserProperties.class,
         SecurityProperties.class,
+        AccountControllerProperties.class,
 })
 public class AccountServiceApplication {
     public static void main(String[] args) {

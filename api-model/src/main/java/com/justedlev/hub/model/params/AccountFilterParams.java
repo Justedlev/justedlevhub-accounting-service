@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Collection;
 
+import static com.justedlev.hub.type.AccountMode.*;
+import static com.justedlev.hub.type.AccountStatus.*;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -18,11 +21,11 @@ import java.util.Collection;
 @Schema(description = "Query parameters for filter")
 public class AccountFilterParams implements Serializable {
     @Parameter(description = "Filtering by list of account status", in = ParameterIn.QUERY)
-    @Schema(allowableValues = {"active", "unconfirmed", "restored", "deactivated", "deleted",})
+    @Schema(allowableValues = {ACTIVE, UNCONFIRMED, RESTORED, DELETED, DEACTIVATED,})
     private Collection<String> statuses;
 
     @Parameter(description = "Filtering by list of account mode", in = ParameterIn.QUERY)
-    @Schema(allowableValues = {"online", "offline", "hidden", "sleep",})
+    @Schema(allowableValues = {ONLINE, OFFLINE, SLEEP, HIDDEN,})
     private Collection<String> modes;
 
     @Parameter(description = "Free text filtering", in = ParameterIn.QUERY)

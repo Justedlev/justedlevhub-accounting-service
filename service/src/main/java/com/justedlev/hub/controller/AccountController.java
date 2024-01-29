@@ -1,5 +1,6 @@
 package com.justedlev.hub.controller;
 
+import com.justedlev.hub.configuration.properties.AccountControllerProperties;
 import com.justedlev.hub.model.params.AccountFilterParams;
 import com.justedlev.hub.model.request.CreateAccountRequest;
 import com.justedlev.hub.model.request.UpdateAccountModeRequest;
@@ -23,23 +24,28 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import static com.justedlev.common.constant.ControllerResources.API;
-import static com.justedlev.common.constant.ControllerResources.Account.*;
-
 @Tag(name = "Accounts", description = "Endpoints for accounts operations")
 @RestController
-@RequestMapping(ACCOUNTS)
+@RequestMapping("${controller.account.path}")
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
+    public static final String ACCOUNTS = "/v1/accounts";
+    public static final String UPDATE_MODE = "/update-mode";
+    public static final String ID_PATH_VAR = "{id}";
+    public static final String ID = "/" + ID_PATH_VAR;
+    public static final String CODE_PATH_VAR = "{code}";
+    public static final String CONFIRM = "/confirm";
+    public static final String CONFIRM_CODE = CONFIRM + "/" + CODE_PATH_VAR;
+
     private final AccountService accountService;
+    private final AccountControllerProperties properties;
 
     @Operation(summary = "Find the page of accounts")
     @ApiResponse(responseCode = "200", description = "Found the page of accounts")
@@ -74,17 +80,17 @@ public class AccountController {
         return ResponseEntity.ok(accountService.updateById(id, request));
     }
 
-    @Operation(summary = "Update account avatar")
-    @ApiResponse(responseCode = "200")
-    @PatchMapping(
-            value = ID_AVATAR,
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    public ResponseEntity<AccountResponse> updateAvatar(@PathVariable @NotNull UUID id,
-                                                        @RequestPart MultipartFile file) {
-        return ResponseEntity.ok(accountService.updateAvatar(id, file));
-    }
+//    @Operation(summary = "Update account avatar")
+//    @ApiResponse(responseCode = "200")
+//    @PatchMapping(
+//            value = ID_AVATAR,
+//            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    public ResponseEntity<AccountResponse> updateAvatar(@PathVariable @NotNull UUID id,
+//                                                        @RequestPart MultipartFile file) {
+//        return ResponseEntity.ok(accountService.updateAvatar(id, file));
+//    }
 
     @Operation(summary = "Account confirmation")
     @ApiResponse(responseCode = "302")
@@ -118,6 +124,6 @@ public class AccountController {
     }
 
     private URI buildAccountUri(UUID id) {
-        return UriComponentsBuilder.fromUriString(API).path(ACCOUNTS).path("/" + id).build().toUri();
+        return UriComponentsBuilder.fromUriString(properties.getPath()).path("/" + id).build().toUri();
     }
 }

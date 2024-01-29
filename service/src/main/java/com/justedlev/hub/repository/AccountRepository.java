@@ -17,7 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, UUID>,
     boolean existsByConfirmCodeAndStatus(String confirmCode, String status);
 
     default boolean isUnconfirmed(String code) {
-        return existsByConfirmCodeAndStatus(code, AccountStatus.UNCONFIRMED.getLabel());
+        return existsByConfirmCodeAndStatus(code, AccountStatus.UNCONFIRMED);
     }
 
     Optional<Account> findByConfirmCode(String code);

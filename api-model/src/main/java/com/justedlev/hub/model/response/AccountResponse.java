@@ -28,6 +28,6 @@ public class AccountResponse implements Serializable {
     private String mode;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdAt;
-    private String avatar;
+    private String avatarUrl;
     private Long version;
 }

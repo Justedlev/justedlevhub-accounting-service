@@ -1,8 +1,7 @@
 package com.justedlev.hub.model.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.justedlev.hub.type.AccountMode;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,8 +20,7 @@ import java.util.Collection;
 public class UpdateAccountModeRequest implements Serializable {
     @NotNull
     @NotEmpty
-    private Collection<@NotNull AccountMode> fromAccountModes;
+    private Collection<@NotBlank String> fromAccountModes;
     @NotNull
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    private AccountMode toAccountMode;
+    private String toAccountMode;
 }

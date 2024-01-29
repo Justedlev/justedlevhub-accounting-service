@@ -4,6 +4,7 @@ server:
     context-path: /api
   error:
     include-stacktrace: never
+    include-message: always
 
 spring:
   config:
@@ -16,6 +17,7 @@ spring:
       - classpath:/logging.yml
       - classpath:/eureka.yml
       - classpath:/management.yml
+      - classpath:/controller.yml
   application:
     name: service.users
   security:
