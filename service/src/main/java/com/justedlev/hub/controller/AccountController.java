@@ -32,7 +32,7 @@ import java.util.UUID;
 
 @Tag(name = "Accounts", description = "Endpoints for accounts operations")
 @RestController
-@RequestMapping("${controller.account.path}")
+@RequestMapping("/account")
 @RequiredArgsConstructor
 @Validated
 public class AccountController {
@@ -58,7 +58,7 @@ public class AccountController {
 
     @Operation(summary = "Find the account by its id")
     @ApiResponse(responseCode = "200")
-    @GetMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> getById(@PathVariable @NotNull UUID id) {
         return ResponseEntity.ok(accountService.getById(id));
     }
@@ -74,7 +74,7 @@ public class AccountController {
 
     @Operation(summary = "Update account")
     @ApiResponse(responseCode = "200")
-    @PatchMapping(value = ID, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<AccountResponse> update(@PathVariable @NotNull UUID id,
                                                   @Valid @RequestBody UpdateAccountRequest request) {
         return ResponseEntity.ok(accountService.updateById(id, request));
@@ -94,8 +94,8 @@ public class AccountController {
 
     @Operation(summary = "Account confirmation")
     @ApiResponse(responseCode = "302")
-    @PatchMapping(value = CONFIRM_CODE)
-    public ResponseEntity<Void> confirm(@PathVariable @NotEmpty String code) {
+    @PatchMapping(value = "/confirm/{code}")
+    public ResponseEntity<Void> confirmCode(@PathVariable @NotEmpty String code) {
         var id = accountService.confirm(code);
         return ResponseEntities.found(buildAccountUri(id));
     }

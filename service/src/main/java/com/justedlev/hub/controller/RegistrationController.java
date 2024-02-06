@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 @RestController
-@RequestMapping("${controller.registration.path}")
+@RequestMapping("/registration")
 @RequiredArgsConstructor
 @Validated
 public class RegistrationController {
     private final RegistrationService registrationService;
 
-    @PostMapping(value = "${controller.registration.resources.sign-up}")
+    @PostMapping(value = "/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid RegistrationRequest request) {
         var res = registrationService.registration(request);
 
