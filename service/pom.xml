@@ -38,8 +38,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.justedlev</groupId>
-            <artifactId>omm-jtc</artifactId>
+            <groupId>io.github.justedlev</groupId>
+            <artifactId>jtc4omm</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
